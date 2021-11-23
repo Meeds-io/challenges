@@ -9,7 +9,7 @@
   </parent>
   <groupId>org.exoplatform.challenges</groupId>
   <artifactId>challenges-parent</artifactId>
-  <version>1.0.x-SNAPSHOT</version>
+  <version>1.0.x-rewards-SNAPSHOT</version>
   <packaging>pom</packaging>
   <name>eXo Challenges - Parent POM</name>
   <modules>
@@ -24,10 +24,9 @@
     <tag>HEAD</tag>
   </scm>
   <properties>
-    <!-- 3rd party libraries versions -->
-    <org.exoplatform.social.version>6.3.x-SNAPSHOT</org.exoplatform.social.version>
-    <org.exoplatform.platform-ui.version>6.3.x-SNAPSHOT</org.exoplatform.platform-ui.version>
-    <addon.exo.gamification.version>2.3.x-SNAPSHOT</addon.exo.gamification.version>
+    <org.exoplatform.social.version>6.3.x-rewards-SNAPSHOT</org.exoplatform.social.version>
+    <org.exoplatform.platform-ui.version>6.3.x-rewards-SNAPSHOT</org.exoplatform.platform-ui.version>
+    <addon.exo.gamification.version>2.3.x-rewards-SNAPSHOT</addon.exo.gamification.version>
   </properties>
   <dependencyManagement>
     <dependencies>
