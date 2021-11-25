@@ -64,14 +64,6 @@ public class AnnouncementEntity implements Serializable {
     this.assignee = assignee;
   }
 
-  public Date getCreatedDate() {
-    return createdDate;
-  }
-
-  public void setCreatedDate(Date createdDate) {
-    this.createdDate = createdDate;
-  }
-
   public String getComment() {
     return comment;
   }
@@ -86,6 +78,14 @@ public class AnnouncementEntity implements Serializable {
 
   public void setCreator(Long creator) {
     this.creator = creator;
+  }
+
+  public Date getCreatedDate() {
+    return createdDate;
+  }
+
+  public void setCreatedDate(Date createdDate) {
+    this.createdDate = createdDate;
   }
 
   public Long getActivityId() {
