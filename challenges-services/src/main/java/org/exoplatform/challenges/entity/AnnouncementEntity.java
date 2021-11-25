@@ -9,7 +9,7 @@ import java.util.List;
 @Entity(name = "Announcement")
 @ExoEntity
 @Table(name = "ANNOUNCEMENT")
-public class Announcement {
+public class AnnouncementEntity {
 
   @Id
   @SequenceGenerator(name = "SEQ_ANNOUNCEMENT_ID", sequenceName = "SEQ_ANNOUNCEMENT_ID")
@@ -19,7 +19,7 @@ public class Announcement {
 
   @ManyToOne(fetch = FetchType.LAZY, optional = false)
   @JoinColumn(name = "CHALLENGE_ID", referencedColumnName = "CHALLENGE_ID")
-  private Challenge         challenge;
+  private ChallengeEntity challenge;
 
   @ElementCollection
   @CollectionTable(name = "ANNOUNCEMENT_ASSIGNEE", joinColumns = @JoinColumn(name = "ANNOUNCEMENT_ID"))
@@ -47,11 +47,11 @@ public class Announcement {
     this.id = id;
   }
 
-  public Challenge getChallenge() {
+  public ChallengeEntity getChallenge() {
     return challenge;
   }
 
-  public void setChallenge(Challenge challenge) {
+  public void setChallenge(ChallengeEntity challenge) {
     this.challenge = challenge;
   }
 

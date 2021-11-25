@@ -8,7 +8,7 @@ import java.util.List;
 @Entity(name = "Challenge")
 @ExoEntity
 @Table(name = "CHALLENGE")
-public class Challenge {
+public class ChallengeEntity {
 
   @Id
   @SequenceGenerator(name = "SEQ_CHALLENGE_ID", sequenceName = "SEQ_CHALLENGE_ID")
