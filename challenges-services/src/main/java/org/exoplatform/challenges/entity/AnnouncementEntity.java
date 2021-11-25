@@ -3,13 +3,14 @@ package org.exoplatform.challenges.entity;
 import org.exoplatform.commons.api.persistence.ExoEntity;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 
 @Entity(name = "Announcement")
 @ExoEntity
 @Table(name = "ANNOUNCEMENT")
-public class AnnouncementEntity {
+public class AnnouncementEntity implements Serializable {
 
   @Id
   @SequenceGenerator(name = "SEQ_ANNOUNCEMENT_ID", sequenceName = "SEQ_ANNOUNCEMENT_ID")
@@ -37,7 +38,7 @@ public class AnnouncementEntity {
   private Date             createdDate;
 
   @Column(name = "ACTIVITY_ID")
-  private Long             ActivityId;
+  private Long             activityId;
 
   public Long getId() {
     return id;
@@ -88,10 +89,10 @@ public class AnnouncementEntity {
   }
 
   public Long getActivityId() {
-    return ActivityId;
+    return activityId;
   }
 
   public void setActivityId(Long activityId) {
-    ActivityId = activityId;
+    this.activityId = activityId;
   }
 }

@@ -2,13 +2,14 @@ package org.exoplatform.challenges.entity;
 
 import org.exoplatform.commons.api.persistence.ExoEntity;
 import javax.persistence.*;
+import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 
 @Entity(name = "Challenge")
 @ExoEntity
 @Table(name = "CHALLENGE")
-public class ChallengeEntity {
+public class ChallengeEntity implements Serializable {
 
   @Id
   @SequenceGenerator(name = "SEQ_CHALLENGE_ID", sequenceName = "SEQ_CHALLENGE_ID")
