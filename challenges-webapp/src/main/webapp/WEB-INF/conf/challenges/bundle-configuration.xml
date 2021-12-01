@@ -28,7 +28,7 @@ Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
         <init-params>
           <values-param>
             <name>classpath.resources</name>
-            <value>locale.portlet.Challenges</value>
+            <value>navigation.portal</value>
           </values-param>
             <values-param>
               <name>portal.resource.names</name>
@@ -37,7 +37,7 @@ Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
             </values-param>
             <values-param>
               <name>init.resources</name>
-              <value>locale.navigation.portal</value>
+              <value>locale.portlet.Challenges</value>
             </values-param>
         </init-params>
         </component-plugin>
