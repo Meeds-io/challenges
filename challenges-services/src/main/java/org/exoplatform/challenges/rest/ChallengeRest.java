@@ -11,10 +11,7 @@ import org.exoplatform.services.log.Log;
 import org.exoplatform.services.rest.resource.ResourceContainer;
 
 import javax.annotation.security.RolesAllowed;
-import javax.ws.rs.Consumes;
-import javax.ws.rs.POST;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
+import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
@@ -60,6 +57,31 @@ public class ChallengeRest implements ResourceContainer {
     } catch (Exception e) {
       LOG.warn("Error creating a challenge", e);
       return Response.serverError().entity(e.getMessage()).build();
+    }
+  }
+
+  @GET
+  @Produces(MediaType.APPLICATION_JSON)
+  @Path("{challengeId}")
+  @RolesAllowed("users")
+  @ApiOperation(value = "Retrieves a challenge by its id", httpMethod = "GET", response = Response.class, produces = "application/json", notes = "returns selected challenge if exists")
+  @ApiResponses(value = {
+          @ApiResponse(code = 200, message = "Request fulfilled"),
+          @ApiResponse(code = 400, message = "Invalid query input"),
+          @ApiResponse(code = 403, message = "Unauthorized operation"),
+          @ApiResponse(code = 500, message = "Internal server error") })
+  public Response getChallengeById(@ApiParam(value = "Challenge technical id", required = true) @PathParam("challengeId") long challengeId) {
+    if (challengeId == 0) {
+      LOG.warn("Bad request sent to server with empty challengeId");
+      return Response.status(400).build();
+    }
+    String currentUserId = Utils.getCurrentUser();
+    try {
+      Challenge challenge = challengeService.getChallengeById(challengeId, currentUserId);
+      return Response.ok(challenge).build();
+    } catch (Exception e) {
+      LOG.error("Error getting challenge", e);
+      return Response.status(500).build();
     }
   }
 }
