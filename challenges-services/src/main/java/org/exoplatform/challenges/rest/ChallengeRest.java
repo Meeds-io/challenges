@@ -21,17 +21,15 @@ import javax.ws.rs.core.Response;
 
 @Path("/challengeRest")
 @Api(value = "/challengeRest", description = "Manages challenge associated to users") // NOSONAR
+@RolesAllowed("users")
 public class ChallengeRest implements ResourceContainer {
 
   private static final Log LOG = ExoLogger.getLogger(ChallengeRest.class);
 
   private ChallengeService challengeService;
 
-  private IdentityManager  identityManager;
-
-  public ChallengeRest(ChallengeService challengeService, IdentityManager identityManager) {
+  public ChallengeRest(ChallengeService challengeService) {
     this.challengeService = challengeService;
-    this.identityManager = identityManager;
   }
 
   @POST

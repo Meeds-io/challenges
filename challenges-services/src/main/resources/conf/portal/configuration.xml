@@ -16,26 +16,25 @@
     -->
 <configuration xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.exoplatform.org/xml/ns/kernel_1_2.xsd http://www.exoplatform.org/xml/ns/kernel_1_2.xsd" xmlns="http://www.exoplatform.org/xml/ns/kernel_1_2.xsd">
 
-<component>
-  <type>org.exoplatform.challenges.dao.AnnouncementDAO</type>
-</component>
+  <component>
+    <type>org.exoplatform.challenges.dao.AnnouncementDAO</type>
+  </component>
 
-<component>
-  <type>org.exoplatform.challenges.dao.ChallengeDAO</type>
-</component>
+  <component>
+    <type>org.exoplatform.challenges.dao.ChallengeDAO</type>
+  </component>
 
-<component>
-  <type>org.exoplatform.challenges.storage.ChallengeStorage</type>
-</component>
+  <component>
+    <type>org.exoplatform.challenges.storage.ChallengeStorage</type>
+  </component>
 
-<component>
-  <key>org.exoplatform.challenges.service.ChallengeService</key>
-  <type>org.exoplatform.challenges.service.ChallengeServiceImpl</type>
-</component>
-
-<component>
-  <type>org.exoplatform.challenges.rest.ChallengeRest</type>
-</component>
+  <component>
+    <key>org.exoplatform.challenges.service.ChallengeService</key>
+    <type>org.exoplatform.challenges.service.ChallengeServiceImpl</type>
+  </component>
+  <component>
+    <type>org.exoplatform.challenges.rest.ChallengeRest</type>
+  </component>
 
 <external-component-plugins>
   <target-component>org.exoplatform.commons.api.persistence.DataInitializer</target-component>
