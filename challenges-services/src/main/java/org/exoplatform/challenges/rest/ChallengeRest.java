@@ -6,6 +6,7 @@ import org.exoplatform.challenges.model.Challenge;
 import org.exoplatform.challenges.service.ChallengeService;
 import org.exoplatform.challenges.utils.Utils;
 import org.exoplatform.common.http.HTTPStatus;
+import org.exoplatform.commons.exception.ObjectNotFoundException;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
 import org.exoplatform.services.rest.resource.ResourceContainer;
@@ -82,6 +83,40 @@ public class ChallengeRest implements ResourceContainer {
     } catch (Exception e) {
       LOG.error("Error getting challenge", e);
       return Response.status(500).build();
+    }
+  }
+
+  @PUT
+  @Consumes(MediaType.APPLICATION_JSON)
+  @RolesAllowed("users")
+  @Path("updateChallenge")
+  @ApiOperation(value = "Updates an existing challenge", httpMethod = "PUT", response = Response.class, consumes = "application/json")
+  @ApiResponses(value = { @ApiResponse(code = HTTPStatus.NO_CONTENT, message = "Request fulfilled"),
+      @ApiResponse(code = HTTPStatus.NOT_FOUND, message = "Object not found"),
+      @ApiResponse(code = HTTPStatus.BAD_REQUEST, message = "Invalid query input"),
+      @ApiResponse(code = HTTPStatus.UNAUTHORIZED, message = "Unauthorized operation"),
+      @ApiResponse(code = HTTPStatus.INTERNAL_ERROR, message = "Internal server error"), })
+  public Response updateChallenge(@ApiParam(value = "challenge object to update", required = true) Challenge challenge) {
+    if (challenge == null) {
+      return Response.status(Response.Status.BAD_REQUEST).entity("challenge object is mandatory").build();
+    }
+    if (challenge.getId() <= 0) {
+      return Response.status(Response.Status.BAD_REQUEST).entity("challenge technical identifier must be positive").build();
+    }
+
+    String currentUser = Utils.getCurrentUser();
+    try {
+      challengeService.updateChallenge(challenge, currentUser);
+      return Response.ok(challenge).build();
+    } catch (ObjectNotFoundException e) {
+      LOG.debug("User '{}' attempts to update a not existing challenge '{}'", currentUser, e);
+      return Response.status(Response.Status.NOT_FOUND).entity("Challenge not found").build();
+    } catch (IllegalAccessException e) {
+      LOG.error("User '{}' attempts to update a challenge for owner '{}'", currentUser, e);
+      return Response.status(Response.Status.UNAUTHORIZED).entity(e.getMessage()).build();
+    } catch (Exception e) {
+      LOG.warn("Error updating a challenge", e);
+      return Response.serverError().entity(e.getMessage()).build();
     }
   }
 }

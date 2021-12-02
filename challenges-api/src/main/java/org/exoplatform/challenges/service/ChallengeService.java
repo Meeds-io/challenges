@@ -1,6 +1,7 @@
 package org.exoplatform.challenges.service;
 
 import org.exoplatform.challenges.model.Challenge;
+import org.exoplatform.commons.exception.ObjectNotFoundException;
 
 public interface ChallengeService {
 
@@ -8,18 +9,32 @@ public interface ChallengeService {
    * Creates a new challenge
    *
    * @param challenge {@link Challenge} object to create
-   * @param username User name creating calendar
+   * @param username User name creating challenge
    * @return created {@link Challenge} with generated technical identifier
    * @throws IllegalAccessException when user is not authorized to create a
    *           challenge for the designated owner defined in object
    */
   Challenge createChallenge(Challenge challenge, String username) throws IllegalAccessException;
 
+  /**
+   * Updates an existing challenge
+   *
+   * @param  challenge {@link Challenge} object to update
+   * @param username User name updating challenge
+   * @throws IllegalAccessException when user is not authorized to update the
+   *           challenge
+   * @throws ObjectNotFoundException when the challenge identified by its
+   *           technical identifier is not found
+   * @throws IllegalAccessException when user is not authorized to create a
+   *           challenge for the designated owner defined in object
+   */
+  Challenge updateChallenge(Challenge challenge, String username) throws IllegalAccessException, ObjectNotFoundException, IllegalAccessException;
+
     /**
      * Retrieves a challenge identified by its technical identifier.
      *
      * @param challengeId technical identifier of a challenge
-     * @param username User name accessing calendar
+     * @param username User name accessing challenge
      * @return A {@link Challenge} object
      * @throws IllegalAccessException when user is not authorized to access
      *           challenge

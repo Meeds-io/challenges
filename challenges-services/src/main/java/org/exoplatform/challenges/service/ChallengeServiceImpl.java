@@ -2,6 +2,7 @@ package org.exoplatform.challenges.service;
 
 import org.exoplatform.challenges.model.Challenge;
 import org.exoplatform.challenges.storage.ChallengeStorage;
+import org.exoplatform.commons.exception.ObjectNotFoundException;
 
 public class ChallengeServiceImpl implements ChallengeService {
 
@@ -18,6 +19,25 @@ public class ChallengeServiceImpl implements ChallengeService {
     }
     if (challenge.getId() != 0) {
       throw new IllegalArgumentException("challenge id must be equal to 0");
+    }
+
+    return challengeStorage.saveChallenge(challenge, username);
+  }
+
+  @Override
+  public Challenge updateChallenge(Challenge challenge, String username) throws IllegalAccessException, ObjectNotFoundException, IllegalAccessException {
+    if (challenge == null) {
+      throw new IllegalArgumentException("Challenge is mandatory");
+    }
+    if (challenge.getId() == 0) {
+      throw new IllegalArgumentException("challenge id must not be equal to 0");
+    }
+    Challenge oldChallenge = challengeStorage.getChallengeById(challenge.getId());
+    if (oldChallenge == null) {
+      throw new ObjectNotFoundException("challenge is not exist");
+    }
+    if(oldChallenge.equals(challenge)) {
+      throw new IllegalArgumentException("there are no changes to save");
     }
 
     return challengeStorage.saveChallenge(challenge, username);
