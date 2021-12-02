@@ -9,7 +9,6 @@ import org.exoplatform.common.http.HTTPStatus;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
 import org.exoplatform.services.rest.resource.ResourceContainer;
-import org.exoplatform.social.core.manager.IdentityManager;
 
 import javax.annotation.security.RolesAllowed;
 import javax.ws.rs.Consumes;
@@ -19,8 +18,8 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
-@Path("/challengeRest")
-@Api(value = "/challengeRest", description = "Manages challenge associated to users") // NOSONAR
+@Path("/challenge/api")
+@Api(value = "/challenge/api", description = "Manages challenge associated to users") // NOSONAR
 @RolesAllowed("users")
 public class ChallengeRest implements ResourceContainer {
 
