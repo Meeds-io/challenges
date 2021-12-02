@@ -88,6 +88,7 @@ public class ChallengeRest implements ResourceContainer {
 
   @PUT
   @Consumes(MediaType.APPLICATION_JSON)
+  @Produces(MediaType.APPLICATION_JSON)
   @RolesAllowed("users")
   @Path("updateChallenge")
   @ApiOperation(value = "Updates an existing challenge", httpMethod = "PUT", response = Response.class, consumes = "application/json")
@@ -106,7 +107,7 @@ public class ChallengeRest implements ResourceContainer {
 
     String currentUser = Utils.getCurrentUser();
     try {
-      challengeService.updateChallenge(challenge, currentUser);
+      challenge = challengeService.updateChallenge(challenge, currentUser);
       return Response.ok(challenge).build();
     } catch (ObjectNotFoundException e) {
       LOG.debug("User '{}' attempts to update a not existing challenge '{}'", currentUser, e);
