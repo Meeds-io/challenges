@@ -11,22 +11,26 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class Challenge implements Cloneable {
-  private long id;
-  private String title;
-  private String description;
-  private long audience;
-  private Date startDate;
-  private Date endDate;
+  private long       id;
+
+  private String     title;
+
+  private String     description;
+
+  private long       audience;
+
+  private Date       startDate;
+
+  private Date       endDate;
+
+  private boolean    canEdit;
+
+  private boolean    canAnnounce;
+
   private List<Long> managers;
 
   @Override
   public Challenge clone() { // NOSONAR
-    return new Challenge(id,
-                         title,
-                         description,
-                         audience,
-                         startDate,
-                         endDate,
-                         managers);
+    return new Challenge(id, title, description, audience, startDate, endDate,canEdit, canAnnounce, managers);
   }
 }
