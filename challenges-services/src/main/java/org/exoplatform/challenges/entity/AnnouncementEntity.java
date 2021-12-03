@@ -16,7 +16,7 @@ public class AnnouncementEntity implements Serializable {
   @SequenceGenerator(name = "SEQ_ANNOUNCEMENT_ID", sequenceName = "SEQ_ANNOUNCEMENT_ID")
   @GeneratedValue(strategy = GenerationType.AUTO, generator = "SEQ_ANNOUNCEMENT_ID")
   @Column(name = "ANNOUNCEMENT_ID", nullable = false)
-  private Long              id;
+  private Long            id;
 
   @ManyToOne(fetch = FetchType.LAZY, optional = false)
   @JoinColumn(name = "CHALLENGE_ID", referencedColumnName = "CHALLENGE_ID")
@@ -25,20 +25,20 @@ public class AnnouncementEntity implements Serializable {
   @ElementCollection
   @CollectionTable(name = "ANNOUNCEMENT_ASSIGNEE", joinColumns = @JoinColumn(name = "ANNOUNCEMENT_ID"))
   @Column(name = "ASSIGNEE_ID")
-  private List<Long>        assignee;
+  private List<Long>      assignee;
 
   @Column(name = "COMMENT")
-  private String           comment;
+  private String          comment;
 
   @Column(name = "CREATOR_ID")
-  private Long             creator;
+  private Long            creator;
 
   @Temporal(TemporalType.TIMESTAMP)
   @Column(name = "CREATED_DATE", nullable = false)
-  private Date             createdDate;
+  private Date            createdDate;
 
   @Column(name = "ACTIVITY_ID")
-  private Long             activityId;
+  private Long            activityId;
 
   public Long getId() {
     return id;
