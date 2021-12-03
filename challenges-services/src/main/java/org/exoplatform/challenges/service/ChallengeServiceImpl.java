@@ -23,6 +23,9 @@ public class ChallengeServiceImpl implements ChallengeService {
     if (challenge == null) {
       throw new IllegalArgumentException("Challenge is mandatory");
     }
+    if (challenge.getId() != 0) {
+      throw new IllegalArgumentException("challenge id must be equal to 0");
+    }
     String idSpace = String.valueOf(challenge.getAudience());
     if (StringUtils.isBlank(idSpace)) {
       throw new IllegalArgumentException("space id must not be null or empty");
@@ -38,6 +41,9 @@ public class ChallengeServiceImpl implements ChallengeService {
   public Challenge updateChallenge(Challenge challenge, String username) throws IllegalAccessException, ObjectNotFoundException, IllegalAccessException {
     if (challenge == null) {
       throw new IllegalArgumentException("Challenge is mandatory");
+    }
+    if (challenge.getId() == 0) {
+      throw new IllegalArgumentException("challenge id must not be equal to 0");
     }
     String idSpace = String.valueOf(challenge.getAudience());
     if (StringUtils.isBlank(idSpace)) {
