@@ -15,27 +15,27 @@ public class ChallengeEntity implements Serializable {
   @SequenceGenerator(name = "SEQ_CHALLENGE_ID", sequenceName = "SEQ_CHALLENGE_ID")
   @GeneratedValue(strategy = GenerationType.AUTO, generator = "SEQ_CHALLENGE_ID")
   @Column(name = "CHALLENGE_ID", nullable = false)
-  private Long              id;
+  private Long       id;
 
   @Column(name = "TITLE", nullable = false)
-  private String            title;
+  private String     title;
 
   @Column(name = "DESCRIPTION")
-  private String            description;
+  private String     description;
 
   @Column(name = "AUDIENCE_ID")
-  private Long              audience;
+  private Long       audience;
 
   @Column(name = "START_DATE", nullable = false)
-  private Date              startDate;
+  private Date       startDate;
 
   @Column(name = "END_DATE", nullable = false)
-  private Date              endDate;
+  private Date       endDate;
 
   @ElementCollection
   @CollectionTable(name = "CHALLENGE_MANAGER", joinColumns = @JoinColumn(name = "CHALLENGE_ID"))
   @Column(name = "MANAGER_ID")
-  private List<Long>        managers;
+  private List<Long> managers;
 
   public Long getId() {
     return id;
