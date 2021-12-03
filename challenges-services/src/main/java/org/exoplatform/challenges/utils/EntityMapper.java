@@ -1,4 +1,4 @@
-package org.exoplatform.challenges.util;
+package org.exoplatform.challenges.utils;
 
 import org.apache.commons.lang3.StringUtils;
 import org.exoplatform.challenges.entity.AnnouncementEntity;
@@ -13,6 +13,7 @@ public class EntityMapper {
 
   private EntityMapper() {
   }
+
   public static Challenge fromEntity(ChallengeEntity challengeEntity) {
     if (challengeEntity == null) {
       return null;
@@ -23,6 +24,8 @@ public class EntityMapper {
                          challengeEntity.getAudience(),
                          challengeEntity.getStartDate(),
                          challengeEntity.getEndDate(),
+                         Utils.canEditChallenge(String.valueOf(challengeEntity.getId())),
+                         Utils.canAnnounce(String.valueOf(challengeEntity.getId())),
                          challengeEntity.getManagers());
   }
 
@@ -72,7 +75,7 @@ public class EntityMapper {
                             announcementEntity.getActivityId());
   }
 
-  public static AnnouncementEntity toEntity (Announcement announcement) {
+  public static AnnouncementEntity toEntity(Announcement announcement) {
     if (announcement == null) {
       return null;
     }
@@ -100,4 +103,5 @@ public class EntityMapper {
     announcementEntity.setCreator(announcement.getCreator());
     return announcementEntity;
   }
+
 }
