@@ -6,6 +6,7 @@ import org.exoplatform.challenges.model.Challenge;
 import org.exoplatform.challenges.utils.EntityMapper;
 import org.exoplatform.challenges.utils.Utils;
 import org.exoplatform.social.core.identity.model.Identity;
+import java.util.List;
 
 public class ChallengeStorage {
 
@@ -37,5 +38,9 @@ public class ChallengeStorage {
   public Challenge getChallengeById(long challengeId) {
     ChallengeEntity challengeEntity = this.challengeDAO.find(challengeId);
     return EntityMapper.fromEntity(challengeEntity);
+  }
+
+  public List<ChallengeEntity> findAllChallengesByUser(int offset, int limit, List<Long> ids) {
+    return challengeDAO.findAllChallengesByUser(offset, limit, ids);
   }
 }

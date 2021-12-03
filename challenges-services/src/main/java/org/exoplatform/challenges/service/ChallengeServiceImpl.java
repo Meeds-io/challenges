@@ -1,11 +1,17 @@
 package org.exoplatform.challenges.service;
 
 import org.apache.commons.lang3.StringUtils;
+import org.exoplatform.challenges.entity.ChallengeEntity;
 import org.exoplatform.challenges.model.Challenge;
 import org.exoplatform.challenges.storage.ChallengeStorage;
+import org.exoplatform.challenges.utils.EntityMapper;
 import org.exoplatform.commons.exception.ObjectNotFoundException;
+import org.exoplatform.commons.utils.ListAccess;
 import org.exoplatform.social.core.space.model.Space;
 import org.exoplatform.social.core.space.spi.SpaceService;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 public class ChallengeServiceImpl implements ChallengeService {
 
@@ -81,5 +87,27 @@ public class ChallengeServiceImpl implements ChallengeService {
       throw new IllegalAccessException("user is not allowed to access to the challenge");
     }
     return challenge;
+  }
+
+  @Override
+  public List<Challenge> getAllChallengeByUser(int offset, int limit, String username) throws Exception {
+    if (StringUtils.isBlank(username)) {
+      throw new IllegalAccessException("user name must not be null");
+    }
+    List<Long> listIdSpace = new ArrayList<>();
+    ListAccess<Space> userSpaces = spaceService.getMemberSpaces(username);
+    int spacesSize = userSpaces.getSize();
+    int offsetToFetch = 0;
+    int limitToFetch = spacesSize > 20 ? 20 : spacesSize;
+    while (limitToFetch > 0) {
+      Space[] spaces = userSpaces.load(offsetToFetch, limitToFetch);
+      Arrays.stream(spaces).forEach(space -> {
+        listIdSpace.add(Long.valueOf(space.getId()));
+      });
+      offsetToFetch += limitToFetch;
+      limitToFetch = (spacesSize - offsetToFetch) > 20 ? 20 : (spacesSize - offsetToFetch);
+    }
+    List<ChallengeEntity> challengeEntities = challengeStorage.findAllChallengesByUser(offset, limit, listIdSpace);
+    return EntityMapper.fromChallengeEntities(challengeEntities);
   }
 }

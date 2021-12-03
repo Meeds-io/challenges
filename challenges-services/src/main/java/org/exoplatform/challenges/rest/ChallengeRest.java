@@ -15,6 +15,7 @@ import javax.annotation.security.RolesAllowed;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import java.util.List;
 
 @Path("/challenge/api")
 @Api(value = "/challenge/api", description = "Manages challenge associated to users") // NOSONAR
@@ -117,6 +118,40 @@ public class ChallengeRest implements ResourceContainer {
       return Response.status(Response.Status.UNAUTHORIZED).entity(e.getMessage()).build();
     } catch (Exception e) {
       LOG.warn("Error updating a challenge", e);
+      return Response.serverError().entity(e.getMessage()).build();
+    }
+  }
+
+  @GET
+  @Produces(MediaType.APPLICATION_JSON)
+  @Consumes(MediaType.APPLICATION_JSON)
+  @RolesAllowed("users")
+  @Path("allChallenge")
+  @ApiOperation(value = "Retrieves the list of challenges available for an owner", httpMethod = "GET", response = Response.class, produces = "application/json")
+  @ApiResponses(value = { @ApiResponse(code = HTTPStatus.OK, message = "Request fulfilled"),
+  @ApiResponse(code = HTTPStatus.UNAUTHORIZED, message = "Unauthorized operation"),
+  @ApiResponse(code = HTTPStatus.INTERNAL_ERROR, message = "Internal server error"), })
+  public Response getAllChallengesByUser(@ApiParam(value = "Offset of result", required = false, defaultValue = "0")
+                                         @QueryParam("offset")
+                                         int offset,
+                                         @ApiParam(value = "Limit of result", required = false, defaultValue = "10")
+                                         @QueryParam("limit")
+                                         int limit) {
+    if (offset < 0) {
+      return Response.status(Response.Status.BAD_REQUEST).entity("Offset must be 0 or positive").build();
+    }
+    if (limit <= 0) {
+      return Response.status(Response.Status.BAD_REQUEST).entity("Limit must be positive").build();
+    }
+    String currentUser = Utils.getCurrentUser();
+    try {
+      List<Challenge> challenges = challengeService.getAllChallengeByUser(offset, limit, currentUser);
+      return Response.ok(challenges).build();
+    } catch (IllegalAccessException e) {
+      LOG.warn("User '{}' attempts to access not authorized challenges with owner Ids", currentUser, e);
+      return Response.status(Response.Status.UNAUTHORIZED).entity(e.getMessage()).build();
+    } catch (Exception e) {
+      LOG.warn("Error retrieving list of challenges", e);
       return Response.serverError().entity(e.getMessage()).build();
     }
   }
