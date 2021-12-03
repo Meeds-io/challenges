@@ -15,16 +15,16 @@ public class ChallengeStorage {
     this.challengeDAO = challengeDAO;
   }
 
-  public Challenge saveChallenge(Challenge entity, String username) throws IllegalArgumentException {
-    if (entity == null) {
+  public Challenge saveChallenge(Challenge challenge, String username) throws IllegalArgumentException {
+    if (challenge == null) {
       throw new IllegalArgumentException("challenge argument is null");
     }
     Identity identity = Utils.getIdentityByTypeAndId(username);
     if (identity == null) {
       throw new IllegalArgumentException("identity is not exist");
     }
-    ChallengeEntity challengeEntity = EntityMapper.toEntity(entity);
-    if (entity.getId() == 0) {
+    ChallengeEntity challengeEntity = EntityMapper.toEntity(challenge);
+    if (challenge.getId() == 0) {
       challengeEntity.setId(null);
       challengeEntity = challengeDAO.create(challengeEntity);
     } else {

@@ -24,6 +24,8 @@ public class EntityMapper {
                          challengeEntity.getAudience(),
                          challengeEntity.getStartDate(),
                          challengeEntity.getEndDate(),
+                         Utils.canEditChallenge(String.valueOf(challengeEntity.getId())),
+                         Utils.canAnnounce(String.valueOf(challengeEntity.getId())),
                          challengeEntity.getManagers());
   }
 
@@ -101,4 +103,5 @@ public class EntityMapper {
     announcementEntity.setCreator(announcement.getCreator());
     return announcementEntity;
   }
+
 }

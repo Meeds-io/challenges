@@ -23,10 +23,14 @@ public class Challenge implements Cloneable {
 
   private Date       endDate;
 
+  private boolean    canEdit;
+
+  private boolean    canAnnounce;
+
   private List<Long> managers;
 
   @Override
   public Challenge clone() { // NOSONAR
-    return new Challenge(id, title, description, audience, startDate, endDate, managers);
+    return new Challenge(id, title, description, audience, startDate, endDate,canEdit, canAnnounce, managers);
   }
 }
