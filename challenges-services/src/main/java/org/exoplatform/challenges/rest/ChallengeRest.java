@@ -145,7 +145,7 @@ public class ChallengeRest implements ResourceContainer {
     }
     String currentUser = Utils.getCurrentUser();
     try {
-      List<Challenge> challenges = challengeService.getAllChallengeByUser(offset, limit, currentUser);
+      List<Challenge> challenges = challengeService.getAllChallengesByUser(offset, limit, currentUser);
       return Response.ok(challenges).build();
     } catch (IllegalAccessException e) {
       LOG.warn("User '{}' attempts to access not authorized challenges with owner Ids", currentUser, e);

@@ -51,5 +51,5 @@ public interface ChallengeService {
    * @throws IllegalAccessException when user is not authorized to access
    *           challenges
    */
-  List<Challenge> getAllChallengeByUser(int offset, int limit, String username) throws Exception;
+  List<Challenge> getAllChallengesByUser(int offset, int limit, String username) throws Exception;
 }
