@@ -54,6 +54,11 @@ public class EntityMapper {
     if (challenge.getStartDate() != null) {
       challengeEntity.setStartDate(challenge.getStartDate());
     }
+    if (challenge.getManagers() == null || challenge.getManagers().isEmpty()) {
+      challengeEntity.setManagers(Collections.emptyList());
+    } else {
+      challengeEntity.setManagers(challenge.getManagers());
+    }
     challengeEntity.setAudience(challenge.getAudience());
     challengeEntity.setManagers(challenge.getManagers());
     return challengeEntity;
