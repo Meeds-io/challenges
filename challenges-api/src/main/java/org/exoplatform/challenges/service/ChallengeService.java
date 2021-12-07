@@ -52,4 +52,12 @@ public interface ChallengeService {
    *           challenges
    */
   List<Challenge> getAllChallengesByUser(int offset, int limit, String username) throws Exception;
+
+  /**
+   * Return a boolean that indicates if the current user can add a challenge or not
+   *
+   * @param currentUser
+   * @return if the user can add a challenge or not    */
+  boolean canAddChallenge(String currentUser) throws Exception;
+
 }
