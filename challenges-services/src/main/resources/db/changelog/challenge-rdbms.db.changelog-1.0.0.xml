@@ -76,7 +76,7 @@ Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.-->
 
     <changeSet author="challenge" id="1.0.0-3">
         <createTable tableName="CHALLENGE_MANAGER">
-            <column name="CHALLENGE_MANAGER_ID" type="BIGINT">
+            <column name="CHALLENGE_MANAGER_ID" type="BIGINT" autoIncrement="${autoIncrement}" startWith="1">
                 <constraints nullable="false" primaryKey="true" primaryKeyName="PK_CHALLENGE_MANAGER_ID"/>
             </column>
             <column name="CHALLENGE_ID" type="BIGINT">

@@ -2,6 +2,7 @@ package org.exoplatform.challenges.service;
 
 import org.exoplatform.challenges.model.Challenge;
 import org.exoplatform.commons.exception.ObjectNotFoundException;
+import java.util.List;
 
 public interface ChallengeService {
 
@@ -40,4 +41,15 @@ public interface ChallengeService {
      *           challenge
      */
     Challenge getChallengeById(long challengeId, String username) throws IllegalAccessException;
+
+  /**
+   * Retrieves all challenges by user.
+   * @param offset Offset
+   * @param limit Limit
+   * @param username User name accessing challenge
+   * @return A {@link List<Challenge>} object
+   * @throws IllegalAccessException when user is not authorized to access
+   *           challenges
+   */
+  List<Challenge> getAllChallengesByUser(int offset, int limit, String username) throws Exception;
 }
