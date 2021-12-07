@@ -1,5 +1,6 @@
 package org.exoplatform.challenges.utils;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.exoplatform.challenges.entity.AnnouncementEntity;
 import org.exoplatform.challenges.entity.ChallengeEntity;
@@ -7,6 +8,10 @@ import org.exoplatform.challenges.model.Announcement;
 import org.exoplatform.challenges.model.Challenge;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.stream.Collectors;
 
 public class EntityMapper {
   private static final Log LOG = ExoLogger.getLogger(EntityMapper.class);
@@ -48,6 +53,11 @@ public class EntityMapper {
     }
     if (challenge.getStartDate() != null) {
       challengeEntity.setStartDate(challenge.getStartDate());
+    }
+    if (challenge.getManagers() == null || challenge.getManagers().isEmpty()) {
+      challengeEntity.setManagers(Collections.emptyList());
+    } else {
+      challengeEntity.setManagers(challenge.getManagers());
     }
     challengeEntity.setAudience(challenge.getAudience());
     challengeEntity.setManagers(challenge.getManagers());
@@ -104,4 +114,14 @@ public class EntityMapper {
     return announcementEntity;
   }
 
+  public static List<Challenge> fromChallengeEntities(List<ChallengeEntity> challengeEntities) {
+    if (CollectionUtils.isEmpty(challengeEntities)) {
+      return new ArrayList<>(Collections.emptyList());
+    } else {
+      List<Challenge> challenges = challengeEntities.stream()
+                                                    .map(challengeEntity -> fromEntity(challengeEntity))
+                                                    .collect(Collectors.toList());
+      return challenges;
+    }
+  }
 }
