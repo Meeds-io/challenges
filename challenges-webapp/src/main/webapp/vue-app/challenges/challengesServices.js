@@ -1,7 +1,7 @@
 export function canAddChallenge() {
   return fetch(`${eXo.env.portal.context}/${eXo.env.portal.rest}/challenge/api/canAddChallenge`, {
     headers: {
-      'Content-Type': 'application/json'
+      'Content-Type': 'text/plain'
     },
     method: 'GET'
   }).then((resp) => {
