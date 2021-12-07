@@ -110,4 +110,10 @@ public class ChallengeServiceImpl implements ChallengeService {
     List<ChallengeEntity> challengeEntities = challengeStorage.findAllChallengesByUser(offset, limit, listIdSpace);
     return EntityMapper.fromChallengeEntities(challengeEntities);
   }
+
+  @Override
+  public boolean canAddChallenge(String currentUser) throws Exception {
+    return spaceService.getManagerSpaces(currentUser).getSize() > 0;
+  }
+
 }
