@@ -9,6 +9,8 @@ import java.util.List;
 @Entity(name = "Challenge")
 @ExoEntity
 @Table(name = "CHALLENGE")
+@NamedQueries({
+    @NamedQuery(name = "Challenge.findAllChallengesByUser", query = "SELECT DISTINCT c FROM Challenge c where c.audience in (:ids) order by c.endDate desc"), })
 public class ChallengeEntity implements Serializable {
 
   @Id
