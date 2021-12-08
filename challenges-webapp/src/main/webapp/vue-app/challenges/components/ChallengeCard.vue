@@ -59,14 +59,6 @@ export default {
   data: () => ({
     showMenu: false
   }),
-  computed: {
-    startDate() {
-      return this.challenge && this.$challengeUtils.toRFC3339(this.challenge.startDate);
-    },
-    endDate() {
-      return this.challenge && this.$challengeUtils.toRFC3339(this.challenge.endDate);
-    }
-  },
   methods: {
     closeMenu() {
       this.showMenu= false;
