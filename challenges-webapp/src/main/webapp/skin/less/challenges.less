@@ -27,21 +27,32 @@
   .title{
     .status {
       font-size: 14px;
-      color: gray;
+      color: @greyColorLighten1;
       width: 90%;
       padding: 9px;
     }
     .iconStatus {
       margin-left: -8px;
-      color: red;
       font-size: 12px;
+    }
+    .startsColor {
+      color: @colorIconWarning;
+    }
+    .endedColor {
+      color: @errorColor;
+    }
+    .endsColor {
+      color: @darkBlue;
     }
     .edit {
       width: 10%;
+      .v-list.v-sheet.theme--light{
+        padding: 0px !important;
+      }
     }
     .subtitleChallenge {
       font-weight: bold;
-      color: black;
+      color: @baseColor;
     }
     .descriptionChallenge {
       -webkit-line-clamp: 3 !important;

@@ -9,25 +9,27 @@
         <v-list-item-content class="title">
           <div class="d-flex">
             <div class="status">
-              <i class="uiIconStatus iconStatus"></i> End {{ getFormatDate(challenge.startDate) }}
+              <i class="uiIconStatus iconStatus" :class="classStatus"></i> {{ getStatus() }}
             </div>
             <div class="edit">
               <v-menu
                 v-if="challenge && challenge.canEdit"
                 v-model="showMenu"
-                offset-y>
+                offset-y
+                attach
+                @blur="closeMenu()"
+                left>
                 <template v-slot:activator="{ on }">
                   <v-btn
                     icon
                     class="ml-2"
-                    v-on="on"
-                    @blur="closeMenu()">
+                    v-on="on">
                     <v-icon>mdi-dots-vertical</v-icon>
                   </v-btn>
                 </template>
                 <v-list>
                   <v-list-item @mousedown="$event.preventDefault()">
-                    <v-list-item-title>Edit challenge</v-list-item-title>
+                    <v-list-item-title>{{ $t('challenges.edit') }}</v-list-item-title>
                   </v-list-item>
                 </v-list>
               </v-menu>
@@ -57,14 +59,42 @@ export default {
     }
   },
   data: () => ({
-    showMenu: false
+    showMenu: false,
+    label: '',
+    status: ''
   }),
+  computed: {
+    classStatus() {
+      if (this.status === 'Starts') {
+        return 'startsColor';
+      } else if (this.status === 'Ended') {
+        return 'endedColor';
+      } else {
+        return 'endsColor';
+      }
+    }
+  },
   methods: {
     closeMenu() {
       this.showMenu= false;
     },
-    getFormatDate(date){
-      return date && date.split('T')[0];
+    getStatus() {
+      const currentDate = new Date();
+      const startDate = new Date(this.challenge && this.challenge.startDate);
+      const endDate = new Date(this.challenge && this.challenge.endDate);
+      if (startDate.getTime() > currentDate.getTime() && endDate.getTime() > currentDate.getTime()) {
+        this.status = 'Starts';
+        this.label=this.$t('challenges.status.starts');
+        return `${this.label } ${ this.challenge.startDate.split('T')[0]}`;
+      } else if (startDate.getTime()<currentDate.getTime() && endDate.getTime() > currentDate.getTime()) {
+        this.status = 'Ends';
+        this.label=this.$t('challenges.status.ends');
+        return `${this.label } ${ this.challenge.endDate.split('T')[0]}`;
+      } else if (endDate.getTime() < currentDate.getTime() && startDate.getTime()< currentDate.getTime()) {
+        this.status = 'Ended';
+        this.label=this.$t('challenges.status.ended');
+        return this.label;
+      }
     }
   }
 };
