@@ -3,7 +3,6 @@
 #ChallengesApplication{
   margin: 25px;
   background-color: @white !important;
-  min-height: ~"calc(100vh - 100px)" ;
   .welcomeMessage{
     margin: 0 20% 10%;
     align-items: center;
@@ -15,6 +14,37 @@
   .addChallengeButton{
     .v-btn{
       text-transform: none !important;
+    }
+  }
+}
+.emptyChallenges {
+  min-height: ~"calc(100vh - 100px)" ;
+}
+#ChallengeCard {
+  .cardOfChallenge {
+    width: 95%
+  }
+  .title{
+    .status {
+      font-size: 14px;
+      color: gray;
+      width: 90%;
+      padding: 9px;
+    }
+    .iconStatus {
+      margin-left: -8px;
+      color: red;
+      font-size: 12px;
+    }
+    .edit {
+      width: 10%;
+    }
+    .subtitleChallenge {
+      font-weight: bold;
+      color: black;
+    }
+    .descriptionChallenge {
+      -webkit-line-clamp: 3 !important;
     }
   }
 }

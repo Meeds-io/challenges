@@ -21,7 +21,7 @@ public class Announcement implements Cloneable {
 
   private Long       creator;
 
-  private Date       createdDate;
+  private String     createdDate;
 
   private Long       activityId;
 
