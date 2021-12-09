@@ -25,6 +25,10 @@ public class ChallengeStorage {
       throw new IllegalArgumentException("identity is not exist");
     }
     ChallengeEntity challengeEntity = EntityMapper.toEntity(challenge);
+    if (challengeEntity.getEndDate().compareTo(challengeEntity.getStartDate()) < 0
+        || challengeEntity.getEndDate().equals(challengeEntity.getStartDate())) {
+      throw new IllegalArgumentException("endDate must be greater than startDate");
+    }
     if (challenge.getId() == 0) {
       challengeEntity.setId(null);
       challengeEntity = challengeDAO.create(challengeEntity);

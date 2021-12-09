@@ -19,9 +19,9 @@ public class Challenge implements Cloneable {
 
   private long       audience;
 
-  private Date       startDate;
+  private String     startDate;
 
-  private Date       endDate;
+  private String     endDate;
 
   private boolean    canEdit;
 
@@ -31,6 +31,6 @@ public class Challenge implements Cloneable {
 
   @Override
   public Challenge clone() { // NOSONAR
-    return new Challenge(id, title, description, audience, startDate, endDate,canEdit, canAnnounce, managers);
+    return new Challenge(id, title, description, audience, startDate, endDate, canEdit, canAnnounce, managers);
   }
 }
