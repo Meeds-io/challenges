@@ -45,7 +45,7 @@ public class ChallengeServiceImpl implements ChallengeService {
   }
 
   @Override
-  public Challenge updateChallenge(Challenge challenge, String username) throws IllegalAccessException, ObjectNotFoundException, IllegalAccessException {
+  public Challenge updateChallenge(Challenge challenge, String username) throws  IllegalArgumentException, ObjectNotFoundException, IllegalAccessException {
     if (challenge == null) {
       throw new IllegalArgumentException("Challenge is mandatory");
     }
