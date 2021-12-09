@@ -27,10 +27,10 @@ public class EntityMapper {
                          challengeEntity.getTitle(),
                          challengeEntity.getDescription(),
                          challengeEntity.getAudience(),
-                         challengeEntity.getStartDate(),
-                         challengeEntity.getEndDate(),
-                         Utils.canEditChallenge(String.valueOf(challengeEntity.getId())),
-                         Utils.canAnnounce(String.valueOf(challengeEntity.getId())),
+                         challengeEntity.getStartDate() == null ? null : Utils.toRFC3339Date(challengeEntity.getStartDate()),
+                         challengeEntity.getEndDate() == null ? null : Utils.toRFC3339Date(challengeEntity.getEndDate()),
+                         Utils.canEditChallenge(String.valueOf(challengeEntity.getAudience())),
+                         Utils.canAnnounce(String.valueOf(challengeEntity.getAudience())),
                          challengeEntity.getManagers());
   }
 
@@ -49,10 +49,10 @@ public class EntityMapper {
       challengeEntity.setDescription(challenge.getDescription());
     }
     if (challenge.getEndDate() != null) {
-      challengeEntity.setEndDate(challenge.getEndDate());
+      challengeEntity.setEndDate(Utils.parseRFC3339Date(challenge.getEndDate()));
     }
     if (challenge.getStartDate() != null) {
-      challengeEntity.setStartDate(challenge.getStartDate());
+      challengeEntity.setStartDate(Utils.parseRFC3339Date(challenge.getStartDate()));
     }
     if (challenge.getManagers() == null || challenge.getManagers().isEmpty()) {
       challengeEntity.setManagers(Collections.emptyList());
@@ -72,16 +72,17 @@ public class EntityMapper {
     challenge.setId(announcementEntity.getChallenge().getId());
     challenge.setAudience(announcementEntity.getChallenge().getAudience());
     challenge.setDescription(announcementEntity.getChallenge().getDescription());
-    challenge.setEndDate(announcementEntity.getChallenge().getEndDate());
+    challenge.setEndDate(Utils.toRFC3339Date(announcementEntity.getChallenge().getEndDate()));
     challenge.setManagers(announcementEntity.getChallenge().getManagers());
     challenge.setTitle(announcementEntity.getChallenge().getTitle());
-    challenge.setStartDate(announcementEntity.getChallenge().getStartDate());
+    challenge.setStartDate(Utils.toRFC3339Date(announcementEntity.getChallenge().getStartDate()));
     return new Announcement(announcementEntity.getId(),
                             challenge,
                             announcementEntity.getAssignee(),
                             announcementEntity.getComment(),
                             announcementEntity.getCreator(),
-                            announcementEntity.getCreatedDate(),
+                            announcementEntity.getCreatedDate() == null ? null
+                                                                        : Utils.toRFC3339Date(announcementEntity.getCreatedDate()),
                             announcementEntity.getActivityId());
   }
 
@@ -95,8 +96,8 @@ public class EntityMapper {
     challengeEntity.setDescription(announcement.getChallenge().getDescription());
     challengeEntity.setAudience(announcement.getChallenge().getAudience());
     challengeEntity.setManagers(announcement.getChallenge().getManagers());
-    challengeEntity.setStartDate(announcement.getChallenge().getStartDate());
-    challengeEntity.setEndDate(announcement.getChallenge().getEndDate());
+    challengeEntity.setStartDate(Utils.parseRFC3339Date(announcement.getChallenge().getStartDate()));
+    challengeEntity.setEndDate(Utils.parseRFC3339Date(announcement.getChallenge().getEndDate()));
     AnnouncementEntity announcementEntity = new AnnouncementEntity();
     if (announcement.getId() != 0) {
       announcementEntity.setId(announcement.getId());
@@ -108,7 +109,7 @@ public class EntityMapper {
       announcementEntity.setActivityId(announcement.getActivityId());
     }
     announcementEntity.setComment(announcement.getComment());
-    announcementEntity.setCreatedDate(announcement.getCreatedDate());
+    announcementEntity.setCreatedDate(Utils.parseRFC3339Date(announcement.getCreatedDate()));
     announcementEntity.setChallenge(challengeEntity);
     announcementEntity.setCreator(announcement.getCreator());
     return announcementEntity;

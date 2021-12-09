@@ -3,7 +3,6 @@
 #ChallengesApplication{
   margin: 25px;
   background-color: @white !important;
-  min-height: ~"calc(100vh - 100px)" ;
   .welcomeMessage{
     margin: 0 20% 10%;
     align-items: center;
@@ -15,6 +14,49 @@
   .addChallengeButton{
     .v-btn{
       text-transform: none !important;
+    }
+  }
+}
+.emptyChallenges {
+  min-height: ~"calc(100vh - 100px)" ;
+}
+#ChallengeCard {
+  .cardOfChallenge {
+    width: 95%
+  }
+  .title{
+    .status {
+      font-size: 14px;
+      color: @greyColorLighten1;
+      width: 90%;
+      padding: 9px;
+    }
+    .iconStatus {
+      margin-left: -8px;
+      font-size: 12px;
+    }
+    .startsColor {
+      color: @colorIconWarning;
+    }
+    .endedColor {
+      color: @errorColor;
+    }
+    .endsColor {
+      color: @darkBlue;
+    }
+    .edit {
+      width: 10%;
+      .v-list.v-sheet.theme--light{
+        padding: 0px !important;
+      }
+    }
+    .subtitleChallenge {
+      font-weight: bold;
+      color: @baseColor;
+    }
+    .descriptionChallenge {
+      -webkit-line-clamp: 3 !important;
+      color: @greyColorLighten1;
     }
   }
 }
