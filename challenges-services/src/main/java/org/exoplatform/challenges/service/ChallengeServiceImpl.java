@@ -11,6 +11,7 @@ import org.exoplatform.social.core.space.model.Space;
 import org.exoplatform.social.core.space.spi.SpaceService;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 public class ChallengeServiceImpl implements ChallengeService {
@@ -44,7 +45,7 @@ public class ChallengeServiceImpl implements ChallengeService {
   }
 
   @Override
-  public Challenge updateChallenge(Challenge challenge, String username) throws IllegalAccessException, ObjectNotFoundException, IllegalAccessException {
+  public Challenge updateChallenge(Challenge challenge, String username) throws  IllegalArgumentException, ObjectNotFoundException, IllegalAccessException {
     if (challenge == null) {
       throw new IllegalArgumentException("Challenge is mandatory");
     }
@@ -106,6 +107,9 @@ public class ChallengeServiceImpl implements ChallengeService {
       });
       offsetToFetch += limitToFetch;
       limitToFetch = (spacesSize - offsetToFetch) > 20 ? 20 : (spacesSize - offsetToFetch);
+    }
+    if (listIdSpace.isEmpty()){
+      return Collections.emptyList();
     }
     List<ChallengeEntity> challengeEntities = challengeStorage.findAllChallengesByUser(offset, limit, listIdSpace);
     return EntityMapper.fromChallengeEntities(challengeEntities);
