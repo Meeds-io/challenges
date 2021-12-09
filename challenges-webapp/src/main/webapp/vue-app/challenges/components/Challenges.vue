@@ -8,7 +8,14 @@
       color="transparent"
       flat
       class="pa-4">
-      <add-challenge v-if="canAddChallenge" />
+      <div class="border-box-sizing clickable addChallengeButton" v-if="canAddChallenge">
+        <v-btn class="btn btn-primary" @click="openChallengeDrawer">
+          <i class="fas fa-plus pr-1"></i>
+          <span class="ms-2 d-none d-lg-inline">
+            {{ $t('challenges.button.addChallenge') }}
+          </span>
+        </v-btn>
+      </div>
       <v-spacer />
     </v-toolbar>
     <template v-if="displayChallenges">
@@ -20,6 +27,8 @@
       <welcome-message
         :can-add-challenge="canAddChallenge" />
     </template>
+    <challenge-drawer
+      ref="challengeDrawer" />
   </v-app>
 </template>
 <script>
@@ -42,6 +51,11 @@ export default {
       this.challenges = challenges;
       this.displayChallenges = this.challenges && this.challenges.length > 0 ? true : false;
     });
+  },
+  methods: {
+    openChallengeDrawer(){
+      this.$refs.challengeDrawer.open();
+    },
   }
 };
 </script>

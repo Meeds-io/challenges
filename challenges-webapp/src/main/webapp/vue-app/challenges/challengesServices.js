@@ -13,6 +13,23 @@ export function canAddChallenge() {
   });
 }
 
+export function saveChallenge(challenge) {
+  return fetch(`${eXo.env.portal.context}/${eXo.env.portal.rest}/challenge/api/addChallenge`, {
+    method: 'POST',
+    credentials: 'include',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify(challenge),
+  }).then((resp) => {
+    if (resp && resp.ok) {
+      return resp.json();
+    } else {
+      throw new Error('Error saving challenge');
+    }
+  });
+}
+
 export function getAllChallengesByUser(offset, limit) {
   return fetch(`${eXo.env.portal.context}/${eXo.env.portal.rest}/challenge/api/allChallenge?offset=${offset || 0}&limit=${limit|| 10}`, {
     method: 'GET',
