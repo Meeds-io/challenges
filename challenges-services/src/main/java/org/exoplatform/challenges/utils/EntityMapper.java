@@ -29,8 +29,8 @@ public class EntityMapper {
                          challengeEntity.getAudience(),
                          challengeEntity.getStartDate() == null ? null : Utils.toRFC3339Date(challengeEntity.getStartDate()),
                          challengeEntity.getEndDate() == null ? null : Utils.toRFC3339Date(challengeEntity.getEndDate()),
-                         Utils.canEditChallenge(String.valueOf(challengeEntity.getId())),
-                         Utils.canAnnounce(String.valueOf(challengeEntity.getId())),
+                         Utils.canEditChallenge(String.valueOf(challengeEntity.getAudience())),
+                         Utils.canAnnounce(String.valueOf(challengeEntity.getAudience())),
                          challengeEntity.getManagers());
   }
 
