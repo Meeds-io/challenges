@@ -1,6 +1,7 @@
 <template>
   <v-app
     class="challenges-application border-box-sizing"
+    :class="classWelcomeMessage"
     role="main"
     flat>
     <v-toolbar
@@ -10,9 +11,13 @@
       <add-challenge v-if="canAddChallenge" />
       <v-spacer />
     </v-toolbar>
-    <template>
+    <template v-if="displayChallenges">
+      <div class="pl-2 pt-5">
+        <challenges-list :challenges="challenges" />
+      </div>
+    </template>
+    <template v-else>
       <welcome-message
-        v-if="!displayChallenges"
         :can-add-challenge="canAddChallenge" />
     </template>
   </v-app>
@@ -22,15 +27,20 @@ export default {
   data: () => ({
     canAddChallenge: false,
     challenges: [],
+    displayChallenges: true
   }),
   computed: {
-    displayChallenges() {
-      return this.challenges && this.challenges.length > 0 ;
+    classWelcomeMessage() {
+      return !this.displayChallenges ? 'emptyChallenges': '';
     }
   },
   created() {
     this.$challengesServices.canAddChallenge().then(canAddChallenge => {
       this.canAddChallenge = canAddChallenge;
+    });
+    this.$challengesServices.getAllChallengesByUser().then(challenges => {
+      this.challenges = challenges;
+      this.displayChallenges = this.challenges && this.challenges.length > 0 ? true : false;
     });
   }
 };
