@@ -21,15 +21,15 @@ public interface ChallengeService {
    * Updates an existing challenge
    *
    * @param  challenge {@link Challenge} object to update
-   * @param username User name updating challenge
-   * @throws IllegalAccessException when user is not authorized to update the
+   * @param username Username updating challenge
+   * @throws IllegalArgumentException when user is not authorized to update the
    *           challenge
    * @throws ObjectNotFoundException when the challenge identified by its
    *           technical identifier is not found
    * @throws IllegalAccessException when user is not authorized to create a
    *           challenge for the designated owner defined in object
    */
-  Challenge updateChallenge(Challenge challenge, String username) throws IllegalAccessException, ObjectNotFoundException, IllegalAccessException;
+  Challenge updateChallenge(Challenge challenge, String username) throws  IllegalArgumentException, ObjectNotFoundException, IllegalAccessException;
 
     /**
      * Retrieves a challenge identified by its technical identifier.
