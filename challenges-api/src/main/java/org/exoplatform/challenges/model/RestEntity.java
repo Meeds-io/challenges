@@ -3,7 +3,6 @@ package org.exoplatform.challenges.model;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.exoplatform.social.core.identity.model.Profile;
 import org.exoplatform.social.core.space.model.Space;
 
 import java.util.List;
