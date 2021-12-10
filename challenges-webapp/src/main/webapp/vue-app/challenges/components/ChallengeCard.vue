@@ -35,17 +35,20 @@
               </v-menu>
             </div>
           </div>
-          <v-list-item-subtitle class="pl-5 pr-5 mb-4 mt-1 subtitleChallenge">
-            {{ challenge && challenge.title }}
-          </v-list-item-subtitle>
-          <v-list-item-subtitle class="pl-9 pr-9 descriptionChallenge">
-            {{ challenge && challenge.description }}
-          </v-list-item-subtitle>
+          <div @click="showDetails">
+            <v-list-item-subtitle class="pl-5 pr-5 mb-4 mt-1 subtitleChallenge">
+              {{ challenge && challenge.title }}
+            </v-list-item-subtitle>
+            <v-list-item-subtitle class="pl-9 pr-9 descriptionChallenge">
+              {{ challenge && challenge.description }}
+            </v-list-item-subtitle>
+          </div>
         </v-list-item-content>
       </v-list-item>
 
       <v-card-actions />
     </v-card>
+    <challenge-details-drawer :challenge="challenge" ref="challenge" />
   </v-app>
 </template>
 
@@ -77,6 +80,11 @@ export default {
   methods: {
     closeMenu() {
       this.showMenu= false;
+    },
+    showDetails() {
+      if (this.$refs.challenge){
+        this.$refs.challenge.open();
+      }
     },
     getStatus() {
       const currentDate = new Date();

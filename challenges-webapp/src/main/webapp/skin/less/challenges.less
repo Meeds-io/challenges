@@ -224,3 +224,49 @@
     }
   }
 }
+
+#challengeDetails {
+  .titleChallenge {
+    color: @greyColorLighten1Default;
+    font-weight: bold;
+    font-size: 14px !important;
+  }
+
+  .separation {
+    background-color: @greyColorLighten1Default;
+  }
+
+  .descriptionLabel {
+    color: @greyColorLighten1Default;
+  }
+
+  .description {
+    color: @textColorDefault;
+  }
+
+  .date {
+    color: @baseColorLight;
+  }
+
+  .endDate {
+    .uiIconDueDate {
+      &:before {
+        content: "\ebf2";
+        color: @baseColorLight;
+        font-size: 22px;
+      }
+    }
+  }
+
+  .startDate {
+    .uiIconStartDate {
+      color: @baseColorLight;
+      font-size: 24px;
+      margin-left: -2px;
+
+      &:before {
+        content: "\ebf3";
+      }
+    }
+  }
+}
