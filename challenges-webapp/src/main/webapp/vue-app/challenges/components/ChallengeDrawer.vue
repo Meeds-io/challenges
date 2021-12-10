@@ -27,7 +27,6 @@
             auto-grow
             rows="1"
             row-height="13"
-            shaped
             required
             autofocus />
           <v-divider class="my-2" />
@@ -53,7 +52,7 @@
             :challenge="challenge"
             class="challengeDates my-1"
             @startDateChanged="updateChallengeStartDate($event)"
-            @dueDateChanged="updateChallengeEndDate($event)" />
+            @endDateChanged="updateChallengeEndDate($event)" />
 
           <div class="challengeDescription py-4 my-1">
             <challenge-description
@@ -201,12 +200,17 @@ export default {
       this.checkEnableSaveChallenge();
     },
     SaveChallenge() {
+      if (this.challenge.startDate > this.challenge.endDate){
+        this.$root.$emit('show-alert', {type: 'error',message: this.$t('challenges.challengeDateError')});
+        return;
+      }
       this.$challengesServices.saveChallenge(this.challenge).then(() =>{
+        this.$root.$emit('show-alert', {type: 'success',message: this.$t('challenges.challengeCreateSuccess')});
         this.close();
         this.challenge = {};
       })
         .catch(e => {
-          console.error('Error saving challenge', e);
+          this.$root.$emit('show-alert', {type: 'error',message: String(e)});
         });
     },
   }
