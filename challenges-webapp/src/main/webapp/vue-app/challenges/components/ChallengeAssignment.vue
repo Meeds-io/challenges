@@ -91,23 +91,22 @@ export default {
     searchOptions() {
       if (this.challengeAssigneeObj && this.challengeAssigneeObj.length >0) {
         return {
-          currentUser: this.currentUser,
+          currentUser: '',
           spaceURL: this.space && this.space.remoteId
         };
       } else {
-        return this.currentUser;
+        return  {
+          currentUser: '',
+        };
       }
     },
   },
   watch: {
-    currentUser() {
-      this.reset();
-    },
     invitedChallengeAssignee() {
       const found = this.challengeAssigneeObj.find(attendee => {
         return attendee.username === this.invitedChallengeAssignee.remoteId;
       });
-      if (!found) {
+      if (!found && this.invitedChallengeAssignee.remoteId) {
         this.$identityService.getIdentityByProviderIdAndRemoteId('organization',this.invitedChallengeAssignee.remoteId).then(user => {
           this.challengeAssigneeObj.push( user.profile);
           this.$emit('add-manager',user.profile);

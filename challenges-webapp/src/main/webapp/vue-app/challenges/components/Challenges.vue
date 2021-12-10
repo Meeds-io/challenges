@@ -29,6 +29,13 @@
     </template>
     <challenge-drawer
       ref="challengeDrawer" />
+    <v-alert
+      v-model="alert"
+      :type="type"
+      class="walletAlert"
+      dismissible>
+      {{ message }}
+    </v-alert>
   </v-app>
 </template>
 <script>
@@ -36,7 +43,10 @@ export default {
   data: () => ({
     canAddChallenge: false,
     challenges: [],
-    displayChallenges: true
+    displayChallenges: true,
+    alert: false,
+    type: '',
+    message: '',
   }),
   computed: {
     classWelcomeMessage() {
@@ -51,10 +61,19 @@ export default {
       this.challenges = challenges;
       this.displayChallenges = this.challenges && this.challenges.length > 0 ? true : false;
     });
+    this.$root.$on('show-alert', message => {
+      this.displayMessage(message);
+    });
   },
   methods: {
     openChallengeDrawer(){
       this.$refs.challengeDrawer.open();
+    },
+    displayMessage(message) {
+      this.message=message.message;
+      this.type=message.type;
+      this.alert = true;
+      window.setTimeout(() => this.alert = false, 5000);
     },
   }
 };
