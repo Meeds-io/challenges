@@ -15,9 +15,7 @@
         <div class="pl-4 pr-4 descriptionLabel">
           {{ $t('challenges.label.description') }}
         </div>
-        <div class="description pr-4 pl-4 pt-4">
-          {{ challenge && challenge.description }}
-        </div>
+        <div class="description pr-4 pl-4 pt-4" v-html="challenge && challenge.description" />
         <hr class="separation ml-4 mr-4">
         <div class="startDate d-flex pl-4 pr-4">
           <i class="uiIconStartDate "></i>

@@ -39,9 +39,8 @@
             <v-list-item-subtitle class="pl-5 pr-5 mb-4 mt-1 subtitleChallenge">
               {{ challenge && challenge.title }}
             </v-list-item-subtitle>
-            <v-list-item-subtitle class="pl-9 pr-9 descriptionChallenge">
-              {{ challenge && challenge.description }}
-            </v-list-item-subtitle>
+            <v-list-item-subtitle class="pl-9 pr-9 descriptionChallenge" v-html="challenge && challenge.description" />
+
           </div>
         </v-list-item-content>
       </v-list-item>
@@ -103,7 +102,7 @@ export default {
         this.label=this.$t('challenges.status.ended');
         return this.label;
       }
-    }
+    },
   }
 };
 </script>

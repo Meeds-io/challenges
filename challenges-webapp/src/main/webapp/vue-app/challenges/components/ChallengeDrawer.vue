@@ -124,10 +124,7 @@ export default {
     },
     audience() {
       if (this.audience) {
-        this.$spaceService.getSpaceMembers(null, 0, 0, null, 'manager', this.audience.spaceId).then(managers => {
-          for (let i = 0; i < managers.length; i++) {
-            this.challenge.managers.push(managers[i].id);
-          }
+        this.$spaceService.getSpaceMembers(null, 0, 0, null,'manager', this.audience.spaceId).then(managers => {
           this.challenge.managers = managers.users;
           this.challenge.audience = this.audience.spaceId;
           const data = {};
