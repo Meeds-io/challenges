@@ -52,7 +52,7 @@
             :challenge="challenge"
             class="challengeDates my-1"
             @startDateChanged="updateChallengeStartDate($event)"
-            @dueDateChanged="updateChallengeEndDate($event)" />
+            @endDateChanged="updateChallengeEndDate($event)" />
 
           <div class="challengeDescription py-4 my-1">
             <challenge-description
@@ -201,7 +201,7 @@ export default {
     },
     SaveChallenge() {
       if (this.challenge.startDate > this.challenge.endDate){
-        this.$root.$emit('show-alert', {type: 'error',message: this.$t('challenges.challengeDueDateError')});
+        this.$root.$emit('show-alert', {type: 'error',message: this.$t('challenges.challengeDateError')});
         return;
       }
       this.$challengesServices.saveChallenge(this.challenge).then(() =>{

@@ -12,16 +12,16 @@
         class="flex-grow-1 my-auto"
         @input="emitStartDate(startDate)" />
     </div>
-    <div class="challengeDueDateCalender d-flex align-center">
-      <i class="uiIconDueDate uiIconBlue"></i>
+    <div class="challengeEndDateCalender d-flex align-center">
+      <i class="uiIconEndDate uiIconBlue"></i>
       <date-picker
-        ref="challengeDueDate"
-        v-model="dueDate"
+        ref="challengeEndDate"
+        v-model="endDate"
         :default-value="false"
-        :placeholder="$t('challenges.label.dueDate')"
+        :placeholder="$t('challenges.label.endDate')"
         :min-value="minimumEndDate"
         class="flex-grow-1 my-auto"
-        @input="emitDueDate(dueDate)" />
+        @input="emitEndDate(endDate)" />
     </div>
   </div>
 </template>
@@ -34,34 +34,45 @@ export default {
   data () {
     return {
       startDate: null,
-      dueDate: null,
-      minimumEndDate: new Date( new Date(new Date()).setDate(new Date().getDate()+1)),
-      minimumStartDate: new Date(),
-      maximumStartDate: null,
+      endDate: null,
     };
   },
-  watch: {
-    startDate() {
-      this.minimumEndDate = this.startDate ?  new Date(new Date(this.startDate).setDate(new Date(this.startDate).getDate()+1)) : new Date( new Date(new Date()).setDate(new Date().getDate()+1)) ;
-      this.minimumStartDate = this.startDate ? new Date( this.startDate.setDate(this.startDate.getDate()+1)) :  new Date();
+  computed: {
+    minimumStartDate() {
+      return new Date();
     },
-    dueDate() {
-      this.maximumStartDate = this.dueDate ?new Date(new Date(this.dueDate).setDate(new Date(this.dueDate).getDate()-1)): new Date();
+    maximumStartDate() {
+      if (this.endDate){
+        let date = new Date();
+        date = new Date(this.endDate);
+        date.setDate(date.getDate()- 1) ;
+        return date;
+      } else {
+        return null;
+      }
+    },
+    minimumEndDate() {
+      let date = new Date();
+      if (this.startDate){
+        date = new Date(this.startDate);
+      }
+      date.setDate(date.getDate() + 1) ;
+      return date;
     }
 
   },
   mounted() {
     $('.challengeDate').off('click').on('click', () => {
       this.$refs.challengeStartDate.menu = false;
-      this.$refs.challengeDueDate.menu = false;
+      this.$refs.challengeEndDate.menu = false;
     });
   },
   methods: {
     emitStartDate(date) {
       this.$emit('startDateChanged',new Date(date));
     },
-    emitDueDate(date) {
-      this.$emit('dueDateChanged',new Date(date));
+    emitEndDate(date) {
+      this.$emit('endDateChanged',new Date(date));
     },
   }
 };
