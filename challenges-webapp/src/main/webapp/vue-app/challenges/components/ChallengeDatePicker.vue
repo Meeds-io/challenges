@@ -8,6 +8,7 @@
         :default-value="false"
         :placeholder="$t('challenges.label.startDate')"
         :max-value="maximumStartDate"
+        :min-value="minimumStartDate"
         class="flex-grow-1 my-auto"
         @input="emitStartDate(startDate)" />
     </div>
@@ -34,21 +35,20 @@ export default {
     return {
       startDate: null,
       dueDate: null,
+      minimumEndDate: new Date( new Date(new Date()).setDate(new Date().getDate()+1)),
+      minimumStartDate: new Date(),
+      maximumStartDate: null,
     };
   },
-  computed: {
-    minimumEndDate() {
-      if (!this.startDate) {
-        return null;
-      }
-      return new Date(this.startDate);
+  watch: {
+    startDate() {
+      this.minimumEndDate = this.startDate ?  new Date(new Date(this.startDate).setDate(new Date(this.startDate).getDate()+1)) : new Date( new Date(new Date()).setDate(new Date().getDate()+1)) ;
+      this.minimumStartDate = this.startDate ? new Date( this.startDate.setDate(this.startDate.getDate()+1)) :  new Date();
     },
-    maximumStartDate() {
-      if (!this.dueDate) {
-        return null;
-      }
-      return new Date(this.dueDate);
-    },
+    dueDate() {
+      this.maximumStartDate = this.dueDate ?new Date(new Date(this.dueDate).setDate(new Date(this.dueDate).getDate()-1)): new Date();
+    }
+
   },
   mounted() {
     $('.challengeDate').off('click').on('click', () => {
