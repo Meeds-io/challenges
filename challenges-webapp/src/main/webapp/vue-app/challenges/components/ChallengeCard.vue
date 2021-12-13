@@ -40,7 +40,6 @@
               {{ challenge && challenge.title }}
             </v-list-item-subtitle>
             <v-list-item-subtitle class="pl-9 pr-9 descriptionChallenge" v-html="challenge && challenge.description" />
-
           </div>
         </v-list-item-content>
       </v-list-item>
