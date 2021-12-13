@@ -22,12 +22,12 @@
               v-for="user in challengeAssigneeObj"
               :key="user"
               class="identitySuggesterItem mx-1 mt-2"
-              @click:close="$emit('remove-manager', user)">
+              @click:close="removeManager(user)">
               <v-avatar left>
-                <v-img :src="user.avatar" />
+                <v-img :src="user.avatarUrl" />
               </v-avatar>
               <span class="text-truncate">
-                {{ user.fullname }}
+                {{ user.fullName }}
               </span>
             </v-chip>
           </div>
@@ -108,8 +108,14 @@ export default {
       });
       if (!found && this.invitedChallengeAssignee.remoteId) {
         this.$identityService.getIdentityByProviderIdAndRemoteId('organization',this.invitedChallengeAssignee.remoteId).then(user => {
-          this.challengeAssigneeObj.push( user.profile);
-          this.$emit('add-manager',user.profile);
+          const newManager= {
+            id: user.profile.id,
+            remoteId: user.profile.username,
+            fullName: user.profile.fullname,
+            avatarUrl: user.profile.avatar,
+          };
+          this.challengeAssigneeObj.push(newManager);
+          this.$emit('add-manager',newManager.id);
           this.invitedChallengeAssignee = null;
           this.globalMenu = false;
         });
@@ -140,16 +146,29 @@ export default {
     assignToMe() {
       if (!this.isAssigned(this.currentUser)){
         this.$identityService.getIdentityByProviderIdAndRemoteId('organization',this.currentUser).then(user => {
-          this.challengeAssigneeObj.push( user.profile);
-          this.$emit('add-manager',user.profile);
+          const newManager= {
+            id: user.profile.id,
+            remoteId: user.profile.username,
+            fullName: user.profile.fullname,
+            avatarUrl: user.profile.avatar,
+          };
+          this.challengeAssigneeObj.push(newManager);
+          this.$emit('add-manager',newManager.id);
           this.globalMenu = false;
         });
       }
     },
     isAssigned( username) {
       return this.challengeAssigneeObj && this.challengeAssigneeObj.findIndex(manager => {
-        return manager.username === username;
+        return manager.remoteId === username;
       }) >= 0 ? true : false;
+    },
+    removeManager( user) {
+      const index =  this.challengeAssigneeObj.findIndex(manager => {
+        return manager.remoteId === user.remoteId;
+      });
+      this.challengeAssigneeObj.splice(index, 1);
+      this.$emit('remove-manager', user.id);
     },
   }
 };

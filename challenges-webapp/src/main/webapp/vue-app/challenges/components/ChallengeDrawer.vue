@@ -61,6 +61,7 @@
               v-model="challenge.description"
               :value="challenge.description"
               @disableCreateButton="disableCreateButton($event)"
+              @enableCreateButton="enableCreateButton($event)"
               @addChallengeDescription="addChallengeDescription($event)" />
           </div>
         </v-form>
@@ -125,11 +126,23 @@ export default {
     audience() {
       if (this.audience) {
         this.$spaceService.getSpaceMembers(null, 0, 0, null,'manager', this.audience.spaceId).then(managers => {
-          this.challenge.managers = managers.users;
+          this.challenge.managers = [];
+          const listManagers = [];
+          managers.users.forEach(manager => {
+            const newManager= {
+              id: manager.id,
+              remoteId: manager.username,
+              fullName: manager.fullname,
+              avatarUrl: manager.avatar,
+            };
+            this.challenge.managers.push(newManager.id);
+            listManagers.push(newManager);
+          });
           this.challenge.audience = this.audience.spaceId;
-          const data = {};
-          data.managers = managers.users;
-          data.space= this.audience;
+          const data = {
+            managers: listManagers,
+            space: this.audience,
+          };
           document.dispatchEvent(new CustomEvent('audienceChanged', {detail: data}));
           this.checkEnableSaveChallenge();
         });
@@ -144,6 +157,7 @@ export default {
       this.challenge = {};
       this.$refs.challengeDatePicker.startDate = null;
       this.$refs.challengeDatePicker.endDate = null;
+      this.$refs.challengeDescription.inputVal = null;
       this.audience = '';
     },
     open(){
@@ -152,23 +166,24 @@ export default {
       this.$refs.challengeDrawer.open();
     },
     close(){
+      this.$refs.challengeDescription.deleteDescription();
       this.$refs.challengeDrawer.close();
     },
-    removeManager(user) {
-      const index = this.challenge.managers.findIndex(manager => {
-        return manager.username === user.username;
+    removeManager(id) {
+      const index = this.challenge.managers.findIndex(managerId => {
+        return managerId === id;
       });
       if (index >= 0) {
         this.challenge.managers.splice(index, 1);
         this.checkEnableSaveChallenge();
       }
     },
-    addManager(user) {
-      const index = this.challenge.managers.findIndex(manager => {
-        return manager.username === user.username;
+    addManager(id) {
+      const index = this.challenge.managers.findIndex(managerId => {
+        return managerId === id;
       });
       if (index < 0) {
-        this.challenge.managers.push(user);
+        this.challenge.managers.push(id);
         this.checkEnableSaveChallenge();
       }
     },
@@ -197,6 +212,11 @@ export default {
     disableCreateButton() {
       this.validDescription = false ;
       this.disabledSave = true ;
+      this.checkEnableSaveChallenge();
+    },
+    enableCreateButton() {
+      this.validDescription = true ;
+      this.disabledSave = false ;
       this.checkEnableSaveChallenge();
     },
     SaveChallenge() {
