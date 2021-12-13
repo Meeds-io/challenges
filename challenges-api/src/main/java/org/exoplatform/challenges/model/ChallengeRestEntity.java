@@ -10,7 +10,7 @@ import java.util.List;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class RestEntity implements Cloneable {
+public class ChallengeRestEntity implements Cloneable {
 
   private long          id;
 
@@ -30,7 +30,7 @@ public class RestEntity implements Cloneable {
 
   private List<UserInfo> managers;
 
-  public RestEntity clone() { // NOSONAR
-    return new RestEntity(id, title, description, space, startDate, endDate, canEdit, canAnnounce, managers);
+  public ChallengeRestEntity clone() { // NOSONAR
+    return new ChallengeRestEntity(id, title, description, space, startDate, endDate, canEdit, canAnnounce, managers);
   }
 }

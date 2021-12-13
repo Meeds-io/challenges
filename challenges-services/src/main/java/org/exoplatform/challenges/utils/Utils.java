@@ -88,7 +88,7 @@ public class Utils {
     List<UserInfo> users = new ArrayList<>();
     for (Long id : ids) {
       Identity identity = identityManager.getIdentity(String.valueOf(id));
-      if (identity != null && "organization".equals(identity.getProviderId())) {
+      if (identity != null && OrganizationIdentityProvider.NAME.equals(identity.getProviderId())) {
         UserInfo userInfo = new UserInfo();
         userInfo.setAvatarUrl(identity.getProfile().getAvatarUrl());
         userInfo.setFullName(identity.getProfile().getFullName());
