@@ -59,10 +59,9 @@ export default {
     },
     charsCount() {
       if (this.charsCount > this.maxLength) {
-        this.$emit('disableCreateButton');
-      }
-      else {
-        this.$emit('enableCreateButton');
+        this.$emit('invalidDescription');
+      } else {
+        this.$emit('validDescription');
       }
     },
   },

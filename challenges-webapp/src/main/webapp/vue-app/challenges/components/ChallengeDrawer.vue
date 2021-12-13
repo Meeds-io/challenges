@@ -60,8 +60,8 @@
               :challenge="challenge"
               v-model="challenge.description"
               :value="challenge.description"
-              @disableCreateButton="disableCreateButton($event)"
-              @enableCreateButton="enableCreateButton($event)"
+              @invalidDescription="invalidDescription($event)"
+              @validDescription="validDescription($event)"
               @addChallengeDescription="addChallengeDescription($event)" />
           </div>
         </v-form>
@@ -115,7 +115,7 @@ export default {
       },
       audience: '' ,
       disabledSave: false,
-      validDescription: true,
+      isValidDescription: true,
       valid: true,
     };
   },
@@ -207,15 +207,15 @@ export default {
       }
     },
     checkEnableSaveChallenge() {
-      this.disabledSave = this.valid && this.validDescription && this.challenge && this.challenge.title && this.challenge.audience && this.challenge.managers.length > 0 && this.challenge.startDate && this.challenge.endDate ;
+      this.disabledSave = this.valid && this.isValidDescription && this.challenge && this.challenge.title && this.challenge.audience && this.challenge.managers.length > 0 && this.challenge.startDate && this.challenge.endDate ;
     },
-    disableCreateButton() {
-      this.validDescription = false ;
+    invalidDescription() {
+      this.isValidDescription = false ;
       this.disabledSave = true ;
       this.checkEnableSaveChallenge();
     },
-    enableCreateButton() {
-      this.validDescription = true ;
+    validDescription() {
+      this.isValidDescription = true ;
       this.disabledSave = false ;
       this.checkEnableSaveChallenge();
     },
