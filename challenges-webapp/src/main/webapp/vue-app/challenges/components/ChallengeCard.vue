@@ -5,8 +5,8 @@
       height="200"
       max-height="200"
       outlined>
-      <v-list-item three-line>
-        <v-list-item-content class="title">
+      <v-list-item class="pa-0" three-line>
+        <v-list-item-content class="title pl-4 pr-4 pt-3">
           <div class="d-flex">
             <div class="status">
               <i class="uiIconStatus iconStatus" :class="classStatus"></i> {{ getStatus() }}
@@ -17,13 +17,13 @@
                 v-model="showMenu"
                 offset-y
                 attach
-                @blur="closeMenu()"
                 left>
                 <template v-slot:activator="{ on }">
                   <v-btn
                     icon
                     class="ml-2"
-                    v-on="on">
+                    v-on="on"
+                    @blur="closeMenu()">
                     <v-icon>mdi-dots-vertical</v-icon>
                   </v-btn>
                 </template>
@@ -35,17 +35,18 @@
               </v-menu>
             </div>
           </div>
-          <v-list-item-subtitle class="pl-5 pr-5 mb-4 mt-1 subtitleChallenge">
-            {{ challenge && challenge.title }}
-          </v-list-item-subtitle>
-          <v-list-item-subtitle class="pl-9 pr-9 descriptionChallenge">
-            {{ challenge && challenge.description }}
-          </v-list-item-subtitle>
+          <div class="contentChallenge" @click="showDetails">
+            <v-list-item-subtitle class="pl-5 pr-5 mb-4 mt-1 subtitleChallenge">
+              {{ challenge && challenge.title }}
+            </v-list-item-subtitle>
+            <v-list-item-subtitle class="pl-9 pr-9 descriptionChallenge" v-html="challenge && challenge.description" />
+          </div>
         </v-list-item-content>
       </v-list-item>
 
       <v-card-actions />
     </v-card>
+    <challenge-details-drawer :challenge="challenge" ref="challenge" />
   </v-app>
 </template>
 
@@ -78,6 +79,11 @@ export default {
     closeMenu() {
       this.showMenu= false;
     },
+    showDetails() {
+      if (this.$refs.challenge){
+        this.$refs.challenge.open();
+      }
+    },
     getStatus() {
       const currentDate = new Date();
       const startDate = new Date(this.challenge && this.challenge.startDate);
@@ -85,16 +91,25 @@ export default {
       if (startDate.getTime() > currentDate.getTime() && endDate.getTime() > currentDate.getTime()) {
         this.status = 'Starts';
         this.label=this.$t('challenges.status.starts');
-        return `${this.label } ${ this.challenge.startDate.split('T')[0]}`;
+        return `${this.label } ${ this.formattedDate(new Date(this.challenge.startDate)) }`;
       } else if (startDate.getTime()<currentDate.getTime() && endDate.getTime() > currentDate.getTime()) {
         this.status = 'Ends';
         this.label=this.$t('challenges.status.ends');
-        return `${this.label } ${ this.challenge.endDate.split('T')[0]}`;
+        return `${this.label } ${ this.formattedDate(new Date(this.challenge.endDate))}`;
       } else if (endDate.getTime() < currentDate.getTime() && startDate.getTime()< currentDate.getTime()) {
         this.status = 'Ended';
         this.label=this.$t('challenges.status.ended');
         return this.label;
       }
+    }, formattedDate(d) {
+      let month = String(d.getMonth() + 1);
+      let day = String(d.getDate());
+      const year = String(d.getFullYear());
+
+      if (month.length < 2) {month = `0${  month}`;}
+      if (day.length < 2) {day = `0${  day}`;}
+
+      return `${day}/${month}/${year}`;
     }
   }
 };
