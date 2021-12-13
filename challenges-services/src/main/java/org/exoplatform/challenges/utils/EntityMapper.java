@@ -6,6 +6,7 @@ import org.exoplatform.challenges.entity.AnnouncementEntity;
 import org.exoplatform.challenges.entity.ChallengeEntity;
 import org.exoplatform.challenges.model.Announcement;
 import org.exoplatform.challenges.model.Challenge;
+import org.exoplatform.challenges.model.ChallengeRestEntity;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
 import java.util.ArrayList;
@@ -123,6 +124,22 @@ public class EntityMapper {
                                                     .map(challengeEntity -> fromEntity(challengeEntity))
                                                     .collect(Collectors.toList());
       return challenges;
+    }
+  }
+
+  public static ChallengeRestEntity fromChallenge(Challenge challenge) {
+    if (challenge == null) {
+      return null;
+    }
+    return new ChallengeRestEntity(challenge.getId(),challenge.getTitle(),challenge.getDescription(),Utils.getSpaceById(String.valueOf(challenge.getAudience())), challenge.getStartDate(), challenge.getEndDate(), Utils.canEditChallenge(String.valueOf(challenge.getAudience())), Utils.canAnnounce(String.valueOf(challenge.getAudience())), Utils.getUsersByIds(challenge.getManagers()));
+  }
+  
+  public static List<ChallengeRestEntity> fromChallengesList(List<Challenge> challenges) {
+    if (CollectionUtils.isEmpty(challenges)) {
+      return new ArrayList<>(Collections.emptyList());
+    } else {
+      List<ChallengeRestEntity> restEntities = challenges.stream().map(challenge -> fromChallenge(challenge)).collect(Collectors.toList());
+      return restEntities;
     }
   }
 }
