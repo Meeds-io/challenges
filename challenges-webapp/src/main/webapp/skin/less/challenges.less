@@ -188,7 +188,12 @@
   .cardOfChallenge {
     width: 95%
   }
-  .title{
+
+  .contentChallenge {
+    cursor: pointer;
+  }
+
+  .title {
     .status {
       font-size: 14px;
       color: @greyColorLighten1;
@@ -221,6 +226,53 @@
     .descriptionChallenge {
       -webkit-line-clamp: 3 !important;
       color: @greyColorLighten1;
+    }
+  }
+}
+
+#challengeDetails {
+  .titleChallenge {
+    color: @greyColorLighten1Default;
+    font-weight: bold;
+    font-size: 14px !important;
+  }
+
+  .separation {
+    border-color: @greyColorLighten1Default;
+    border-bottom: 0px !important;
+  }
+
+  .descriptionLabel {
+    color: @greyColorLighten1Default;
+  }
+
+  .description {
+    color: @textColorDefault;
+  }
+
+  .date {
+    color: @baseColorLight;
+  }
+
+  .endDate {
+    .uiIconDueDate {
+      &:before {
+        content: "\ebf2";
+        color: @baseColorLight;
+        font-size: 22px;
+      }
+    }
+  }
+
+  .startDate {
+    .uiIconStartDate {
+      color: @baseColorLight;
+      font-size: 24px;
+      margin-left: -2px;
+
+      &:before {
+        content: "\ebf3";
+      }
     }
   }
 }

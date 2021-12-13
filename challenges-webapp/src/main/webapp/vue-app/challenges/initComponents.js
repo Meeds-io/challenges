@@ -6,6 +6,7 @@ import ChallengeDrawer from './components/ChallengeDrawer.vue';
 import ChallengeAssignment from './components/ChallengeAssignment.vue';
 import ChallengeDatePicker from './components/ChallengeDatePicker.vue';
 import ChallengeDescription from './components/ChallengeDescription.vue';
+import ChallengeDetailsDrawer from './components/ChallengeDetailsDrawer.vue';
 const components = {
   'challenges': Challenges,
   'welcome-message': WelcomeMessage,
@@ -15,6 +16,7 @@ const components = {
   'challenge-assignment': ChallengeAssignment,
   'challenge-date-picker': ChallengeDatePicker,
   'challenge-description': ChallengeDescription,
+  'challenge-details-drawer': ChallengeDetailsDrawer
 };
 
 for (const key in components) {
