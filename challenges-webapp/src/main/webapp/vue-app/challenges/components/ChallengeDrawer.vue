@@ -12,7 +12,7 @@
       <v-card-text>
         <v-form
           ref="form"
-          v-model="valid"
+          v-model="isValid.title"
           @submit="
             $event.preventDefault();
             $event.stopPropagation();
@@ -45,6 +45,7 @@
           <challenge-assignment
             :challenge="challenge"
             class="my-2"
+            v-model="challenge.managers"
             @remove-manager="removeManager"
             @add-manager="addManager" />
           <challenge-date-picker
@@ -107,6 +108,9 @@ export default {
         placeholder: this.$t('challenges.spaces.placeholder'),
       };
     },
+    disabledSave() {
+      return this.challenge && this.challenge.title && this.challenge.audience && this.challenge.managers.length > 0 && this.challenge.startDate && this.challenge.endDate && this.isValid.title && this.isValid.description;
+    },
   },
   data() {
     return {
@@ -114,15 +118,12 @@ export default {
         length: (v) => (v && v.length < 250) || this.$t('challenges.label.challengeTitleLengthExceed') ,
       },
       audience: '' ,
-      disabledSave: false,
-      isValidDescription: true,
-      valid: true,
+      isValid: {
+        title: true,
+        description: true }
     };
   },
   watch: {
-    valid(){
-      this.checkEnableSaveChallenge();
-    },
     audience() {
       if (this.audience) {
         this.$spaceService.getSpaceMembers(null, 0, 0, null,'manager', this.audience.spaceId).then(managers => {
@@ -135,16 +136,15 @@ export default {
               fullName: manager.fullname,
               avatarUrl: manager.avatar,
             };
-            this.challenge.managers.push(newManager.id);
+            this.$set(this.challenge.managers,this.challenge.managers.length, newManager.id);
             listManagers.push(newManager);
           });
-          this.challenge.audience = this.audience.spaceId;
+          this.$set(this.challenge,'audience', this.audience.spaceId);
           const data = {
             managers: listManagers,
             space: this.audience,
           };
           document.dispatchEvent(new CustomEvent('audienceChanged', {detail: data}));
-          this.checkEnableSaveChallenge();
         });
       } else {
         this.challenge.managers= [];
@@ -175,7 +175,6 @@ export default {
       });
       if (index >= 0) {
         this.challenge.managers.splice(index, 1);
-        this.checkEnableSaveChallenge();
       }
     },
     addManager(id) {
@@ -184,40 +183,29 @@ export default {
       });
       if (index < 0) {
         this.challenge.managers.push(id);
-        this.checkEnableSaveChallenge();
       }
     },
 
     updateChallengeStartDate(value) {
       if (value) {
-        this.challenge.startDate = value;
-        this.checkEnableSaveChallenge();
+        this.$set(this.challenge,'startDate', value);
       }
     },
     updateChallengeEndDate(value) {
       if (value) {
-        this.challenge.endDate = value;
-        this.checkEnableSaveChallenge();
+        this.$set(this.challenge,'endDate', value);
       }
     },
     addChallengeDescription(value) {
       if (value) {
-        this.challenge.description = value;
-        this.checkEnableSaveChallenge();
+        this.$set(this.challenge,'description', value);
       }
     },
-    checkEnableSaveChallenge() {
-      this.disabledSave = this.valid && this.isValidDescription && this.challenge && this.challenge.title && this.challenge.audience && this.challenge.managers.length > 0 && this.challenge.startDate && this.challenge.endDate ;
-    },
     invalidDescription() {
-      this.isValidDescription = false ;
-      this.disabledSave = true ;
-      this.checkEnableSaveChallenge();
+      this.$set(this.isValid,'description', false);
     },
     validDescription() {
-      this.isValidDescription = true ;
-      this.disabledSave = false ;
-      this.checkEnableSaveChallenge();
+      this.$set(this.isValid,'description', true);
     },
     SaveChallenge() {
       if (this.challenge.startDate > this.challenge.endDate){
