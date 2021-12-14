@@ -12,7 +12,7 @@
       <v-card-text>
         <v-form
           ref="form"
-          v-model="valid"
+          v-model="isValid.title"
           @submit="
             $event.preventDefault();
             $event.stopPropagation();
@@ -45,6 +45,7 @@
           <challenge-assignment
             :challenge="challenge"
             class="my-2"
+            v-model="challenge.managers"
             @remove-manager="removeManager"
             @add-manager="addManager" />
           <challenge-date-picker
@@ -60,7 +61,8 @@
               :challenge="challenge"
               v-model="challenge.description"
               :value="challenge.description"
-              @disableCreateButton="disableCreateButton($event)"
+              @invalidDescription="invalidDescription($event)"
+              @validDescription="validDescription($event)"
               @addChallengeDescription="addChallengeDescription($event)" />
           </div>
         </v-form>
@@ -106,6 +108,9 @@ export default {
         placeholder: this.$t('challenges.spaces.placeholder'),
       };
     },
+    disabledSave() {
+      return this.challenge && this.challenge.title && this.challenge.audience && this.challenge.managers.length > 0 && this.challenge.startDate && this.challenge.endDate && this.isValid.title && this.isValid.description;
+    },
   },
   data() {
     return {
@@ -113,25 +118,33 @@ export default {
         length: (v) => (v && v.length < 250) || this.$t('challenges.label.challengeTitleLengthExceed') ,
       },
       audience: '' ,
-      disabledSave: false,
-      validDescription: true,
-      valid: true,
+      isValid: {
+        title: true,
+        description: true }
     };
   },
   watch: {
-    valid(){
-      this.checkEnableSaveChallenge();
-    },
     audience() {
       if (this.audience) {
         this.$spaceService.getSpaceMembers(null, 0, 0, null,'manager', this.audience.spaceId).then(managers => {
-          this.challenge.managers = managers.users;
-          this.challenge.audience = this.audience.spaceId;
-          const data = {};
-          data.managers = managers.users;
-          data.space= this.audience;
+          this.challenge.managers = [];
+          const listManagers = [];
+          managers.users.forEach(manager => {
+            const newManager= {
+              id: manager.id,
+              remoteId: manager.username,
+              fullName: manager.fullname,
+              avatarUrl: manager.avatar,
+            };
+            this.$set(this.challenge.managers,this.challenge.managers.length, newManager.id);
+            listManagers.push(newManager);
+          });
+          this.$set(this.challenge,'audience', this.audience.spaceId);
+          const data = {
+            managers: listManagers,
+            space: this.audience,
+          };
           document.dispatchEvent(new CustomEvent('audienceChanged', {detail: data}));
-          this.checkEnableSaveChallenge();
         });
       } else {
         this.challenge.managers= [];
@@ -144,6 +157,7 @@ export default {
       this.challenge = {};
       this.$refs.challengeDatePicker.startDate = null;
       this.$refs.challengeDatePicker.endDate = null;
+      this.$refs.challengeDescription.inputVal = null;
       this.audience = '';
     },
     open(){
@@ -152,52 +166,46 @@ export default {
       this.$refs.challengeDrawer.open();
     },
     close(){
+      this.$refs.challengeDescription.deleteDescription();
       this.$refs.challengeDrawer.close();
     },
-    removeManager(user) {
-      const index = this.challenge.managers.findIndex(manager => {
-        return manager.username === user.username;
+    removeManager(id) {
+      const index = this.challenge.managers.findIndex(managerId => {
+        return managerId === id;
       });
       if (index >= 0) {
         this.challenge.managers.splice(index, 1);
-        this.checkEnableSaveChallenge();
       }
     },
-    addManager(user) {
-      const index = this.challenge.managers.findIndex(manager => {
-        return manager.username === user.username;
+    addManager(id) {
+      const index = this.challenge.managers.findIndex(managerId => {
+        return managerId === id;
       });
       if (index < 0) {
-        this.challenge.managers.push(user);
-        this.checkEnableSaveChallenge();
+        this.challenge.managers.push(id);
       }
     },
 
     updateChallengeStartDate(value) {
       if (value) {
-        this.challenge.startDate = value;
-        this.checkEnableSaveChallenge();
+        this.$set(this.challenge,'startDate', value);
       }
     },
     updateChallengeEndDate(value) {
       if (value) {
-        this.challenge.endDate = value;
-        this.checkEnableSaveChallenge();
+        this.$set(this.challenge,'endDate', value);
       }
     },
     addChallengeDescription(value) {
       if (value) {
-        this.challenge.description = value;
-        this.checkEnableSaveChallenge();
+        this.$set(this.challenge,'description', value);
       }
     },
-    checkEnableSaveChallenge() {
-      this.disabledSave = this.valid && this.validDescription && this.challenge && this.challenge.title && this.challenge.audience && this.challenge.managers.length > 0 && this.challenge.startDate && this.challenge.endDate ;
+    invalidDescription() {
+      this.$set(this.isValid,'description', false);
     },
-    disableCreateButton() {
-      this.validDescription = false ;
-      this.disabledSave = true ;
-      this.checkEnableSaveChallenge();
+    validDescription() {
+      this.$set(this.isValid,'description', true);
     },
     SaveChallenge() {
       if (this.challenge.startDate > this.challenge.endDate){
