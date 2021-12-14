@@ -35,7 +35,7 @@ export default {
   },
   data() {
     return {
-      inputVal: this.value,
+      inputVal: '',
       charsCount: 0,
       editorReady: false,
       maxLength: 1300,
@@ -59,7 +59,9 @@ export default {
     },
     charsCount() {
       if (this.charsCount > this.maxLength) {
-        this.$emit('disableCreateButton');
+        this.$emit('invalidDescription');
+      } else {
+        this.$emit('validDescription');
       }
     },
   },
@@ -109,7 +111,11 @@ export default {
       text = urlVerify(text);
       this.$emit('addChallengeDescription',text);
       return text;
-    }
+    },
+
+    deleteDescription: function() {
+      CKEDITOR.instances['descriptionContent'].destroy();
+    },
   }
 };
 </script>
