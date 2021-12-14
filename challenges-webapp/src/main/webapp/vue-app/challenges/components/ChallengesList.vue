@@ -7,10 +7,9 @@
           :key="challenge.id"
           class="mb-4"
           cols="12"
-          md="6"
-          lg="4"
-          xl="3">
-          <challenge-card :challenge="challenge" />
+          sm="3"
+          md="3">
+          <challenge-card :challenge="challenge" @edit="emitEditChallenge($event)" />
         </v-col>
       </v-row>
     </v-container>
@@ -26,6 +25,11 @@ export default {
       default: function() {
         return [];
       },
+    }
+  },
+  methods: {
+    emitEditChallenge(challenge){
+      this.$emit('edit-challenge',challenge);
     }
   }
 };

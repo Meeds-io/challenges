@@ -20,7 +20,7 @@
     </v-toolbar>
     <template v-if="displayChallenges">
       <div class="pl-2 pt-5">
-        <challenges-list :challenges="challenges" />
+        <challenges-list :challenges="challenges" @edit-challenge="editChallenge($event)" />
       </div>
     </template>
     <template v-else>
@@ -28,7 +28,8 @@
         :can-add-challenge="canAddChallenge" />
     </template>
     <challenge-drawer
-      ref="challengeDrawer" />
+      ref="challengeDrawer"
+      :challenge="selectedChallenge" />
     <v-alert
       v-model="alert"
       :type="type"
@@ -43,6 +44,7 @@ export default {
   data: () => ({
     canAddChallenge: false,
     challenges: [],
+    selectedChallenge: {},
     displayChallenges: true,
     alert: false,
     type: '',
@@ -74,6 +76,10 @@ export default {
       this.type=message.type;
       this.alert = true;
       window.setTimeout(() => this.alert = false, 5000);
+    },
+    editChallenge(challenge) {
+      this.selectedChallenge = challenge;
+      this.$nextTick().then(() => this.openChallengeDrawer());
     },
   }
 };
