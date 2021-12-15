@@ -290,6 +290,11 @@ export default {
     validDescription() {
       this.$set(this.isValid,'description', true);
     },
+    getManagersIds(managers) {
+      const ids = [];
+      managers.forEach(manager => ids.push(manager.id));
+      return ids;
+    },
     getChallengeStatus() {
       const status = {
         NOTSTARTED: 'NOTSTARTED',
@@ -326,6 +331,9 @@ export default {
       if (this.challenge.startDate > this.challenge.endDate){
         this.$root.$emit('show-alert', {type: 'error',message: this.$t('challenges.challengeDateError')});
         return;
+      }
+      if ( this.challenge.managers && this.challenge.managers[0].id){
+        this.challenge.managers = this.getManagersIds(this.challenge.managers);
       }
       this.$challengesServices.updateChallenge(this.challenge).then(() =>{
         this.$root.$emit('show-alert', {type: 'success',message: this.$t('challenges.challengeUpdateSuccess')});
