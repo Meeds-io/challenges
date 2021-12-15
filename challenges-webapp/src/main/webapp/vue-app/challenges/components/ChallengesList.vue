@@ -9,7 +9,7 @@
           cols="12"
           sm="3"
           md="3">
-          <challenge-card :challenge="challenge" @edit="emitEditChallenge($event)" />
+          <challenge-card :challenge="challenge" @edit="$emit('edit-challenge',challenge)" />
         </v-col>
       </v-row>
     </v-container>
@@ -27,10 +27,5 @@ export default {
       },
     }
   },
-  methods: {
-    emitEditChallenge(challenge){
-      this.$emit('edit-challenge',challenge);
-    }
-  }
 };
 </script>

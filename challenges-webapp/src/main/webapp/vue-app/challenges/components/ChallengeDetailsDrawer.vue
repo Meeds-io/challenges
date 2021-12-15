@@ -74,7 +74,7 @@
 </template>
 
 <script>
-
+import {getFromDate} from '../challengesUtils.js';
 export default {
   props: {
     challenge: {
@@ -102,11 +102,7 @@ export default {
       }
     },
     getFromDate(date) {
-      const lang = eXo.env.portal.language;
-      const options = { month: 'long' };
-      const day = String(date.getDate());
-      const year = String(date.getFullYear());
-      return `${date.toLocaleDateString(lang || 'en', options)} ${day}, ${year}` ;
+      return getFromDate(date);
     }
   }
 };

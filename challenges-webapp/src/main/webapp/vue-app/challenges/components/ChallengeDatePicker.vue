@@ -40,6 +40,7 @@
 
 
 <script>
+import {getFromDate} from '../challengesUtils.js';
 
 export default {
   name: 'ChallengeDatePicker',
@@ -89,12 +90,7 @@ export default {
       this.$emit('endDateChanged',new Date(date));
     },
     getFormatDate(date) {
-      const format = {
-        year: 'numeric',
-        month: 'long',
-        day: 'numeric'
-      };
-      return this.$dateUtil.formatDateObjectToDisplay(date, format, eXo.env.portal.language);
+      return getFromDate(date);
     }
   }
 };

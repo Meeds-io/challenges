@@ -86,18 +86,10 @@
           {{ $t('challenges.button.cancel') }}
         </button>
         <button
-          v-if="this.challenge && this.challenge.id"
-          :disabled="disabledUpdate"
-          class="ignore-vuetify-classes btn btn-primary"
-          @click="updateChallenge">
-          {{ $t('challenges.button.save') }}
-        </button>
-        <button
-          v-else
           :disabled="!disabledSave"
           class="ignore-vuetify-classes btn btn-primary"
           @click="SaveChallenge">
-          {{ $t('challenges.button.create') }}
+          {{ buttonName }}
         </button>
       </div>
     </template>
@@ -126,7 +118,10 @@ export default {
       };
     },
     disabledSave() {
-      return this.challenge && this.challenge.title && this.challenge.audience && this.challenge.managers.length > 0 && this.challenge.startDate && this.challenge.endDate && this.isValid.title && this.isValid.description;
+      return this.challenge && this.challenge.title && this.challenge.audience && this.challenge.managers.length > 0 && this.challenge.startDate && this.challenge.endDate && this.isValid.title && this.isValid.description && !this.disabledUpdate;
+    },
+    buttonName() {
+      return this.challenge && this.challenge.id && this.$t('challenges.button.save') || this.$t('challenges.button.create') ;
     },
   },
   data() {
@@ -146,7 +141,7 @@ export default {
   },
   watch: {
     audience() {
-      if ( this.audience && this.audience.id && !this.audience.notToChange) {
+      if (this.audience && this.audience.id && !this.audience.notToChange) {
         this.$spaceService.getSpaceMembers(null, 0, 0, null,'manager', this.audience.spaceId).then(managers => {
           this.challenge.managers = [];
           const listManagers = [];
@@ -168,6 +163,7 @@ export default {
           document.dispatchEvent(new CustomEvent('audienceChanged', {detail: data}));
         });
       } else if (this.audience && this.audience.id && this.audience.notToChange){
+        this.audience.notToChange = false ;
         return;
       } else {
         this.challenge.managers= [];
@@ -177,7 +173,7 @@ export default {
   },
   methods: {
     setUp(){
-      const space= this.challenge.space ;
+      const space = this.challenge.space ;
       const NewAudience = {
         id: `space:${ space.displayName }` ,
         profile: {
@@ -221,9 +217,9 @@ export default {
       };
       document.dispatchEvent(new CustomEvent('audienceChanged', {detail: data}));
       this.$refs.challengeAssignment.challengeAssigneeObj = this.challenge.managers;
-      this.challenge.audience= space.id;
+      this.$set(this.challenge,'audience', space.id);
     },
-    cleanUp(){
+    reset(){
       this.challenge = {};
       this.$refs.challengeDatePicker.startDate = null;
       this.$refs.challengeDatePicker.endDate = null;
@@ -248,7 +244,7 @@ export default {
       this.$refs.challengeDrawer.open();
     },
     close(){
-      this.cleanUp();
+      this.reset();
       this.$refs.challengeDescription.deleteDescription();
       this.$refs.challengeDrawer.close();
     },
@@ -290,11 +286,6 @@ export default {
     validDescription() {
       this.$set(this.isValid,'description', true);
     },
-    getManagersIds(managers) {
-      const ids = [];
-      managers.forEach(manager => ids.push(manager.id));
-      return ids;
-    },
     getChallengeStatus() {
       const status = {
         NOTSTARTED: 'NOTSTARTED',
@@ -318,31 +309,28 @@ export default {
         this.$root.$emit('show-alert', {type: 'error',message: this.$t('challenges.challengeDateError')});
         return;
       }
-      this.$challengesServices.saveChallenge(this.challenge).then(() =>{
-        this.$root.$emit('show-alert', {type: 'success',message: this.$t('challenges.challengeCreateSuccess')});
-        this.close();
-        this.challenge = {};
-      })
-        .catch(e => {
-          this.$root.$emit('show-alert', {type: 'error',message: String(e)});
-        });
-    },
-    updateChallenge() {
-      if (this.challenge.startDate > this.challenge.endDate){
-        this.$root.$emit('show-alert', {type: 'error',message: this.$t('challenges.challengeDateError')});
-        return;
+      if (this.challenge && this.challenge.id){
+        if ( this.challenge.managers && this.challenge.managers[0].id){
+          this.challenge.managers = this.challenge.managers.map(manager => manager.id);
+        }
+        this.$challengesServices.updateChallenge(this.challenge).then(() =>{
+          this.$root.$emit('show-alert', {type: 'success',message: this.$t('challenges.challengeUpdateSuccess')});
+          this.close();
+          this.challenge = {};
+        })
+          .catch(e => {
+            this.$root.$emit('show-alert', {type: 'error',message: String(e)});
+          });
+      } else {
+        this.$challengesServices.saveChallenge(this.challenge).then(() =>{
+          this.$root.$emit('show-alert', {type: 'success',message: this.$t('challenges.challengeCreateSuccess')});
+          this.close();
+          this.challenge = {};
+        })
+          .catch(e => {
+            this.$root.$emit('show-alert', {type: 'error',message: String(e)});
+          });
       }
-      if ( this.challenge.managers && this.challenge.managers[0].id){
-        this.challenge.managers = this.getManagersIds(this.challenge.managers);
-      }
-      this.$challengesServices.updateChallenge(this.challenge).then(() =>{
-        this.$root.$emit('show-alert', {type: 'success',message: this.$t('challenges.challengeUpdateSuccess')});
-        this.close();
-        this.challenge = {};
-      })
-        .catch(e => {
-          this.$root.$emit('show-alert', {type: 'error',message: String(e)});
-        });
     },
   }
 };

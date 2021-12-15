@@ -78,7 +78,7 @@ export default {
       window.setTimeout(() => this.alert = false, 5000);
     },
     editChallenge(challenge) {
-      this.selectedChallenge = challenge;
+      this.selectedChallenge = Object.assign({}, this.selectedChallenge,challenge) ;
       this.$nextTick().then(() => this.openChallengeDrawer());
     },
   }

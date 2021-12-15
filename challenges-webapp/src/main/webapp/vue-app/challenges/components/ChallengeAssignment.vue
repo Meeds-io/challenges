@@ -18,7 +18,7 @@
         <div class="d-flex align-" v-on="on">
           <a
             :disabled="disabledUnAssign"
-            :class="AssignButtonClass"
+            :class="assignButtonClass"
             class="challengeAssignBtn align-end">
             <i class="uiIcon uiAddAssignIcon"></i>
             <span class="text-decoration-underline">{{ $t('challenges.label.assign') }}</span>
@@ -85,7 +85,7 @@ export default {
       currentUser: eXo.env.portal.userName,
       menu: false,
       space: {},
-      menuId: `AssigneeMenu${parseInt(Math.random() * 10000).toString()}`,
+      menuId: `AssigneeMenu${parseInt(Math.random() * 10000)}`,
       disabledUnAssign: false,
     };
   },
@@ -102,7 +102,7 @@ export default {
         };
       }
     },
-    AssignButtonClass(){
+    assignButtonClass(){
       return this.challengeAssigneeObj &&  this.challengeAssigneeObj.length && 'mt-2';
     }
   },
