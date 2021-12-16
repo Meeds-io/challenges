@@ -60,3 +60,11 @@ export function getUserTimezone() {
   const timezoneSign = timeZoneOffset >= 0 ? '+' : '-';
   return `${timezoneSign}${timezoneHours}:${timezoneMinutes}`;
 }
+
+export function getFromDate(date) {
+  const lang = eXo.env.portal.language;
+  const options = { month: 'long' };
+  const day = String(date.getDate());
+  const year = String(date.getFullYear());
+  return `${date.toLocaleDateString(lang || 'en', options)} ${day}, ${year}` ;
+}
