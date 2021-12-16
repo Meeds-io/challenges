@@ -1,5 +1,5 @@
 <template>
-  <div class="assigneeParent">
+  <div class="challengeAssignItem">
     <v-menu
       id="assigneeMenu"
       v-model="globalMenu"
@@ -9,30 +9,17 @@
       :max-width="300"
       attach
       transition="scale-transition"
-      class=""
       offset-y
       allow-overflow
       eager
-      bottom>
+      bottom
+      :disabled="disabledUnAssign">
       <template v-slot:activator="{ on }">
-        <div class="d-flex align-center challengeAssignItem" v-on="on">
-          <div class="assigneeName">
-            <v-chip
-              close
-              v-for="user in challengeAssigneeObj"
-              :key="user"
-              class="identitySuggesterItem mx-1 mt-2"
-              @click:close="removeManager(user)">
-              <v-avatar left>
-                <v-img :src="user.avatarUrl" />
-              </v-avatar>
-              <span class="text-truncate">
-                {{ user.fullName }}
-              </span>
-            </v-chip>
-          </div>
+        <div class="d-flex align-" v-on="on">
           <a
-            class="challengeAssignBtn mt-1 align-end">
+            :disabled="disabledUnAssign"
+            :class="assignButtonClass"
+            class="challengeAssignBtn align-end">
             <i class="uiIcon uiAddAssignIcon"></i>
             <span class="text-decoration-underline">{{ $t('challenges.label.assign') }}</span>
           </a>
@@ -59,6 +46,21 @@
           only-manager />
       </v-card>
     </v-menu>
+    <div class="assigneeName">
+      <v-chip
+        :close="!disabledUnAssign"
+        v-for="user in challengeAssigneeObj"
+        :key="user"
+        class="identitySuggesterItem mx-1 mb-2"
+        @click:close="removeManager(user)">
+        <v-avatar left>
+          <v-img :src="user.avatarUrl" />
+        </v-avatar>
+        <span class="text-truncate">
+          {{ user.fullName }}
+        </span>
+      </v-chip>
+    </div>
   </div>
 </template>
 <script>
@@ -83,8 +85,8 @@ export default {
       currentUser: eXo.env.portal.userName,
       menu: false,
       space: {},
-      menuId: `AssigneeMenu${parseInt(Math.random() * 10000).toString()}`,
-
+      menuId: `AssigneeMenu${parseInt(Math.random() * 10000)}`,
+      disabledUnAssign: false,
     };
   },
   computed: {
@@ -100,6 +102,9 @@ export default {
         };
       }
     },
+    assignButtonClass(){
+      return this.challengeAssigneeObj &&  this.challengeAssigneeObj.length && 'mt-2';
+    }
   },
   watch: {
     invitedChallengeAssignee() {
@@ -135,7 +140,7 @@ export default {
     document.addEventListener('audienceChanged', event => {
       if (event && event.detail) {
         this.challengeAssigneeObj = event.detail.managers;
-        this.spaceId = event.detail.space;
+        this.space = event.detail.space;
       } else {
         this.challengeAssigneeObj = [];
         this.space = {};
