@@ -324,6 +324,7 @@ export default {
       } else {
         this.$challengesServices.saveChallenge(this.challenge).then(() =>{
           this.$root.$emit('show-alert', {type: 'success',message: this.$t('challenges.challengeCreateSuccess')});
+          this.$root.$emit('challenge-added', challenge);
           this.close();
           this.challenge = {};
         })

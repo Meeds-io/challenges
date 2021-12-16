@@ -37,14 +37,28 @@
       dismissible>
       {{ message }}
     </v-alert>
+    <v-row class="ml-6 mr-6 mb-6 mt-n4 d-none d-lg-inline">
+      <v-btn
+        v-if="showLoadMoreButton"
+        :loading="loading"
+        :disabled="loading"
+        class="loadMoreButton ma-auto mt-4 btn"
+        block
+        @click="loadMore">
+        {{ $t('challenges.button.ShowMore') }}
+      </v-btn>
+    </v-row>
   </v-app>
 </template>
 <script>
 export default {
   data: () => ({
     canAddChallenge: false,
+    loading: true,
     challenges: [],
     selectedChallenge: {},
+    showLoadMoreButton: false,
+    challengePerPage: 20,
     displayChallenges: true,
     alert: false,
     type: '',
@@ -59,17 +73,43 @@ export default {
     this.$challengesServices.canAddChallenge().then(canAddChallenge => {
       this.canAddChallenge = canAddChallenge;
     });
-    this.$challengesServices.getAllChallengesByUser().then(challenges => {
-      this.challenges = challenges;
-      this.displayChallenges = this.challenges && this.challenges.length > 0 ? true : false;
-    });
+    this.getChallenges(false);
     this.$root.$on('show-alert', message => {
       this.displayMessage(message);
     });
+    this.$root.$on('challenge-added', this.pushChallenge);
   },
   methods: {
+    pushChallenge(event) {
+      if (event) {
+        if (this.challenges.length <= this.challengePerPage){
+          this.challenges.push(event);
+        } else {
+          this.showLoadMoreButton = true;
+        }
+
+      }
+    },
+    loadMore() {
+      this.getChallenges();
+    },
     openChallengeDrawer(){
       this.$refs.challengeDrawer.open();
+    },
+    getChallenges(append = true) {
+      this.loading = true;
+      const offset = append ? this.challenges.length : 0;
+      this.$challengesServices.getAllChallengesByUser(offset, this.challengePerPage,).then(challenges => {
+        if (challenges.length >= this.challengePerPage) {
+          this.showLoadMoreButton = true;
+        } else {
+          this.showLoadMoreButton = false;
+        }
+        this.challenges = this.challenges.concat(challenges);
+        this.displayChallenges = this.challenges && this.challenges.length > 0 ? true : false;
+      }).finally(() => {
+        this.loading = false;
+      });
     },
     displayMessage(message) {
       this.message=message.message;
