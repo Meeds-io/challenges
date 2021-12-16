@@ -10,7 +10,8 @@
       ref="editor"
       v-model="inputVal"
       cols="30"
-      rows="10"></textarea>
+      rows="10"
+      :disabled="disabled"></textarea>
     <span class="tooManyChars">
       {{ charsCount }}{{ maxLength > -1 ? ' / ' + maxLength : '' }}
       <i class="uiIconMessageLength"></i>
@@ -39,6 +40,7 @@ export default {
       charsCount: 0,
       editorReady: false,
       maxLength: 1300,
+      disabled: false,
     };
   },
   computed: {
