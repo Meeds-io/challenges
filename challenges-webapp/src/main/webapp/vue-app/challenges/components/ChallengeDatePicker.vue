@@ -2,32 +2,45 @@
   <div class="challengeDates">
     <div class="challengePlanDateCalender d-flex align-center">
       <i class="uiIconStartDate uiIconBlue"></i>
-      <date-picker
-        ref="challengeStartDate"
-        v-model="startDate"
-        :default-value="false"
-        :placeholder="$t('challenges.label.startDate')"
-        :max-value="maximumStartDate"
-        :min-value="minimumStartDate"
-        class="flex-grow-1 my-auto"
-        @input="emitStartDate(startDate)" />
+      <div v-if="disabledStartDate" class="subtitle-1 mx-4 mt-1">
+        {{ getFormatDate(startDate) }}
+      </div>
+      <div v-else>
+        <date-picker
+          ref="challengeStartDate"
+          v-model="startDate"
+          :default-value="false"
+          :placeholder="$t('challenges.label.startDate')"
+          :max-value="maximumStartDate"
+          :min-value="minimumStartDate"
+          :disabled="disabledStartDate"
+          class="flex-grow-1 my-auto"
+          @input="emitStartDate(startDate)" />
+      </div>
     </div>
     <div class="challengeEndDateCalender d-flex align-center">
       <i class="uiIconEndDate uiIconBlue"></i>
-      <date-picker
-        ref="challengeEndDate"
-        v-model="endDate"
-        :default-value="false"
-        :placeholder="$t('challenges.label.endDate')"
-        :min-value="minimumEndDate"
-        class="flex-grow-1 my-auto"
-        @input="emitEndDate(endDate)" />
+      <div v-if="disabledEndDate" class="subtitle-1 mx-4 mt-1">
+        {{ getFormatDate(endDate) }}
+      </div>
+      <div v-else>
+        <date-picker
+          ref="challengeEndDate"
+          v-model="endDate"
+          :default-value="false"
+          :placeholder="$t('challenges.label.endDate')"
+          :min-value="minimumEndDate"
+          :disabled="disabledEndDate"
+          class="flex-grow-1 my-auto"
+          @input="emitEndDate(endDate)" />
+      </div>
     </div>
   </div>
 </template>
 
 
 <script>
+import {getFromDate} from '../challengesUtils.js';
 
 export default {
   name: 'ChallengeDatePicker',
@@ -35,6 +48,8 @@ export default {
     return {
       startDate: null,
       endDate: null,
+      disabledStartDate: false,
+      disabledEndDate: false,
     };
   },
   computed: {
@@ -74,6 +89,9 @@ export default {
     emitEndDate(date) {
       this.$emit('endDateChanged',new Date(date));
     },
+    getFormatDate(date) {
+      return getFromDate(date);
+    }
   }
 };
 </script>

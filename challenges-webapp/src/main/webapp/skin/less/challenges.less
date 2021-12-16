@@ -25,6 +25,9 @@
   }
 
   .challengeDrawer {
+    .alert{
+      text-align: center;
+    }
     .challenge-title {
       .v-input__slot {
         &:before {
@@ -53,15 +56,22 @@
         }
       }
     }
-    .assigneeName{
-      .identitySuggesterItem{
-        background-color: @primaryColorLight ;
-        border: 1px solid @primaryDarkerColorGradientEnd ;
-        color: @btnPrimaryColor ;
-        width: max-content;
+    .challengeAssignItem{
+      position : relative ;
+      .assigneeName{
+        max-width : 80%;
+        .identitySuggesterItem {
+          background-color: @primaryColorLight ;
+          border: 1px solid @primaryDarkerColorGradientEnd ;
+          color: @btnPrimaryColor ;
+          width: max-content;
+        }
       }
-    }
     .challengeAssignBtn {
+      position: absolute;
+      width: 20% ;
+      left: 0  ~'; /** orientation=rt */ ';
+      right: 0  ~'; /** orientation=lt */ ';
       .uiAddAssignIcon {
         margin-top: -4px !important;
         padding-right: 6px;
@@ -84,9 +94,10 @@
         }
       }
     }
+  }
 
     .challengeDates {
-      max-width: 50%;
+      max-width: max-content;
       padding-right: 10px;
       .datePickerComponent {
         &:after {
@@ -94,11 +105,10 @@
         }
         input {
           max-width: 90% !important;
-          padding-right: 10px !important;
-          padding-left: 5px !important;
+          padding: 12px 5px 0px 4px  ;
           border: none;
           box-shadow: none;
-
+          font-size : 16px;
           &::placeholder {
             font-size: 16px !important;
           }
