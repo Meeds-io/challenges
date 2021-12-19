@@ -106,7 +106,7 @@ export default {
           this.showLoadMoreButton = false;
         }
         this.challenges = this.challenges.concat(challenges);
-        this.displayChallenges = this.challenges && this.challenges.length > 0 ? true : false;
+        this.displayChallenges = this.challenges && this.challenges.length;
       }).finally(() => {
         this.loading = false;
       });
