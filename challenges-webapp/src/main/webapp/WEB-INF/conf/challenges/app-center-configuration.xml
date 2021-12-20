@@ -25,6 +25,10 @@ Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
             <type>org.exoplatform.appcenter.plugin.ApplicationPlugin</type>
             <init-params>
                 <value-param>
+                    <name>enabled</name>
+                    <value>${exo.app-center.challenges.enabled:false}</value>
+                </value-param>
+                <value-param>
                     <name>imagePath</name>
                     <value>war:/../images/challengesAppIcon.png</value>
                 </value-param>
