@@ -1,6 +1,8 @@
 package org.exoplatform.challenges.utils;
 
 import org.apache.commons.lang3.StringUtils;
+import org.exoplatform.challenges.entity.AnnouncementEntity;
+import org.exoplatform.challenges.model.Announcement;
 import org.exoplatform.challenges.model.UserInfo;
 import org.exoplatform.commons.utils.CommonsUtils;
 import org.exoplatform.services.log.ExoLogger;
@@ -95,6 +97,30 @@ public class Utils {
         userInfo.setRemoteId(identity.getRemoteId());
         userInfo.setId(identity.getId());
         users.add(userInfo);
+      }
+    }
+    return users;
+  }
+  public static List<UserInfo> getChallengeWinners(List<AnnouncementEntity> announcements) {
+    IdentityManager identityManager = CommonsUtils.getService(IdentityManager.class);
+    if (announcements.isEmpty()) {
+      return Collections.emptyList();
+    }
+    List<UserInfo> users = new ArrayList<>();
+    for (AnnouncementEntity announcement : announcements) {
+      List<Long> ids = new ArrayList<>();
+      ids.addAll(announcement.getAssignee());
+      for (Long id : ids) {
+        Identity identity = identityManager.getIdentity(String.valueOf(id));
+        if (identity != null && OrganizationIdentityProvider.NAME.equals(identity.getProviderId())) {
+          UserInfo userInfo = new UserInfo();
+          userInfo.setAvatarUrl(identity.getProfile().getAvatarUrl());
+          userInfo.setFullName(identity.getProfile().getFullName());
+          userInfo.setRemoteId(identity.getRemoteId());
+          userInfo.setId(identity.getId());
+          userInfo.setAnnouncementActivityId(String.valueOf(announcement.getActivityId()));
+          users.add(userInfo);
+        }
       }
     }
     return users;

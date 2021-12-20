@@ -40,4 +40,25 @@
     </module>
   </portlet>
 
+  <portlet>
+    <name>ChallengesExtensions</name>
+    <module>
+      <script>
+        <path>/js/challengesExtensions.bundle.js</path>
+      </script>
+      <depends>
+        <module>extensionRegistry</module>
+      </depends>
+      <depends>
+        <module>eXoVueI18n</module>
+      </depends>
+      <depends>
+        <module>vue</module>
+      </depends>
+      <depends>
+        <module>commonVueComponents</module>
+      </depends>
+    </module>
+  </portlet>
+
 </gatein-resources>

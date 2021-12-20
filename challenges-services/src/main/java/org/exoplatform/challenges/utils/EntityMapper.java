@@ -4,11 +4,13 @@ import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.exoplatform.challenges.entity.AnnouncementEntity;
 import org.exoplatform.challenges.entity.ChallengeEntity;
-import org.exoplatform.challenges.model.Announcement;
-import org.exoplatform.challenges.model.Challenge;
-import org.exoplatform.challenges.model.ChallengeRestEntity;
+import org.exoplatform.challenges.model.*;
+import org.exoplatform.challenges.storage.AnnouncementStorage;
+import org.exoplatform.commons.utils.CommonsUtils;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
+import org.exoplatform.social.core.manager.IdentityManager;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -131,7 +133,10 @@ public class EntityMapper {
     if (challenge == null) {
       return null;
     }
-    return new ChallengeRestEntity(challenge.getId(),challenge.getTitle(),challenge.getDescription(),Utils.getSpaceById(String.valueOf(challenge.getAudience())), challenge.getStartDate(), challenge.getEndDate(), Utils.canEditChallenge(String.valueOf(challenge.getAudience())), Utils.canAnnounce(String.valueOf(challenge.getAudience())), Utils.getUsersByIds(challenge.getManagers()));
+    AnnouncementStorage announcementStorage = CommonsUtils.getService(AnnouncementStorage.class);
+
+    List<AnnouncementEntity> challengeAnnouncements = announcementStorage.findAllAnnouncementByChallenge(challenge.getId(), 0,10);
+    return new ChallengeRestEntity(challenge.getId(),challenge.getTitle(),challenge.getDescription(),Utils.getSpaceById(String.valueOf(challenge.getAudience())), challenge.getStartDate(), challenge.getEndDate(), Utils.canEditChallenge(String.valueOf(challenge.getAudience())), Utils.canAnnounce(String.valueOf(challenge.getAudience())), Utils.getUsersByIds(challenge.getManagers()),Utils.getChallengeWinners(challengeAnnouncements));
   }
   
   public static List<ChallengeRestEntity> fromChallengesList(List<Challenge> challenges) {
@@ -140,6 +145,17 @@ public class EntityMapper {
     } else {
       List<ChallengeRestEntity> restEntities = challenges.stream().map(challenge -> fromChallenge(challenge)).collect(Collectors.toList());
       return restEntities;
+    }
+  }
+
+  public static List<Announcement> fromAnnouncementEntities(List<AnnouncementEntity> announcementEntities) {
+    if (CollectionUtils.isEmpty(announcementEntities)) {
+      return new ArrayList<>(Collections.emptyList());
+    } else {
+      List<Announcement> announcements = announcementEntities.stream()
+          .map(announcementEntity -> fromEntity(announcementEntity))
+          .collect(Collectors.toList());
+      return announcements;
     }
   }
 }

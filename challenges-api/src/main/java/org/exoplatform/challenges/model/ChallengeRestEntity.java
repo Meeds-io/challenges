@@ -30,7 +30,9 @@ public class ChallengeRestEntity implements Cloneable {
 
   private List<UserInfo> managers;
 
+  private List<UserInfo> winners;
+
   public ChallengeRestEntity clone() { // NOSONAR
-    return new ChallengeRestEntity(id, title, description, space, startDate, endDate, canEdit, canAnnounce, managers);
+    return new ChallengeRestEntity(id, title, description, space, startDate, endDate, canEdit, canAnnounce, managers, winners);
   }
 }
