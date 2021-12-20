@@ -28,8 +28,8 @@
                   </v-btn>
                 </template>
                 <v-list>
-                  <v-list-item @mousedown="$event.preventDefault()">
-                    <v-list-item-title @click="$emit('edit', challenge)">{{ $t('challenges.edit') }}</v-list-item-title>
+                  <v-list-item class="editList" @mousedown="$event.preventDefault()">
+                    <v-list-item-title class="editLabel" @click="$emit('edit', challenge)">{{ $t('challenges.edit') }}</v-list-item-title>
                   </v-list-item>
                 </v-list>
               </v-menu>
