@@ -48,25 +48,20 @@
         <div class="pl-4 pr-4 pt-4">
           {{ $t('challenges.label.managers') }}
         </div>
-        <div
-          v-if="users && users.length > 0"
-          class="d-flex pl-4 pr-4">
-          <div
+        <div v-if="users && users.length" class="pl-3 pt-2">
+          <v-chip
             v-for="user in users"
             :key="user"
-            style="padding: 2px;">
-            <v-chip
-              :title="user.fullName"
-              color="primary"
-              class="identitySuggesterItem mt-2">
-              <v-avatar left>
-                <v-img :src="user.avatarUrl" />
-              </v-avatar>
-              <span class="text-truncate">
-                {{ user.fullName }}
-              </span>
-            </v-chip>
-          </div>
+            :title="user.fullName"
+            color="primary"
+            class="identitySuggesterItem mb-2 mx-1">
+            <v-avatar left>
+              <v-img :src="user.avatarUrl" />
+            </v-avatar>
+            <span class="text-truncate">
+              {{ user.fullName }}
+            </span>
+          </v-chip>
         </div>
       </template>
     </exo-drawer>
