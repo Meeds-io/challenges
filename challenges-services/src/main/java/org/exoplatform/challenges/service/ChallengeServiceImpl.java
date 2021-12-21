@@ -9,7 +9,6 @@ import org.exoplatform.commons.exception.ObjectNotFoundException;
 import org.exoplatform.commons.utils.ListAccess;
 import org.exoplatform.social.core.space.model.Space;
 import org.exoplatform.social.core.space.spi.SpaceService;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;

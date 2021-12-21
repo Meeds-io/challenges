@@ -1,7 +1,6 @@
 package org.exoplatform.challenges.service;
 
 import org.exoplatform.challenges.model.Challenge;
-import org.exoplatform.challenges.model.ChallengeRestEntity;
 import org.exoplatform.commons.exception.ObjectNotFoundException;
 import java.util.List;
 
