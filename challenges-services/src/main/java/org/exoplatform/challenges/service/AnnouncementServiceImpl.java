@@ -1,109 +1,72 @@
 package org.exoplatform.challenges.service;
 
 
-import org.apache.commons.lang.StringEscapeUtils;
 import org.exoplatform.challenges.entity.AnnouncementEntity;
 import org.exoplatform.challenges.model.Announcement;
 import org.exoplatform.challenges.model.Challenge;
-import org.exoplatform.challenges.model.UserInfo;
 import org.exoplatform.challenges.storage.AnnouncementStorage;
 import org.exoplatform.challenges.storage.ChallengeStorage;
 import org.exoplatform.challenges.utils.EntityMapper;
 import org.exoplatform.challenges.utils.Utils;
 import org.exoplatform.commons.exception.ObjectNotFoundException;
-import org.exoplatform.commons.utils.CommonsUtils;
-import org.exoplatform.social.core.activity.model.ExoSocialActivity;
-import org.exoplatform.social.core.activity.model.ExoSocialActivityImpl;
+import org.exoplatform.services.listener.ListenerService;
 import org.exoplatform.social.core.identity.model.Identity;
-import org.exoplatform.social.core.manager.ActivityManager;
-import org.exoplatform.social.core.manager.IdentityManager;
-import org.exoplatform.social.core.space.model.Space;
-import org.exoplatform.social.core.storage.api.ActivityStorage;
+import org.exoplatform.social.core.identity.provider.OrganizationIdentityProvider;
 
-import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
 
-public class AnnouncementServiceImpl implements AnnouncementService{
+import static org.exoplatform.challenges.utils.Utils.ANNOUNCEMENT_ACTIVITY_EVENT;
 
-  public static final String                 ANNOUNCEMENT_ACTIVITY_TYPE     = "exo-announcement:activity";
+public class AnnouncementServiceImpl implements AnnouncementService {
 
-  public static final String   ACTIVITY_DEFAULT_IMAGE        = "/challenges/images/challengesAppIcon.png";
 
-  private AnnouncementStorage announcementStorage ;
+  private AnnouncementStorage announcementStorage;
 
   private ChallengeStorage challengeStorage;
 
-  private ActivityManager activityManager;
+  private ListenerService listenerService;
 
-  private ActivityStorage activityStorage;
 
-  public AnnouncementServiceImpl(AnnouncementStorage announcementStorage,ChallengeStorage challengeStorage, ActivityManager activityManager, ActivityStorage activityStorage) {
+  public AnnouncementServiceImpl(AnnouncementStorage announcementStorage, ChallengeStorage challengeStorage, ListenerService listenerService) {
     this.announcementStorage = announcementStorage;
     this.challengeStorage = challengeStorage;
-    this.activityManager = activityManager;
-    this.activityStorage = activityStorage;
+    this.listenerService = listenerService;
   }
 
   @Override
-  public Announcement createAnnouncement(Announcement announcement) throws IllegalAccessException, ObjectNotFoundException {
+  public Announcement createAnnouncement(Announcement announcement, String currentUser) throws IllegalArgumentException, ObjectNotFoundException, Exception {
     if (announcement == null) {
       throw new IllegalArgumentException("announcement is mandatory");
     }
     if (announcement.getId() != 0) {
       throw new IllegalArgumentException("announcement id must be equal to 0");
     }
-    if ( announcement.getChallenge() == null) {
+    if (announcement.getChallenge() == null) {
       throw new IllegalArgumentException("challenge must not be null or empty");
     }
-    if ( announcement.getAssignee() == null) {
+    if (announcement.getAssignee() == null) {
       throw new IllegalArgumentException("announcement assignee must have at least one winner");
     }
-    Challenge challenge = challengeStorage.getChallengeById(announcement.getChallenge().getId());
+
+    Identity identity = Utils.getIdentityByTypeAndId(OrganizationIdentityProvider.NAME, currentUser);
+    announcement.setCreator(Long.parseLong(identity.getId()));
+
+    listenerService.broadcast(ANNOUNCEMENT_ACTIVITY_EVENT, announcementStorage, announcement);
+
+    return announcementStorage.saveAnnouncement(announcement);
+  }
+
+  @Override
+  public List<Announcement> findAllAnnouncementByChallenge(long challengeId, int offset, int limit) throws IllegalAccessException, ObjectNotFoundException {
+    if (challengeId <= 0) {
+      throw new IllegalArgumentException("Challenge id has to be positive integer");
+    }
+    Challenge challenge = challengeStorage.getChallengeById(challengeId);
     if (challenge == null) {
       throw new ObjectNotFoundException("challenge does not exist");
     }
-    ExoSocialActivity activity = this.createActivity(announcement);
-    IdentityManager identityManager = CommonsUtils.getService(IdentityManager.class);
-    Space space = Utils.getSpaceById(String.valueOf(challenge.getAudience()));
-    if (space == null) {
-      throw new ObjectNotFoundException("space does not exist");
-    }
-
-    Identity owner = identityManager.getOrCreateIdentity("space",space.getPrettyName());
-
-    activity = activityStorage.saveActivity(owner, activity);
-    announcement.setActivityId(Long.parseLong(activity.getId()));
-    announcement = announcementStorage.saveAnnouncement(announcement);
-
-    return announcement;
-  }
-
-  private ExoSocialActivity createActivity(Announcement announcement){
-    ExoSocialActivityImpl activity = new ExoSocialActivityImpl();
-    activity.setType(ANNOUNCEMENT_ACTIVITY_TYPE);
-    activity.setTitle( this.getAssigneeFullNames(announcement.getAssignee()) +" succeeded this challenge");
-    activity.setUserId(String.valueOf(announcement.getCreator()));
-    Map<String, String>  params = new LinkedHashMap();
-    ((Map)params).put("announcementTitle",this.getAssigneeFullNames(announcement.getAssignee()) +" succeeded this challenge");
-    ((Map)params).put("announcementComment", announcement.getComment());
-    ((Map)params).put("announcementDescription", announcement.getChallenge().getDescription());
-    activity.setTemplateParams(params);
-    return activity;
-
-  }
-  private String getAssigneeFullNames(List<Long> assignee){
-    if ( assignee == null) {
-      throw new IllegalArgumentException("announcement assignee must have at least one winner");
-    }
-    String AssigneeFullNames = "";
-    List<UserInfo> AssigneeIdentityList =  Utils.getUsersByIds(assignee);
-    for ( UserInfo user: AssigneeIdentityList ) {
-      String userLink = "<a href='/portal/dw/profile/" + user.getRemoteId() + "'>" + user.getFullName() + "</a>";
-      userLink = StringEscapeUtils.unescapeHtml(userLink);
-      AssigneeFullNames = AssigneeFullNames + " " + userLink;
-    }
-    return AssigneeFullNames;
+    List<AnnouncementEntity> announcementEntities = announcementStorage.findAllAnnouncementByChallenge(challengeId, offset, limit);
+    return EntityMapper.fromAnnouncementEntities(announcementEntities);
   }
 
 }

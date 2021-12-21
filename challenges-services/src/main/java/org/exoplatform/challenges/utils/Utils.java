@@ -1,7 +1,6 @@
 package org.exoplatform.challenges.utils;
 
 import org.apache.commons.lang3.StringUtils;
-import org.exoplatform.challenges.entity.AnnouncementEntity;
 import org.exoplatform.challenges.model.Announcement;
 import org.exoplatform.challenges.model.UserInfo;
 import org.exoplatform.commons.utils.CommonsUtils;
@@ -25,14 +24,16 @@ import java.util.List;
 
 public class Utils {
 
-  private static final Log              LOG                = ExoLogger.getLogger(Utils.class);
+  private static final Log LOG = ExoLogger.getLogger(Utils.class);
+  public static final String ANNOUNCEMENT_ACTIVITY_EVENT = "announcement.activity";
 
   public static final DateTimeFormatter RFC_3339_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss[.SSS][XXX]")
-                                                                              .withResolverStyle(ResolverStyle.LENIENT);
+      .withResolverStyle(ResolverStyle.LENIENT);
 
-  public static Identity getIdentityByTypeAndId(String remoteId) {
+
+  public static Identity getIdentityByTypeAndId(String type, String name) {
     IdentityManager identityManager = CommonsUtils.getService(IdentityManager.class);
-    return identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, remoteId, true);
+    return identityManager.getOrCreateIdentity(type, name);
   }
 
   public static final String getCurrentUser() {
@@ -91,39 +92,41 @@ public class Utils {
     for (Long id : ids) {
       Identity identity = identityManager.getIdentity(String.valueOf(id));
       if (identity != null && OrganizationIdentityProvider.NAME.equals(identity.getProviderId())) {
-        UserInfo userInfo = new UserInfo();
-        userInfo.setAvatarUrl(identity.getProfile().getAvatarUrl());
-        userInfo.setFullName(identity.getProfile().getFullName());
-        userInfo.setRemoteId(identity.getRemoteId());
-        userInfo.setId(identity.getId());
-        users.add(userInfo);
+        users.add(createUser(identity, null));
       }
     }
     return users;
   }
-  public static List<UserInfo> getChallengeWinners(List<AnnouncementEntity> announcements) {
-    IdentityManager identityManager = CommonsUtils.getService(IdentityManager.class);
+
+  public static List<UserInfo> getChallengeWinners(List<Announcement> announcements) {
     if (announcements.isEmpty()) {
       return Collections.emptyList();
     }
     List<UserInfo> users = new ArrayList<>();
-    for (AnnouncementEntity announcement : announcements) {
+    IdentityManager identityManager = CommonsUtils.getService(IdentityManager.class);
+    for (Announcement announcement : announcements) {
       List<Long> ids = new ArrayList<>();
       ids.addAll(announcement.getAssignee());
       for (Long id : ids) {
         Identity identity = identityManager.getIdentity(String.valueOf(id));
         if (identity != null && OrganizationIdentityProvider.NAME.equals(identity.getProviderId())) {
-          UserInfo userInfo = new UserInfo();
-          userInfo.setAvatarUrl(identity.getProfile().getAvatarUrl());
-          userInfo.setFullName(identity.getProfile().getFullName());
-          userInfo.setRemoteId(identity.getRemoteId());
-          userInfo.setId(identity.getId());
-          userInfo.setAnnouncementActivityId(String.valueOf(announcement.getActivityId()));
-          users.add(userInfo);
+          users.add(createUser(identity, String.valueOf(announcement.getActivityId())));
         }
       }
     }
     return users;
+  }
+
+  private static UserInfo createUser(Identity identity, String activityId) {
+    UserInfo userInfo = new UserInfo();
+    userInfo.setAvatarUrl(identity.getProfile().getAvatarUrl());
+    userInfo.setFullName(identity.getProfile().getFullName());
+    userInfo.setRemoteId(identity.getRemoteId());
+    userInfo.setId(identity.getId());
+    if (activityId != null) {
+      userInfo.setAnnouncementActivityId(activityId);
+    }
+    return userInfo;
   }
 
 }

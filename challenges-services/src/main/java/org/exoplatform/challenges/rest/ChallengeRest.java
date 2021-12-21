@@ -2,7 +2,10 @@ package org.exoplatform.challenges.rest;
 
 import io.swagger.annotations.*;
 import org.apache.commons.lang3.StringUtils;
+import org.exoplatform.challenges.model.Announcement;
 import org.exoplatform.challenges.model.Challenge;
+import org.exoplatform.challenges.model.ChallengeRestEntity;
+import org.exoplatform.challenges.service.AnnouncementService;
 import org.exoplatform.challenges.service.ChallengeService;
 import org.exoplatform.challenges.utils.EntityMapper;
 import org.exoplatform.challenges.utils.Utils;
@@ -16,6 +19,8 @@ import javax.annotation.security.RolesAllowed;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 @Path("/challenge/api")
@@ -26,9 +31,11 @@ public class ChallengeRest implements ResourceContainer {
   private static final Log LOG = ExoLogger.getLogger(ChallengeRest.class);
 
   private ChallengeService challengeService;
+  private AnnouncementService announcementService;
 
-  public ChallengeRest(ChallengeService challengeService) {
+  public ChallengeRest(ChallengeService challengeService,AnnouncementService announcementService) {
     this.challengeService = challengeService;
+    this.announcementService = announcementService;
   }
 
   @POST
@@ -53,7 +60,7 @@ public class ChallengeRest implements ResourceContainer {
     }
     try {
       Challenge newChallenge = challengeService.createChallenge(challenge, currentUser);
-      return Response.ok(EntityMapper.fromChallenge(newChallenge)).build();
+      return Response.ok(EntityMapper.fromChallenge(newChallenge, Collections.emptyList())).build();
     } catch (IllegalAccessException e) {
       LOG.warn("User '{}' attempts to create a challenge", e);
       return Response.status(Response.Status.UNAUTHORIZED).entity(e.getMessage()).build();
@@ -81,7 +88,8 @@ public class ChallengeRest implements ResourceContainer {
     String currentUserId = Utils.getCurrentUser();
     try {
       Challenge challenge = challengeService.getChallengeById(challengeId, currentUserId);
-      return Response.ok(EntityMapper.fromChallenge(challenge)).build();
+      List<Announcement>  announcementList = announcementService.findAllAnnouncementByChallenge(challengeId,0,0);
+      return Response.ok(EntityMapper.fromChallenge(challenge,announcementList)).build();
     } catch (Exception e) {
       LOG.error("Error getting challenge", e);
       return Response.status(500).build();
@@ -110,7 +118,8 @@ public class ChallengeRest implements ResourceContainer {
     String currentUser = Utils.getCurrentUser();
     try {
       challenge = challengeService.updateChallenge(challenge, currentUser);
-      return Response.ok(EntityMapper.fromChallenge(challenge)).build();
+      List<Announcement>  announcementList = announcementService.findAllAnnouncementByChallenge(challenge.getId(),0,0);
+      return Response.ok(EntityMapper.fromChallenge(challenge,announcementList)).build();
     } catch (ObjectNotFoundException e) {
       LOG.debug("User '{}' attempts to update a not existing challenge '{}'", currentUser, e);
       return Response.status(Response.Status.NOT_FOUND).entity("Challenge not found").build();
@@ -147,7 +156,12 @@ public class ChallengeRest implements ResourceContainer {
     String currentUser = Utils.getCurrentUser();
     try {
       List<Challenge> challenges = challengeService.getAllChallengesByUser(offset, limit, currentUser);
-      return Response.ok(EntityMapper.fromChallengesList(challenges)).build();
+      List<ChallengeRestEntity> challengeRestEntities = new ArrayList<>();
+      for (Challenge challenge : challenges) {
+        List<Announcement> challengeAnnouncements = announcementService.findAllAnnouncementByChallenge(challenge.getId(), 0, 0);
+        challengeRestEntities.add(EntityMapper.fromChallenge(challenge, challengeAnnouncements));
+      }
+      return Response.ok(challengeRestEntities).build();
     } catch (IllegalAccessException e) {
       LOG.warn("User '{}' attempts to access not authorized challenges with owner Ids", currentUser, e);
       return Response.status(Response.Status.UNAUTHORIZED).entity(e.getMessage()).build();

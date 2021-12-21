@@ -49,6 +49,15 @@
     <type>org.exoplatform.challenges.rest.ChallengeRest</type>
   </component>
 
+  <external-component-plugins>
+    <target-component>org.exoplatform.services.listener.ListenerService</target-component>
+    <component-plugin>
+      <name>announcement.activity</name>
+      <set-method>addListener</set-method>
+      <type>org.exoplatform.challenges.listener.NewAnnouncementActivityGenerator</type>
+    </component-plugin>
+  </external-component-plugins>
+
 <external-component-plugins>
   <target-component>org.exoplatform.commons.api.persistence.DataInitializer</target-component>
   <component-plugin>
