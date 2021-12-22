@@ -1,7 +1,6 @@
 package org.exoplatform.challenges.storage;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
 import org.exoplatform.challenges.entity.ChallengeEntity;
@@ -20,7 +19,6 @@ import org.mockito.stubbing.Answer;
 import org.powermock.core.classloader.annotations.PowerMockIgnore;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 
@@ -90,5 +88,41 @@ public class ChallengeStorageTest {
     assertEquals(createdChallenge.getId(), 1l);
     challenge.setId(createdChallenge.getId());
     assertEquals(challenge, createdChallenge);
+  }
+
+  @PrepareForTest({ EntityMapper.class })
+  @Test
+  public void testGetChallengeById() {
+    ChallengeEntity challengeEntity = new ChallengeEntity();
+    challengeEntity.setTitle("Challenge");
+    challengeEntity.setDescription("description");
+    challengeEntity.setStartDate(new Date(System.currentTimeMillis()));
+    challengeEntity.setEndDate(new Date(System.currentTimeMillis() + 1));
+    challengeEntity.setId(1l);
+    challengeEntity.setAudience(1l);
+    challengeEntity.setManagers(Collections.emptyList());
+    PowerMockito.mockStatic(EntityMapper.class);
+
+    Challenge challenge = new Challenge(1l,
+                                        "Challenge",
+                                        "description",
+                                        1l,
+                                        new Date(System.currentTimeMillis()).toString(),
+                                        new Date(System.currentTimeMillis() + 1).toString(),
+                                        true,
+                                        false,
+                                        Collections.emptyList());
+
+    when(EntityMapper.fromEntity(challengeEntity)).thenReturn(challenge);
+    when(challengeDAO.find(eq(1l))).thenReturn(challengeEntity);
+
+    Challenge notExistingChallenge = challengeStorage.getChallengeById(2l);
+    assertNull(notExistingChallenge);
+    verify(challengeDAO, times(1)).find(anyLong());
+
+    Challenge result = challengeStorage.getChallengeById(1l);
+    assertNotNull(result);
+    verify(challengeDAO, times(2)).find(anyLong());
+
   }
 }
