@@ -211,6 +211,10 @@
       width: 90%;
       padding: 9px;
       cursor: pointer;
+      .date {
+        margin-left:  0px ~'; /** orientation=lt */ ';
+        margin-right: 10px ~'; /** orientation=rt */ ';
+      }
     }
     .iconStatus {
       margin-left: -8px;
@@ -232,6 +236,7 @@
       }
       .editList {
         min-height: 40px;
+        cursor: pointer;
         .editLabel {
           font-size: 0.8125rem;
           font-weight: 500;
@@ -275,6 +280,8 @@
 
   .date {
     color: @baseColorLight;
+    margin-left:  10px ~'; /** orientation=lt */ ';
+    margin-right: 10px ~'; /** orientation=rt */ ';
   }
 
   .endDate {
@@ -297,5 +304,10 @@
         content: "\ebf3";
       }
     }
+  }
+
+  .listMangers {
+    padding-left:  12px ~'; /** orientation=lt */ ';
+    padding-right: 12px ~'; /** orientation=rt */ ';
   }
 }
