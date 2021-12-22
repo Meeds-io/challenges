@@ -19,13 +19,13 @@
         <hr class="separation ml-4 mr-4">
         <div class="startDate d-flex pl-4 pr-4">
           <i class="uiIconStartDate "></i>
-          <div class="ml-1 mt-1 date">
+          <div class="mt-1 date">
             {{ challenge && getFromDate(new Date(challenge.startDate)) }}
           </div>
         </div>
         <div class="endDate d-flex pl-4 pr-4 pt-4">
           <i class="uiIconDueDate "></i>
-          <div class="ml-1 date">
+          <div class="date">
             {{ challenge && getFromDate(new Date(challenge.endDate)) }}
           </div>
         </div>
@@ -48,7 +48,7 @@
         <div class="pl-4 pr-4 pt-4">
           {{ $t('challenges.label.managers') }}
         </div>
-        <div v-if="users && users.length" class="pl-3 pt-2">
+        <div v-if="users && users.length" class="listMangers pt-2">
           <v-chip
             v-for="user in users"
             :key="user"

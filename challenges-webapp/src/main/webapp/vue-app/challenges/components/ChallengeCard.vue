@@ -9,7 +9,7 @@
         <v-list-item-content class="title pl-4 pr-4 pt-3">
           <div class="d-flex">
             <div class="status">
-              <i class="uiIconStatus iconStatus" :class="classStatus"></i> {{ getStatus() }}
+              <i class="uiIconStatus iconStatus" :class="classStatus"></i> <span class="date">{{ getStatus() }}</span>
             </div>
             <div class="edit">
               <v-menu
