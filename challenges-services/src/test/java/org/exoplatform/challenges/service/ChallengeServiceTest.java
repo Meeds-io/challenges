@@ -2,6 +2,7 @@ package org.exoplatform.challenges.service;
 
 import org.exoplatform.challenges.model.Challenge;
 import org.exoplatform.challenges.storage.ChallengeStorage;
+import org.exoplatform.commons.exception.ObjectNotFoundException;
 import org.exoplatform.social.core.space.model.Space;
 import org.exoplatform.social.core.space.spi.SpaceService;
 import org.junit.Before;
@@ -63,5 +64,51 @@ public class ChallengeServiceTest {
     // Then
     assertNotNull(challenge1);
     assertEquals(1l, challenge1.getId());
+  }
+
+  @Test
+  public void testUpdateChallenge() throws ObjectNotFoundException, IllegalAccessException {
+    // Given
+    Challenge challenge = new Challenge(1l,
+                                        "update challenge",
+                                        "challenge description",
+                                        1l,
+                                        new Date(System.currentTimeMillis()).toString(),
+                                        new Date(System.currentTimeMillis() + 1).toString(),
+                                        true,
+                                        false,
+                                        Collections.emptyList());
+    Challenge challenge1 = new Challenge(1l,
+                                         "new challenge",
+                                         "challenge description",
+                                         1l,
+                                         new Date(System.currentTimeMillis()).toString(),
+                                         new Date(System.currentTimeMillis() + 1).toString(),
+                                         true,
+                                         false,
+                                         Collections.emptyList());
+
+    Challenge challenge2 = new Challenge(1l,
+                                         "update challenge",
+                                         "challenge description",
+                                         1l,
+                                         new Date(System.currentTimeMillis()).toString(),
+                                         new Date(System.currentTimeMillis() + 1).toString(),
+                                         true,
+                                         false,
+                                         Collections.emptyList());
+    Space space = new Space();
+    when(spaceService.getSpaceById("1")).thenReturn(space);
+    when(spaceService.isManager(space, "root")).thenReturn(true);
+    when(challengeStorage.getChallengeById(1l)).thenReturn(challenge1);
+    when(challengeStorage.saveChallenge(challenge, "root")).thenReturn(challenge2);
+
+    // When
+    Challenge challengeUpdated = challengeService.updateChallenge(challenge, "root");
+
+    // Then
+    assertNotNull(challengeUpdated);
+    assertEquals(1l, challenge1.getId());
+    assertEquals("update challenge", challengeUpdated.getTitle());
   }
 }

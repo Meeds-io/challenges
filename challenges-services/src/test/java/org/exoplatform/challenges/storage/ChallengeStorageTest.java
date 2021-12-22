@@ -67,7 +67,7 @@ public class ChallengeStorageTest {
     PowerMockito.mockStatic(Utils.class);
     PowerMockito.mockStatic(EntityMapper.class);
     Identity identity = mock(Identity.class);
-    when(Utils.getIdentityByTypeAndId(any())).thenReturn(identity);
+    when(Utils.getIdentityByTypeAndId(any(), any())).thenReturn(identity);
     when(EntityMapper.toEntity(challenge)).thenReturn(challengeEntity);
     Challenge challengeFromEntity = new Challenge(1l,
                                                   "new challenge",
