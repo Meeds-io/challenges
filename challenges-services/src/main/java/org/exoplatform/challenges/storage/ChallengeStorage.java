@@ -6,6 +6,7 @@ import org.exoplatform.challenges.model.Challenge;
 import org.exoplatform.challenges.utils.EntityMapper;
 import org.exoplatform.challenges.utils.Utils;
 import org.exoplatform.social.core.identity.model.Identity;
+import org.exoplatform.social.core.identity.provider.OrganizationIdentityProvider;
 import java.util.List;
 
 public class ChallengeStorage {
@@ -20,7 +21,7 @@ public class ChallengeStorage {
     if (challenge == null) {
       throw new IllegalArgumentException("challenge argument is null");
     }
-    Identity identity = Utils.getIdentityByTypeAndId(username);
+    Identity identity = Utils.getIdentityByTypeAndId(OrganizationIdentityProvider.NAME, username);
     if (identity == null) {
       throw new IllegalArgumentException("identity is not exist");
     }

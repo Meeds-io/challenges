@@ -19,6 +19,18 @@
   <component>
     <type>org.exoplatform.challenges.dao.AnnouncementDAO</type>
   </component>
+  <component>
+    <type>org.exoplatform.challenges.storage.AnnouncementStorage</type>
+  </component>
+
+  <component>
+    <key>org.exoplatform.challenges.service.AnnouncementService</key>
+    <type>org.exoplatform.challenges.service.AnnouncementServiceImpl</type>
+  </component>
+
+  <component>
+    <type>org.exoplatform.challenges.rest.AnnouncementRest</type>
+  </component>
 
   <component>
     <type>org.exoplatform.challenges.dao.ChallengeDAO</type>
@@ -32,9 +44,19 @@
     <key>org.exoplatform.challenges.service.ChallengeService</key>
     <type>org.exoplatform.challenges.service.ChallengeServiceImpl</type>
   </component>
+
   <component>
     <type>org.exoplatform.challenges.rest.ChallengeRest</type>
   </component>
+
+  <external-component-plugins>
+    <target-component>org.exoplatform.services.listener.ListenerService</target-component>
+    <component-plugin>
+      <name>announcement.activity</name>
+      <set-method>addListener</set-method>
+      <type>org.exoplatform.challenges.listener.AnnouncementActivityGenerator</type>
+    </component-plugin>
+  </external-component-plugins>
 
 <external-component-plugins>
   <target-component>org.exoplatform.commons.api.persistence.DataInitializer</target-component>

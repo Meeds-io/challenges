@@ -17,4 +17,6 @@ public class UserInfo implements Cloneable {
 
   private String avatarUrl;
 
+  private String announcementActivityId;
+
 }

@@ -23,6 +23,7 @@ const config = {
   },
   entry: {
     challenges: './src/main/webapp/vue-app/challenges/main.js',
+    challengesExtensions: './src/main/webapp/vue-app/challenges-extensions/main.js',
   },
   output: {
     path: path.join(__dirname, 'target/challenges/'),
