@@ -10,6 +10,9 @@ import java.util.List;
 @Entity(name = "Announcement")
 @ExoEntity
 @Table(name = "ANNOUNCEMENT")
+@NamedQueries({
+    @NamedQuery(name = "Announcement.findAllAnnouncementByChallenge", query = "SELECT DISTINCT a FROM Announcement a where a.challenge.id = :challengeId order by a.createdDate desc"), })
+
 public class AnnouncementEntity implements Serializable {
 
   @Id

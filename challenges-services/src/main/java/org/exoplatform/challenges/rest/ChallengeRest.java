@@ -2,7 +2,10 @@ package org.exoplatform.challenges.rest;
 
 import io.swagger.annotations.*;
 import org.apache.commons.lang3.StringUtils;
+import org.exoplatform.challenges.model.Announcement;
 import org.exoplatform.challenges.model.Challenge;
+import org.exoplatform.challenges.model.ChallengeRestEntity;
+import org.exoplatform.challenges.service.AnnouncementService;
 import org.exoplatform.challenges.service.ChallengeService;
 import org.exoplatform.challenges.utils.EntityMapper;
 import org.exoplatform.challenges.utils.Utils;
@@ -16,6 +19,8 @@ import javax.annotation.security.RolesAllowed;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 @Path("/challenge/api")
@@ -26,9 +31,11 @@ public class ChallengeRest implements ResourceContainer {
   private static final Log LOG = ExoLogger.getLogger(ChallengeRest.class);
 
   private ChallengeService challengeService;
+  private AnnouncementService announcementService;
 
-  public ChallengeRest(ChallengeService challengeService) {
+  public ChallengeRest(ChallengeService challengeService,AnnouncementService announcementService) {
     this.challengeService = challengeService;
+    this.announcementService = announcementService;
   }
 
   @POST
@@ -53,7 +60,7 @@ public class ChallengeRest implements ResourceContainer {
     }
     try {
       Challenge newChallenge = challengeService.createChallenge(challenge, currentUser);
-      return Response.ok(EntityMapper.fromChallenge(newChallenge)).build();
+      return Response.ok(EntityMapper.fromChallenge(newChallenge, Collections.emptyList())).build();
     } catch (IllegalAccessException e) {
       LOG.warn("User '{}' attempts to create a challenge", e);
       return Response.status(Response.Status.UNAUTHORIZED).entity(e.getMessage()).build();
@@ -73,7 +80,9 @@ public class ChallengeRest implements ResourceContainer {
           @ApiResponse(code = 400, message = "Invalid query input"),
           @ApiResponse(code = 403, message = "Unauthorized operation"),
           @ApiResponse(code = 500, message = "Internal server error") })
-  public Response getChallengeById(@ApiParam(value = "Challenge technical id", required = true) @PathParam("challengeId") long challengeId) {
+  public Response getChallengeById(@ApiParam(value = "Challenge technical id", required = true) @PathParam("challengeId") long challengeId,
+                                   @ApiParam(value = "Offset of result", required = false) @DefaultValue("0") @QueryParam("offset") int offset,
+                                   @ApiParam(value = "Limit of result", required = false) @DefaultValue("10") @QueryParam("limit") int limit) {
     if (challengeId == 0) {
       LOG.warn("Bad request sent to server with empty challengeId");
       return Response.status(400).build();
@@ -81,7 +90,8 @@ public class ChallengeRest implements ResourceContainer {
     String currentUserId = Utils.getCurrentUser();
     try {
       Challenge challenge = challengeService.getChallengeById(challengeId, currentUserId);
-      return Response.ok(EntityMapper.fromChallenge(challenge)).build();
+      List<Announcement>  announcementList = announcementService.findAllAnnouncementByChallenge(challengeId,offset,limit);
+      return Response.ok(EntityMapper.fromChallenge(challenge,announcementList)).build();
     } catch (Exception e) {
       LOG.error("Error getting challenge", e);
       return Response.status(500).build();
@@ -99,7 +109,9 @@ public class ChallengeRest implements ResourceContainer {
       @ApiResponse(code = HTTPStatus.BAD_REQUEST, message = "Invalid query input"),
       @ApiResponse(code = HTTPStatus.UNAUTHORIZED, message = "Unauthorized operation"),
       @ApiResponse(code = HTTPStatus.INTERNAL_ERROR, message = "Internal server error"), })
-  public Response updateChallenge(@ApiParam(value = "challenge object to update", required = true) Challenge challenge) {
+  public Response updateChallenge(@ApiParam(value = "challenge object to update", required = true) Challenge challenge,
+                                  @ApiParam(value = "Offset of result", required = false) @DefaultValue("0") @QueryParam("offset")  int offset,
+                                  @ApiParam(value = "Limit of result", required = false) @DefaultValue("10") @QueryParam("limit") int limit) {
     if (challenge == null) {
       return Response.status(Response.Status.BAD_REQUEST).entity("challenge object is mandatory").build();
     }
@@ -110,7 +122,8 @@ public class ChallengeRest implements ResourceContainer {
     String currentUser = Utils.getCurrentUser();
     try {
       challenge = challengeService.updateChallenge(challenge, currentUser);
-      return Response.ok(EntityMapper.fromChallenge(challenge)).build();
+      List<Announcement>  announcementList = announcementService.findAllAnnouncementByChallenge(challenge.getId(),offset,limit);
+      return Response.ok(EntityMapper.fromChallenge(challenge,announcementList)).build();
     } catch (ObjectNotFoundException e) {
       LOG.debug("User '{}' attempts to update a not existing challenge '{}'", currentUser, e);
       return Response.status(Response.Status.NOT_FOUND).entity("Challenge not found").build();
@@ -147,7 +160,12 @@ public class ChallengeRest implements ResourceContainer {
     String currentUser = Utils.getCurrentUser();
     try {
       List<Challenge> challenges = challengeService.getAllChallengesByUser(offset, limit, currentUser);
-      return Response.ok(EntityMapper.fromChallengesList(challenges)).build();
+      List<ChallengeRestEntity> challengeRestEntities = new ArrayList<>();
+      for (Challenge challenge : challenges) {
+        List<Announcement> challengeAnnouncements = announcementService.findAllAnnouncementByChallenge(challenge.getId(), offset, limit);
+        challengeRestEntities.add(EntityMapper.fromChallenge(challenge, challengeAnnouncements));
+      }
+      return Response.ok(challengeRestEntities).build();
     } catch (IllegalAccessException e) {
       LOG.warn("User '{}' attempts to access not authorized challenges with owner Ids", currentUser, e);
       return Response.status(Response.Status.UNAUTHORIZED).entity(e.getMessage()).build();

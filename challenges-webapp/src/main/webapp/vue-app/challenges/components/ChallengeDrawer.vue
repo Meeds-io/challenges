@@ -249,19 +249,27 @@ export default {
       this.$refs.challengeDrawer.close();
     },
     removeManager(id) {
-      const index = this.challenge.managers.findIndex(managerId => {
-        return managerId === id;
+      const index = this.challenge.managers.findIndex(manager => {
+        if (manager && manager.id) {
+          return manager.id === id;
+        } else {
+          return manager === id;
+        }
       });
       if (index >= 0) {
-        this.challenge.managers.splice(index, 1);
+        this.$delete(this.challenge.managers,index, 1);
       }
     },
     addManager(id) {
-      const index = this.challenge.managers.findIndex(managerId => {
-        return managerId === id;
+      const index = this.challenge.managers.findIndex(manager => {
+        if (manager && manager.id) {
+          return manager.id === id;
+        } else {
+          return manager === id;
+        }
       });
       if (index < 0) {
-        this.challenge.managers.push(id);
+        this.$set(this.challenge.managers,this.challenge.managers.length, id);
       }
     },
 
