@@ -50,10 +50,6 @@ public class AnnouncementRest implements ResourceContainer {
       LOG.warn("current User is null");
       return Response.status(Response.Status.UNAUTHORIZED).build();
     }
-    if (Utils.canAnnounce(String.valueOf(announcement.getChallenge().getAudience()))) {
-      LOG.warn("current User is not able to announce");
-      return Response.status(Response.Status.UNAUTHORIZED).build();
-    }
     try {
       Announcement newAnnouncement = announcementService.createAnnouncement(announcement, currentUser);
       return Response.ok(EntityMapper.fromAnnouncement(newAnnouncement)).build();

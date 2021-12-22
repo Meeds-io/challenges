@@ -54,7 +54,7 @@
     <component-plugin>
       <name>announcement.activity</name>
       <set-method>addListener</set-method>
-      <type>org.exoplatform.challenges.listener.NewAnnouncementActivityGenerator</type>
+      <type>org.exoplatform.challenges.listener.AnnouncementActivityGenerator</type>
     </component-plugin>
   </external-component-plugins>
 

@@ -11,7 +11,18 @@ export function initExtensions() {
       noBorder: true,
     },
     getSourceLink: () => '#',
-    getTitle: activity => activity && activity.templateParams && activity.templateParams.announcementTitle || '',
+    getTitle: activity => {
+      const announcementAssigneeUsername = activity && activity.templateParams && activity.templateParams.announcementAssigneeUsername && activity.templateParams.announcementAssigneeUsername.split('#') || '';
+      const announcementAssigneeFullName = activity && activity.templateParams && activity.templateParams.announcementAssigneeUsername && activity.templateParams.announcementAssigneeFullName.split('#') || '';
+      let title = '';
+      for (let i=0 ; i < announcementAssigneeUsername.length-1; i++){
+        title = `${ title } <a href="${eXo.env.portal.context}/${eXo.env.portal.portalName}/profile/${ announcementAssigneeUsername[i] }">${ announcementAssigneeFullName[i] }</a>`;
+      }
+      return {
+        key: 'challenges.succeededChallenge',
+        params: { 0: `${ title }` }
+      };
+    },
     getThumbnail: () => '/challenges/images/challengesAppIcon.png',
     getSummary: activity => activity && activity.templateParams && activity.templateParams.announcementDescription  || '',
     getBody: activity => {
@@ -21,7 +32,7 @@ export function initExtensions() {
   };
 
   extensionRegistry.registerExtension('activity', 'type', {
-    type: 'exo-announcement:activity',
+    type: 'challenges-announcement',
     options: announcementActivityTypeExtensionOptions,
   });
 

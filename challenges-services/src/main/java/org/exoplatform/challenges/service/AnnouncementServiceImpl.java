@@ -13,6 +13,7 @@ import org.exoplatform.services.listener.ListenerService;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.identity.provider.OrganizationIdentityProvider;
 
+import javax.ws.rs.core.Response;
 import java.util.List;
 
 import static org.exoplatform.challenges.utils.Utils.ANNOUNCEMENT_ACTIVITY_EVENT;
@@ -46,6 +47,9 @@ public class AnnouncementServiceImpl implements AnnouncementService {
     }
     if (announcement.getAssignee() == null) {
       throw new IllegalArgumentException("announcement assignee must have at least one winner");
+    }
+    if (Utils.canAnnounce(String.valueOf(announcement.getChallenge().getAudience()))) {
+      throw new IllegalAccessException("user is not allowed to announce challenge");
     }
 
     Identity identity = Utils.getIdentityByTypeAndId(OrganizationIdentityProvider.NAME, currentUser);
