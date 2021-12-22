@@ -80,7 +80,9 @@ public class ChallengeRest implements ResourceContainer {
           @ApiResponse(code = 400, message = "Invalid query input"),
           @ApiResponse(code = 403, message = "Unauthorized operation"),
           @ApiResponse(code = 500, message = "Internal server error") })
-  public Response getChallengeById(@ApiParam(value = "Challenge technical id", required = true) @PathParam("challengeId") long challengeId) {
+  public Response getChallengeById(@ApiParam(value = "Challenge technical id", required = true) @PathParam("challengeId") long challengeId,
+                                   @ApiParam(value = "Offset of result", required = false) @DefaultValue("0") @QueryParam("offset") int offset,
+                                   @ApiParam(value = "Limit of result", required = false) @DefaultValue("10") @QueryParam("limit") int limit) {
     if (challengeId == 0) {
       LOG.warn("Bad request sent to server with empty challengeId");
       return Response.status(400).build();
@@ -88,7 +90,7 @@ public class ChallengeRest implements ResourceContainer {
     String currentUserId = Utils.getCurrentUser();
     try {
       Challenge challenge = challengeService.getChallengeById(challengeId, currentUserId);
-      List<Announcement>  announcementList = announcementService.findAllAnnouncementByChallenge(challengeId,0,0);
+      List<Announcement>  announcementList = announcementService.findAllAnnouncementByChallenge(challengeId,offset,limit);
       return Response.ok(EntityMapper.fromChallenge(challenge,announcementList)).build();
     } catch (Exception e) {
       LOG.error("Error getting challenge", e);
@@ -107,7 +109,9 @@ public class ChallengeRest implements ResourceContainer {
       @ApiResponse(code = HTTPStatus.BAD_REQUEST, message = "Invalid query input"),
       @ApiResponse(code = HTTPStatus.UNAUTHORIZED, message = "Unauthorized operation"),
       @ApiResponse(code = HTTPStatus.INTERNAL_ERROR, message = "Internal server error"), })
-  public Response updateChallenge(@ApiParam(value = "challenge object to update", required = true) Challenge challenge) {
+  public Response updateChallenge(@ApiParam(value = "challenge object to update", required = true) Challenge challenge,
+                                  @ApiParam(value = "Offset of result", required = false) @DefaultValue("0") @QueryParam("offset")  int offset,
+                                  @ApiParam(value = "Limit of result", required = false) @DefaultValue("10") @QueryParam("limit") int limit) {
     if (challenge == null) {
       return Response.status(Response.Status.BAD_REQUEST).entity("challenge object is mandatory").build();
     }
@@ -118,7 +122,7 @@ public class ChallengeRest implements ResourceContainer {
     String currentUser = Utils.getCurrentUser();
     try {
       challenge = challengeService.updateChallenge(challenge, currentUser);
-      List<Announcement>  announcementList = announcementService.findAllAnnouncementByChallenge(challenge.getId(),0,0);
+      List<Announcement>  announcementList = announcementService.findAllAnnouncementByChallenge(challenge.getId(),offset,limit);
       return Response.ok(EntityMapper.fromChallenge(challenge,announcementList)).build();
     } catch (ObjectNotFoundException e) {
       LOG.debug("User '{}' attempts to update a not existing challenge '{}'", currentUser, e);
@@ -158,7 +162,7 @@ public class ChallengeRest implements ResourceContainer {
       List<Challenge> challenges = challengeService.getAllChallengesByUser(offset, limit, currentUser);
       List<ChallengeRestEntity> challengeRestEntities = new ArrayList<>();
       for (Challenge challenge : challenges) {
-        List<Announcement> challengeAnnouncements = announcementService.findAllAnnouncementByChallenge(challenge.getId(), 0, 0);
+        List<Announcement> challengeAnnouncements = announcementService.findAllAnnouncementByChallenge(challenge.getId(), offset, limit);
         challengeRestEntities.add(EntityMapper.fromChallenge(challenge, challengeAnnouncements));
       }
       return Response.ok(challengeRestEntities).build();
