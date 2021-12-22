@@ -19,8 +19,7 @@ import org.mockito.stubbing.Answer;
 import org.powermock.core.classloader.annotations.PowerMockIgnore;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 
-import java.util.Collections;
-import java.util.Date;
+import java.util.*;
 
 @RunWith(PowerMockRunner.class)
 @PowerMockIgnore("javax.management.*")
@@ -123,6 +122,51 @@ public class ChallengeStorageTest {
     Challenge result = challengeStorage.getChallengeById(1l);
     assertNotNull(result);
     verify(challengeDAO, times(2)).find(anyLong());
+
+  }
+
+  @Test
+  public void testFindAllChallengesByUser() {
+    // Given
+    List<Long> ids = new ArrayList<>(Arrays.asList(1l, 2l, 3l));
+    List<ChallengeEntity> challengeEntities = new ArrayList<>();
+    // challenge 1
+    ChallengeEntity challengeEntity = new ChallengeEntity();
+    challengeEntity.setTitle("Challenge");
+    challengeEntity.setDescription("description");
+    challengeEntity.setStartDate(new Date(System.currentTimeMillis()));
+    challengeEntity.setEndDate(new Date(System.currentTimeMillis() + 1));
+    challengeEntity.setId(1l);
+    challengeEntity.setAudience(1l);
+    challengeEntity.setManagers(Collections.emptyList());
+    // challenge 2
+    ChallengeEntity challengeEntity2 = new ChallengeEntity();
+    challengeEntity2.setTitle("Challenge 2");
+    challengeEntity2.setDescription("description 2");
+    challengeEntity2.setStartDate(new Date(System.currentTimeMillis()));
+    challengeEntity2.setEndDate(new Date(System.currentTimeMillis() + 1));
+    challengeEntity2.setId(2l);
+    challengeEntity2.setAudience(2l);
+    challengeEntity2.setManagers(Collections.emptyList());
+    // challenge 3
+    ChallengeEntity challengeEntity3 = new ChallengeEntity();
+    challengeEntity3.setTitle("Challenge 3");
+    challengeEntity3.setDescription("description 3");
+    challengeEntity3.setStartDate(new Date(System.currentTimeMillis()));
+    challengeEntity3.setEndDate(new Date(System.currentTimeMillis() + 1));
+    challengeEntity3.setId(3l);
+    challengeEntity3.setAudience(3l);
+    challengeEntity3.setManagers(Collections.emptyList());
+    challengeEntities.add(challengeEntity);
+    challengeEntities.add(challengeEntity2);
+    challengeEntities.add(challengeEntity3);
+    when(challengeDAO.findAllChallengesByUser(0, 3, ids)).thenReturn(challengeEntities);
+
+    // When
+    List<ChallengeEntity> challengeEntityList = challengeStorage.findAllChallengesByUser(0, 3, ids);
+
+    assertEquals(3, challengeEntityList.size());
+    assertNotNull(challengeEntities);
 
   }
 }
