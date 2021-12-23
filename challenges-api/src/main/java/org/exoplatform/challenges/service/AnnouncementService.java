@@ -16,7 +16,7 @@ public interface AnnouncementService {
    * @throws IllegalAccessException when user is not authorized to create a
    *                                announcement for the designated owner defined in object
    */
-  Announcement createAnnouncement(Announcement announcement, String username) throws IllegalAccessException, ObjectNotFoundException, Exception;
+  Announcement createAnnouncement(Announcement announcement, String username) throws IllegalAccessException, ObjectNotFoundException;
 
   /**
    * Retrieves all Announcements by challenge.

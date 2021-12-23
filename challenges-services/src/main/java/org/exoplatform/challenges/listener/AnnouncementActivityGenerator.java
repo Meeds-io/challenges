@@ -1,9 +1,12 @@
 package org.exoplatform.challenges.listener;
 
-import org.apache.commons.lang.StringEscapeUtils;
+import org.exoplatform.challenges.entity.AnnouncementEntity;
 import org.exoplatform.challenges.model.Announcement;
+import org.exoplatform.challenges.model.Challenge;
 import org.exoplatform.challenges.model.UserInfo;
+import org.exoplatform.challenges.service.ChallengeService;
 import org.exoplatform.challenges.storage.AnnouncementStorage;
+import org.exoplatform.challenges.utils.EntityMapper;
 import org.exoplatform.challenges.utils.Utils;
 import org.exoplatform.commons.exception.ObjectNotFoundException;
 import org.exoplatform.container.ExoContainer;
@@ -24,36 +27,42 @@ import java.util.List;
 import java.util.Map;
 
 public class AnnouncementActivityGenerator extends Listener<AnnouncementStorage, Announcement> {
-  private static final Log LOG = ExoLogger.getLogger(AnnouncementActivityGenerator.class);
+  private static final Log   LOG                        = ExoLogger.getLogger(AnnouncementActivityGenerator.class);
 
   public static final String ANNOUNCEMENT_ACTIVITY_TYPE = "challenges-announcement";
 
-  private ExoContainer container;
+  private ExoContainer       container;
 
-  private ActivityStorage activityStorage;
+  private ActivityStorage    activityStorage;
 
-  public AnnouncementActivityGenerator(ActivityStorage activityStorage, ExoContainer container) {
+  private ChallengeService   challengeService;
+
+  public AnnouncementActivityGenerator(ActivityStorage activityStorage,
+                                       ExoContainer container,
+                                       ChallengeService challengeService) {
     this.activityStorage = activityStorage;
+    this.challengeService = challengeService;
     this.container = container;
   }
 
   @Override
-  public void onEvent(Event<AnnouncementStorage, Announcement> event) throws ObjectNotFoundException {
+  public void onEvent(Event<AnnouncementStorage, Announcement> event) throws ObjectNotFoundException, IllegalAccessException {
     ExoContainerContext.setCurrentContainer(container);
     RequestLifeCycle.begin(container);
     try {
       Announcement announcement = event.getData();
       AnnouncementStorage announcementStorage = event.getSource();
-      ExoSocialActivity activity = createActivity(announcement);
+      Challenge challenge = challengeService.getChallengeById(announcement.getChallengeId(), Utils.getCurrentUser());
+      ExoSocialActivity activity = createActivity(announcement, challenge);
       announcement.setActivityId(Long.parseLong(activity.getId()));
-      announcementStorage.saveAnnouncement(announcement);
+      AnnouncementEntity announcementEntity = EntityMapper.toEntity(announcement, challenge);
+      announcementStorage.saveAnnouncement(announcementEntity);
     } finally {
       RequestLifeCycle.end();
     }
   }
 
-
-  private ExoSocialActivity createActivity(Announcement announcement) throws ObjectNotFoundException {
+  private ExoSocialActivity createActivity(Announcement announcement, Challenge challenge) throws ObjectNotFoundException {
     ExoSocialActivityImpl activity = new ExoSocialActivityImpl();
     activity.setType(ANNOUNCEMENT_ACTIVITY_TYPE);
     activity.setTitle(this.getAssigneeUserNames(announcement.getAssignee()));
@@ -62,9 +71,9 @@ public class AnnouncementActivityGenerator extends Listener<AnnouncementStorage,
     params.put("announcementAssigneeUsername", this.getAssigneeUserNames(announcement.getAssignee()));
     params.put("announcementAssigneeFullName", this.getAssigneeFullNames(announcement.getAssignee()));
     params.put("announcementComment", announcement.getComment());
-    params.put("announcementDescription", announcement.getChallenge().getTitle());
+    params.put("announcementDescription", challenge.getTitle());
     activity.setTemplateParams(params);
-    Space space = Utils.getSpaceById(String.valueOf(announcement.getChallenge().getAudience()));
+    Space space = Utils.getSpaceById(String.valueOf(challenge.getAudience()));
     if (space == null) {
       throw new ObjectNotFoundException("space does not exist");
     }
@@ -79,7 +88,7 @@ public class AnnouncementActivityGenerator extends Listener<AnnouncementStorage,
     String AssigneeFullNames = "";
     List<UserInfo> AssigneeIdentityList = Utils.getUsersByIds(assignee);
     for (UserInfo user : AssigneeIdentityList) {
-      AssigneeFullNames = AssigneeFullNames  + user.getFullName()  + "#";
+      AssigneeFullNames = AssigneeFullNames + user.getFullName() + "#";
     }
     return AssigneeFullNames;
   }
@@ -91,7 +100,7 @@ public class AnnouncementActivityGenerator extends Listener<AnnouncementStorage,
     String AssigneeUserNames = "";
     List<UserInfo> AssigneeIdentityList = Utils.getUsersByIds(assignee);
     for (UserInfo user : AssigneeIdentityList) {
-      AssigneeUserNames = AssigneeUserNames + user.getRemoteId()  + "#";
+      AssigneeUserNames = AssigneeUserNames + user.getRemoteId() + "#";
     }
     return AssigneeUserNames;
   }

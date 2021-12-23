@@ -15,15 +15,12 @@ public class AnnouncementStorage {
     this.announcementDAO = announcementDAO;
   }
 
-
-  public Announcement saveAnnouncement(Announcement announcement) {
-    if (announcement == null) {
+  public Announcement saveAnnouncement(AnnouncementEntity announcementEntity) {
+    if (announcementEntity == null) {
       throw new IllegalArgumentException("Announcement argument is null");
     }
-    AnnouncementEntity announcementEntity = EntityMapper.toEntity(announcement);
 
-    if (announcement.getId() == 0) {
-      announcementEntity.setId(null);
+    if (announcementEntity.getId() == null) {
       announcementEntity = announcementDAO.create(announcementEntity);
     } else {
       announcementEntity = announcementDAO.update(announcementEntity);
