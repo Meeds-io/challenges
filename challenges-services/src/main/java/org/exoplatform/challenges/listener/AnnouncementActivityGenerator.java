@@ -4,6 +4,7 @@ import org.exoplatform.challenges.entity.AnnouncementEntity;
 import org.exoplatform.challenges.model.Announcement;
 import org.exoplatform.challenges.model.Challenge;
 import org.exoplatform.challenges.model.UserInfo;
+import org.exoplatform.challenges.service.AnnouncementService;
 import org.exoplatform.challenges.service.ChallengeService;
 import org.exoplatform.challenges.storage.AnnouncementStorage;
 import org.exoplatform.challenges.utils.EntityMapper;
@@ -26,7 +27,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class AnnouncementActivityGenerator extends Listener<AnnouncementStorage, Announcement> {
+public class AnnouncementActivityGenerator extends Listener<AnnouncementService, Announcement> {
   private static final Log   LOG                        = ExoLogger.getLogger(AnnouncementActivityGenerator.class);
 
   public static final String ANNOUNCEMENT_ACTIVITY_TYPE = "challenges-announcement";
@@ -46,17 +47,16 @@ public class AnnouncementActivityGenerator extends Listener<AnnouncementStorage,
   }
 
   @Override
-  public void onEvent(Event<AnnouncementStorage, Announcement> event) throws ObjectNotFoundException, IllegalAccessException {
+  public void onEvent(Event<AnnouncementService, Announcement> event) throws ObjectNotFoundException, IllegalAccessException {
     ExoContainerContext.setCurrentContainer(container);
     RequestLifeCycle.begin(container);
     try {
       Announcement announcement = event.getData();
-      AnnouncementStorage announcementStorage = event.getSource();
+      AnnouncementService announcementService = event.getSource();
       Challenge challenge = challengeService.getChallengeById(announcement.getChallengeId(), Utils.getCurrentUser());
       ExoSocialActivity activity = createActivity(announcement, challenge);
       announcement.setActivityId(Long.parseLong(activity.getId()));
-      AnnouncementEntity announcementEntity = EntityMapper.toEntity(announcement, challenge);
-      announcementStorage.saveAnnouncement(announcementEntity);
+      announcementService.updateAnnouncement(announcement);
     } finally {
       RequestLifeCycle.end();
     }
@@ -65,11 +65,10 @@ public class AnnouncementActivityGenerator extends Listener<AnnouncementStorage,
   private ExoSocialActivity createActivity(Announcement announcement, Challenge challenge) throws ObjectNotFoundException {
     ExoSocialActivityImpl activity = new ExoSocialActivityImpl();
     activity.setType(ANNOUNCEMENT_ACTIVITY_TYPE);
-    activity.setTitle(this.getAssigneeUserNames(announcement.getAssignee()));
+    activity.setTitle(challenge.getTitle());
     activity.setUserId(String.valueOf(announcement.getCreator()));
     Map<String, String> params = new HashMap<>();
     params.put("announcementAssigneeUsername", this.getAssigneeUserNames(announcement.getAssignee()));
-    params.put("announcementAssigneeFullName", this.getAssigneeFullNames(announcement.getAssignee()));
     params.put("announcementComment", announcement.getComment());
     params.put("announcementDescription", challenge.getTitle());
     activity.setTemplateParams(params);
@@ -79,18 +78,6 @@ public class AnnouncementActivityGenerator extends Listener<AnnouncementStorage,
     }
     Identity owner = Utils.getIdentityByTypeAndId("space", space.getPrettyName());
     return activityStorage.saveActivity(owner, activity);
-  }
-
-  private String getAssigneeFullNames(List<Long> assignee) {
-    if (assignee.isEmpty()) {
-      throw new IllegalArgumentException("announcement assignee must have at least one winner");
-    }
-    String AssigneeFullNames = "";
-    List<UserInfo> AssigneeIdentityList = Utils.getUsersByIds(assignee);
-    for (UserInfo user : AssigneeIdentityList) {
-      AssigneeFullNames = AssigneeFullNames + user.getFullName() + "#";
-    }
-    return AssigneeFullNames;
   }
 
   private String getAssigneeUserNames(List<Long> assignee) {

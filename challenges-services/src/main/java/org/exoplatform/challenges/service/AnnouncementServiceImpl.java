@@ -59,11 +59,9 @@ public class AnnouncementServiceImpl implements AnnouncementService {
 
     Identity identity = Utils.getIdentityByTypeAndId(OrganizationIdentityProvider.NAME, currentUser);
     announcement.setCreator(Long.parseLong(identity.getId()));
-
-    AnnouncementEntity announcementEntity = EntityMapper.toEntity(announcement, challenge);
-    announcement = announcementStorage.saveAnnouncement(announcementEntity);
+    announcement = announcementStorage.saveAnnouncement(announcement);
     try {
-      listenerService.broadcast(ANNOUNCEMENT_ACTIVITY_EVENT, announcementStorage, announcement);
+      listenerService.broadcast(ANNOUNCEMENT_ACTIVITY_EVENT, this, announcement);
 
     } catch (Exception e) {
       LOG.error("Unexpected error", e);
@@ -72,8 +70,7 @@ public class AnnouncementServiceImpl implements AnnouncementService {
   }
 
   @Override
-  public List<Announcement> findAllAnnouncementByChallenge(long challengeId, int offset, int limit) throws IllegalAccessException,
-                                                                                                    ObjectNotFoundException {
+  public List<Announcement> findAllAnnouncementByChallenge(long challengeId, int offset, int limit) throws  ObjectNotFoundException {
     if (challengeId <= 0) {
       throw new IllegalArgumentException("Challenge id has to be positive integer");
     }
@@ -81,9 +78,22 @@ public class AnnouncementServiceImpl implements AnnouncementService {
     if (challenge == null) {
       throw new ObjectNotFoundException("challenge does not exist");
     }
-    List<AnnouncementEntity> announcementEntities =
-                                                  announcementStorage.findAllAnnouncementByChallenge(challengeId, offset, limit);
-    return EntityMapper.fromAnnouncementEntities(announcementEntities);
+    return announcementStorage.findAllAnnouncementByChallenge(challengeId, offset, limit);
   }
 
+  @Override
+  public Announcement updateAnnouncement(Announcement announcement) throws IllegalArgumentException, ObjectNotFoundException {
+    if (announcement == null) {
+      throw new IllegalArgumentException("announcement is mandatory");
+    }
+    if (announcement.getId() == 0) {
+      throw new IllegalArgumentException("announcement id must not be equal to 0");
+    }
+
+    Announcement oldAnnouncement = announcementStorage.getAnnouncementById(announcement.getId());
+    if (oldAnnouncement == null) {
+      throw new ObjectNotFoundException("Announcement does not exist");
+    }
+    return announcementStorage.saveAnnouncement(announcement);
+  }
 }
