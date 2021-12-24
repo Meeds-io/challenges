@@ -24,15 +24,24 @@
         <challenge-assignment
           ref="challengeAssignment"
           class="my-2"
-          v-model="announcement.assigned" />
+          v-model="announcement.assignee"
+          @remove-user="removeAssignee"
+          @add-user="addAssignee" />
       </div>
       <div class="pl-4 pr-4 pt-9 py-4 my-2">
         <challenge-description
           ref="challengeDescription"
-          v-model="announcement.description"
-          :value="announcement.description" />
+          v-model="announcement.comment"
+          :value="announcement.comment"
+          @invalidDescription="invalidDescription($event)"
+          @validDescription="validDescription($event)"
+          @addDescription="addDescription($event)" />
       </div>
-      <div class="pl-4 pr-4 pt-4">
+      <div
+        class="
+          pl-4
+          pr-4
+          pt-4">
         {{ $t('challenges.label.audience') }}
       </div>
       <div v-if="space" class="pl-4 pr-4">
@@ -58,7 +67,9 @@
           {{ $t('challenges.button.cancel') }}
         </button>
         <button
-          class="ignore-vuetify-classes btn btn-primary">
+          :disabled="!disabledSave"
+          class="ignore-vuetify-classes btn btn-primary"
+          @click="createAnnouncement">
           {{ $t('challenges.button.create') }}
         </button>
       </div>
@@ -76,18 +87,65 @@ export default {
   },
   data() {
     return {
-      announcement: {}
+      announcement: { assignee: []},
+      isValidDescription: {
+        description: true },
     };
   },
   computed: {
     space() {
       return this.challenge && this.challenge.space;
     },
+    disabledSave() {
+      return this.announcement.assignee && this.announcement.assignee.length > 0 && this.isValidDescription.description ;
+    },
   },
   methods: {
     open() {
       this.$refs.challengeDescription.initCKEditor();
       this.$refs.announcementDrawer.open();
+    },
+    close() {
+      this.$refs.announcementDrawer.close();
+    },
+    removeAssignee(id) {
+      const index = this.announcement.assignee.findIndex(assignee => {
+        return assignee === id;
+      });
+      if (index >= 0) {
+        this.$delete(this.announcement.assignee,index, 1);
+      }
+    },
+    addAssignee(id) {
+      const index = this.announcement.assignee.findIndex(assignee => {
+        return assignee === id;
+      });
+      if (index < 0) {
+        this.$set(this.announcement.assignee,this.announcement.assignee.length, id);
+      }
+    },
+    addDescription(value) {
+      if (value) {
+        this.$set(this.announcement,'comment', value);
+      }
+    },
+    invalidDescription() {
+      this.$set(this.isValidDescription,'description', false);
+    },
+    validDescription() {
+      this.$set(this.isValidDescription,'description', true);
+    },
+    createAnnouncement() {
+      this.announcement.challengeId =  this.challenge.id;
+      this.announcement.createdDate = new Date();
+      this.$challengesServices.saveAnnouncement(this.announcement).then(() =>{
+        this.$root.$emit('show-alert', {type: 'success',message: this.$t('challenges.announcementCreateSuccess')});
+        this.close();
+        this.challenge = {};
+      })
+        .catch(e => {
+          this.$root.$emit('show-alert', {type: 'error',message: String(e)});
+        });
     },
   }
 };

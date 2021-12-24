@@ -216,7 +216,7 @@ export default {
         space: space,
       };
       document.dispatchEvent(new CustomEvent('audienceChanged', {detail: data}));
-      this.$refs.challengeAssignment.challengeAssigneeObj = this.challenge.managers;
+      this.$refs.challengeAssignment.assigneeObj = this.challenge.managers;
       this.$set(this.challenge,'audience', space.id);
     },
     reset(){
@@ -224,7 +224,7 @@ export default {
       this.$refs.challengeDatePicker.startDate = null;
       this.$refs.challengeDatePicker.endDate = null;
       this.$refs.challengeDescription.inputVal = null;
-      this.$refs.challengeAssignment.challengeAssigneeObj = null;
+      this.$refs.challengeAssignment.assigneeObj = null;
       this.$refs.challengeSpaceSuggester.emitSelectedValue( {});
       this.$refs.challengeDatePicker.disabledStartDate = false;
       this.$refs.challengeDatePicker.disabledEndDate = false;

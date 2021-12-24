@@ -39,7 +39,7 @@
           v-model="invitedChallengeAssignee"
           :labels="spaceSuggesterLabels"
           :search-options="searchOptions"
-          :ignore-items="challengeAssigneeObj"
+          :ignore-items="assigneeObj"
           :width="220"
           name="challengeSpaceAutocomplete"
           include-users
@@ -49,7 +49,7 @@
     <div class="assigneeName">
       <v-chip
         :close="!disabledUnAssign"
-        v-for="user in challengeAssigneeObj"
+        v-for="user in assigneeObj"
         :key="user"
         class="identitySuggesterItem mx-1 mb-2"
         @click:close="removeUser(user)">
@@ -73,7 +73,7 @@ export default {
   },
   data() {
     return {
-      challengeAssigneeObj: [],
+      assigneeObj: [],
       invitedChallengeAssignee: [],
       currentUser: eXo.env.portal.userName,
       menu: false,
@@ -84,7 +84,7 @@ export default {
   },
   computed: {
     searchOptions() {
-      if (this.challengeAssigneeObj && this.challengeAssigneeObj.length >0) {
+      if (this.assigneeObj && this.assigneeObj.length >0) {
         return {
           currentUser: '',
           spaceURL: this.space && this.space.remoteId
@@ -96,12 +96,12 @@ export default {
       }
     },
     assignButtonClass(){
-      return this.challengeAssigneeObj &&  this.challengeAssigneeObj.length && 'mt-2';
+      return this.assigneeObj &&  this.assigneeObj.length && 'mt-2';
     }
   },
   watch: {
     invitedChallengeAssignee() {
-      const found = this.challengeAssigneeObj.find(attendee => {
+      const found = this.assigneeObj.find(attendee => {
         return attendee.username === this.invitedChallengeAssignee.remoteId;
       });
       if (!found && this.invitedChallengeAssignee.remoteId) {
@@ -112,7 +112,7 @@ export default {
             fullName: user.profile.fullname,
             avatarUrl: user.profile.avatar,
           };
-          this.challengeAssigneeObj.push(newManager);
+          this.assigneeObj.push(newManager);
           this.$emit('add-manager',newManager.id);
           this.invitedChallengeAssignee = null;
           this.globalMenu = false;
@@ -128,14 +128,14 @@ export default {
     });
   },
   created() {
-    this.challengeAssigneeObj = [];
+    this.assigneeObj = [];
     this.invitedChallengeAssignee = [];
     document.addEventListener('audienceChanged', event => {
       if (event && event.detail) {
-        this.challengeAssigneeObj = event.detail.managers;
+        this.assigneeObj = event.detail.managers;
         this.space = event.detail.space;
       } else {
-        this.challengeAssigneeObj = [];
+        this.assigneeObj = [];
         this.space = {};
       }
     });
@@ -150,22 +150,22 @@ export default {
             fullName: user.profile.fullname,
             avatarUrl: user.profile.avatar,
           };
-          this.challengeAssigneeObj.push(newManager);
+          this.assigneeObj.push(newManager);
           this.$emit('add-user',newManager.id);
           this.globalMenu = false;
         });
       }
     },
     isAssigned( username) {
-      return this.challengeAssigneeObj && this.challengeAssigneeObj.findIndex(manager => {
+      return this.assigneeObj && this.assigneeObj.findIndex(manager => {
         return manager.remoteId === username;
       }) >= 0 ? true : false;
     },
     removeUser(user) {
-      const index =  this.challengeAssigneeObj.findIndex(manager => {
+      const index =  this.assigneeObj.findIndex(manager => {
         return manager.remoteId === user.remoteId;
       });
-      this.challengeAssigneeObj.splice(index, 1);
+      this.assigneeObj.splice(index, 1);
       this.$emit('remove-user', user.id);
     },
   }
