@@ -96,4 +96,12 @@ public class AnnouncementServiceImpl implements AnnouncementService {
     }
     return announcementStorage.saveAnnouncement(announcement);
   }
+
+  @Override
+  public Announcement getAnnouncementById(Long announcementId) throws IllegalArgumentException {
+    if (announcementId == null || announcementId <= 0) {
+      throw new IllegalArgumentException("announcement id is mandatory");
+    }
+     return announcementStorage.getAnnouncementById(announcementId);
+  }
 }

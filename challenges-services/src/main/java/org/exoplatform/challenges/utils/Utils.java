@@ -49,11 +49,12 @@ public class Utils {
   }
 
   public static final boolean canAnnounce(String id) {
-    Space space = CommonsUtils.getService(SpaceService.class).getSpaceById(id);
+    SpaceService spaceService = CommonsUtils.getService(SpaceService.class);
+    Space space = spaceService.getSpaceById(id);
     if (space == null) {
       throw new IllegalArgumentException("space is not exist");
     }
-    return CommonsUtils.getService(SpaceService.class).isRedactor(space, getCurrentUser());
+    return spaceService.hasRedactor(space) ? spaceService.isRedactor(space, getCurrentUser()): spaceService.isMember(space, getCurrentUser());
   }
 
   public static String toRFC3339Date(Date dateTime) {

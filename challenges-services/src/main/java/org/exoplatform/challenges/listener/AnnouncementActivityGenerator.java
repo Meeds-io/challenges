@@ -68,7 +68,7 @@ public class AnnouncementActivityGenerator extends Listener<AnnouncementService,
     activity.setTitle(challenge.getTitle());
     activity.setUserId(String.valueOf(announcement.getCreator()));
     Map<String, String> params = new HashMap<>();
-    params.put("announcementAssigneeUsername", this.getAssigneeUserNames(announcement.getAssignee()));
+    params.put("announcementId",String.valueOf(announcement.getId()));
     params.put("announcementComment", announcement.getComment());
     params.put("announcementDescription", challenge.getTitle());
     activity.setTemplateParams(params);
@@ -78,18 +78,6 @@ public class AnnouncementActivityGenerator extends Listener<AnnouncementService,
     }
     Identity owner = Utils.getIdentityByTypeAndId("space", space.getPrettyName());
     return activityStorage.saveActivity(owner, activity);
-  }
-
-  private String getAssigneeUserNames(List<Long> assignee) {
-    if (assignee.isEmpty()) {
-      throw new IllegalArgumentException("announcement assignee must have at least one winner");
-    }
-    String AssigneeUserNames = "";
-    List<UserInfo> AssigneeIdentityList = Utils.getUsersByIds(assignee);
-    for (UserInfo user : AssigneeIdentityList) {
-      AssigneeUserNames = AssigneeUserNames + user.getRemoteId() + "#";
-    }
-    return AssigneeUserNames;
   }
 
 }

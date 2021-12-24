@@ -1,5 +1,5 @@
 
-export  function initExtensions() {
+export function initExtensions() {
   const announcementActivityTypeExtensionOptions = {
     canEdit: () => false,
     supportsThumbnail: true,
@@ -11,9 +11,13 @@ export  function initExtensions() {
       noBorder: true,
     },
     getSourceLink: () => '#',
-    getTitle: async activity => {
+    getTitle: activity => {
       const announcementAssigneeUsername = activity && activity.templateParams && activity.templateParams.announcementAssigneeUsername && activity.templateParams.announcementAssigneeUsername.split('#') || '';
-      const title = await buildTitle( announcementAssigneeUsername );
+      const announcementAssigneeFullName = activity && activity.templateParams && activity.templateParams.announcementAssigneeUsername && activity.templateParams.announcementAssigneeFullName.split('#') || '';
+      let title = '';
+      for (let i=0 ; i < announcementAssigneeUsername.length-1; i++){
+        title = `${ title } <a href="${eXo.env.portal.context}/${eXo.env.portal.portalName}/profile/${ announcementAssigneeUsername[i] }">${ announcementAssigneeFullName[i] }</a>`;
+      }
       return {
         key: 'challenges.succeededChallenge',
         params: { 0: `${ title }` }
@@ -27,20 +31,6 @@ export  function initExtensions() {
     },
   };
 
-  function buildTitle( announcementAssigneeUsername ){
-    let title = '';
-    for (let i=0 ; i < announcementAssigneeUsername.length-1; i++){
-      const fullName = getFullName( announcementAssigneeUsername[i] );
-      title = `${ title } <a href="${eXo.env.portal.context}/${eXo.env.portal.portalName}/profile/${ announcementAssigneeUsername[i] }">  ${ fullName }</a>`;
-    }
-    return title;
-  }
-
-  function getFullName( username ){
-    Vue.prototype.$userService.getUser(username).then(user => {
-      return user.fullname;
-    }) ;
-  }
   extensionRegistry.registerExtension('activity', 'type', {
     type: 'challenges-announcement',
     options: announcementActivityTypeExtensionOptions,

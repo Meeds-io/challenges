@@ -29,6 +29,17 @@ public interface AnnouncementService {
 
   Announcement updateAnnouncement(Announcement announcement) throws  ObjectNotFoundException;
 
+  /**
+   * Creates a new announcement
+   *
+   * @param announcementId {@link Announcement} object to create
+   * @return  {@link Announcement} with generated technical identifier
+   * @throws IllegalAccessException when user is not authorized to create a
+   *                                announcement for the designated owner defined in object
+   */
+
+  Announcement getAnnouncementById(Long announcementId) throws  ObjectNotFoundException;
+
       /**
        * Retrieves all Announcements by challenge.
        *
