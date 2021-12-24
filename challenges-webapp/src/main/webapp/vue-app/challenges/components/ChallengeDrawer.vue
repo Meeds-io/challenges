@@ -191,7 +191,6 @@ export default {
         this.$refs.challengeDatePicker.endDate = this.challenge.endDate;
         this.$refs.challengeDatePicker.disabledStartDate = true;
         this.$refs.challengeSpaceSuggester.emitSelectedValue(NewAudience);
-        this.$refs.challengeAssignment.disabledUnAssign = true;
         this.disabledSuggester = true ;
       } else if (status === 'ENDED'){
         this.$refs.challengeDatePicker.startDate = new Date(this.challenge.startDate);
@@ -323,6 +322,7 @@ export default {
         }
         this.$challengesServices.updateChallenge(this.challenge).then(() =>{
           this.$root.$emit('show-alert', {type: 'success',message: this.$t('challenges.challengeUpdateSuccess')});
+          this.$root.$emit('challenge-updated');
           this.close();
           this.challenge = {};
         })
