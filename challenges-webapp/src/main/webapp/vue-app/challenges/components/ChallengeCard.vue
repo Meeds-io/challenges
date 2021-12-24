@@ -2,51 +2,64 @@
   <v-app id="ChallengeCard">
     <v-card
       class="mx-auto card cardOfChallenge"
-      height="200"
-      max-height="200"
+      height="230"
+      max-height="230"
       outlined>
-      <v-list-item class="pa-0" three-line>
-        <v-list-item-content class="title pl-4 pr-4 pt-3">
-          <div class="d-flex">
-            <div class="status">
-              <i class="uiIconStatus iconStatus" :class="classStatus"></i> <span class="date">{{ getStatus() }}</span>
+      <div class="contentCard">
+        <v-list-item class="pa-0" three-line>
+          <v-list-item-content class="title pl-4 pr-4 pt-3">
+            <div class="d-flex">
+              <div class="status">
+                <i class="uiIconStatus iconStatus" :class="classStatus"></i> <span class="date">{{ getStatus() }}</span>
+              </div>
+              <div class="edit">
+                <v-menu
+                  v-if="challenge && challenge.canEdit"
+                  v-model="showMenu"
+                  offset-y
+                  attach
+                  left>
+                  <template v-slot:activator="{ on }">
+                    <v-btn
+                      icon
+                      class="ml-2"
+                      v-on="on"
+                      @blur="closeMenu()">
+                      <v-icon>mdi-dots-vertical</v-icon>
+                    </v-btn>
+                  </template>
+                  <v-list>
+                    <v-list-item class="editList" @mousedown="$event.preventDefault()">
+                      <v-list-item-title class="editLabel" @click="$emit('edit', challenge)">{{ $t('challenges.edit') }}</v-list-item-title>
+                    </v-list-item>
+                  </v-list>
+                </v-menu>
+              </div>
             </div>
-            <div class="edit">
-              <v-menu
-                v-if="challenge && challenge.canEdit"
-                v-model="showMenu"
-                offset-y
-                attach
-                left>
-                <template v-slot:activator="{ on }">
-                  <v-btn
-                    icon
-                    class="ml-2"
-                    v-on="on"
-                    @blur="closeMenu()">
-                    <v-icon>mdi-dots-vertical</v-icon>
-                  </v-btn>
-                </template>
-                <v-list>
-                  <v-list-item class="editList" @mousedown="$event.preventDefault()">
-                    <v-list-item-title class="editLabel" @click="$emit('edit', challenge)">{{ $t('challenges.edit') }}</v-list-item-title>
-                  </v-list-item>
-                </v-list>
-              </v-menu>
+            <div class="contentChallenge" @click="showDetails">
+              <v-list-item-subtitle class="pl-5 pr-5 mb-4 mt-1 subtitleChallenge">
+                {{ challenge && challenge.title }}
+              </v-list-item-subtitle>
+              <v-list-item-subtitle class="pl-9 pr-9 descriptionChallenge" v-html="challenge && challenge.description" />
             </div>
-          </div>
-          <div class="contentChallenge" @click="showDetails">
-            <v-list-item-subtitle class="pl-5 pr-5 mb-4 mt-1 subtitleChallenge">
-              {{ challenge && challenge.title }}
-            </v-list-item-subtitle>
-            <v-list-item-subtitle class="pl-9 pr-9 descriptionChallenge" v-html="challenge && challenge.description" />
-          </div>
-        </v-list-item-content>
-      </v-list-item>
+          </v-list-item-content>
+        </v-list-item>
+      </div>
 
-      <v-card-actions />
+      <div class="footer d-flex">
+        <div class="winners">
+        </div>
+        <div class="addAnnounce">
+          <button
+            class="btnAdd ignore-vuetify-classes btn mx-1"
+            @click="createAnnounce">
+            {{ $t('challenges.button.announce') }}
+          </button>
+        </div>
+      </div>
     </v-card>
     <challenge-details-drawer :challenge="challenge" ref="challenge" />
+    <announce-drawer :challenge="challenge" ref="announceRef" />
   </v-app>
 </template>
 
@@ -76,6 +89,9 @@ export default {
     }
   },
   methods: {
+    createAnnounce() {
+      this.$refs.announceRef.open();
+    },
     closeMenu() {
       this.showMenu= false;
     },

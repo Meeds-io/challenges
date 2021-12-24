@@ -25,7 +25,7 @@
           </a>
         </div>
       </template>
-      <v-card class="pb-4 assignChallengeMenu">
+      <v-card class="pb-4 assignChallengeMenu pa-4">
         <v-card-text class="pb-0 d-flex justify-space-between">
           <span>{{ $t('challenges.label.assignTo') }} :</span>
           <a class="ml-4" @click="assignToMe()">
@@ -52,7 +52,7 @@
         v-for="user in challengeAssigneeObj"
         :key="user"
         class="identitySuggesterItem mx-1 mb-2"
-        @click:close="removeManager(user)">
+        @click:close="removeUser(user)">
         <v-avatar left>
           <v-img :src="user.avatarUrl" />
         </v-avatar>
@@ -65,14 +65,7 @@
 </template>
 <script>
 export default {
-  name: 'ChallengeAssignment',
   props: {
-    challenge: {
-      type: Object,
-      default: function() {
-        return {};
-      },
-    },
     globalMenu: {
       type: Boolean,
       default: false,
@@ -158,7 +151,7 @@ export default {
             avatarUrl: user.profile.avatar,
           };
           this.challengeAssigneeObj.push(newManager);
-          this.$emit('add-manager',newManager.id);
+          this.$emit('add-user',newManager.id);
           this.globalMenu = false;
         });
       }
@@ -168,12 +161,12 @@ export default {
         return manager.remoteId === username;
       }) >= 0 ? true : false;
     },
-    removeManager( user) {
+    removeUser(user) {
       const index =  this.challengeAssigneeObj.findIndex(manager => {
         return manager.remoteId === user.remoteId;
       });
       this.challengeAssigneeObj.splice(index, 1);
-      this.$emit('remove-manager', user.id);
+      this.$emit('remove-user', user.id);
     },
   }
 };
