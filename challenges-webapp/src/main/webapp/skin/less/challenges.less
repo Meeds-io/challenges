@@ -196,7 +196,25 @@
 }
 #ChallengeCard {
   .cardOfChallenge {
-    width: 95%
+    width: 95%;
+    .contentCard {
+      max-height: 175px;
+      height: 175px
+    }
+    .footer {
+      .winners {
+        width: 50%;
+      }
+      .addAnnounce {
+        width: 50%;
+        margin-right: 12px ~'; /** orientation=lt */ ';
+        margin-left: 12px ~'; /** orientation=rt */ ';
+        .btnAdd {
+          float: right ~'; /** orientation=lt */ ';
+          float: left ~'; /** orientation=rt */ ';
+        }
+      }
+    }
   }
 
   .contentChallenge {
@@ -255,6 +273,18 @@
       color: @greyColorLighten1;
       text-align: center;
     }
+  }
+}
+
+#announcementDrawer {
+  .titleChallenge {
+    color: @greyColorLighten1Default;
+    font-weight: bold;
+    font-size: 14px !important;
+  }
+  .separator {
+    border-color: @greyColorLighten1Default;
+    border-bottom: 0px !important;
   }
 }
 

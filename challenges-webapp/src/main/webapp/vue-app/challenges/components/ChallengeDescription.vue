@@ -1,9 +1,9 @@
 <template>
   <div
-    id="challengeDescriptionId"
+    id="descriptionId"
     class="challengeDescription">
     <div class="py-1 px-2 subtitle-1">
-      {{ $t('challenges.label.describeYourChallenge') }}
+      {{ title }}
     </div>
     <textarea
       id="descriptionContent"
@@ -32,6 +32,10 @@ export default {
       default: function () {
         return {};
       }
+    },
+    isChallenge: {
+      type: Boolean,
+      default: false
     }
   },
   data() {
@@ -44,8 +48,11 @@ export default {
     };
   },
   computed: {
+    title() {
+      return this.isChallenge ? this.$t('challenges.label.describeYourChallenge') : this.$t('challenges.label.describeYourAchievement');
+    },
     challengeDescription () {
-      return this.challenge && this.challenge.id && this.challenge.description || '';
+      return this.isChallenge && this.challenge && this.challenge.id && this.challenge.description || '';
     }
   },
   watch: {
@@ -111,7 +118,7 @@ export default {
 
     urlVerify(text) {
       text = urlVerify(text);
-      this.$emit('addChallengeDescription',text);
+      this.$emit('addDescription',text);
       return text;
     },
 

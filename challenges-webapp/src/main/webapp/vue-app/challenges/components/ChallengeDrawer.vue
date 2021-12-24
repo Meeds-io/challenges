@@ -51,11 +51,10 @@
           <span class="subtitle-1"> {{ $t('challenges.label.challengeOwners') }}</span>
           <challenge-assignment
             ref="challengeAssignment"
-            :challenge="challenge"
             class="my-2"
             v-model="challenge.managers"
-            @remove-manager="removeManager"
-            @add-manager="addManager" />
+            @remove-user="removeManager"
+            @add-user="addManager" />
 
           <challenge-date-picker
             ref="challengeDatePicker"
@@ -68,11 +67,12 @@
             <challenge-description
               ref="challengeDescription"
               :challenge="challenge"
+              :is-challenge="true"
               v-model="challenge.description"
               :value="challenge.description"
               @invalidDescription="invalidDescription($event)"
               @validDescription="validDescription($event)"
-              @addChallengeDescription="addChallengeDescription($event)" />
+              @addDescription="addDescription($event)" />
           </div>
         </v-form>
       </v-card-text>
@@ -283,7 +283,7 @@ export default {
         this.$set(this.challenge,'endDate', value);
       }
     },
-    addChallengeDescription(value) {
+    addDescription(value) {
       if (value) {
         this.$set(this.challenge,'description', value);
       }

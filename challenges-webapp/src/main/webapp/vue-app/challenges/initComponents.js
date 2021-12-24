@@ -3,20 +3,22 @@ import WelcomeMessage from './components/WelcomeMessage.vue';
 import ChallengeCard from './components/ChallengeCard.vue';
 import ChallengesList from './components/ChallengesList.vue';
 import ChallengeDrawer from './components/ChallengeDrawer.vue';
-import ChallengeAssignment from './components/ChallengeAssignment.vue';
+import Assignment from './components/Assignment.vue';
 import ChallengeDatePicker from './components/ChallengeDatePicker.vue';
 import ChallengeDescription from './components/ChallengeDescription.vue';
 import ChallengeDetailsDrawer from './components/ChallengeDetailsDrawer.vue';
+import AnnouncementDrawer from './components/AnnouncementDrawer.vue';
 const components = {
   'challenges': Challenges,
   'welcome-message': WelcomeMessage,
   'challenge-card': ChallengeCard,
   'challenges-list': ChallengesList,
   'challenge-drawer': ChallengeDrawer,
-  'challenge-assignment': ChallengeAssignment,
+  'challenge-assignment': Assignment,
   'challenge-date-picker': ChallengeDatePicker,
   'challenge-description': ChallengeDescription,
-  'challenge-details-drawer': ChallengeDetailsDrawer
+  'challenge-details-drawer': ChallengeDetailsDrawer,
+  'announce-drawer': AnnouncementDrawer
 };
 
 for (const key in components) {
