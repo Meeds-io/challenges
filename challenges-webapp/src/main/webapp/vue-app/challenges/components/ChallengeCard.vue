@@ -49,7 +49,7 @@
       <div class="footer d-flex">
         <div class="winners">
         </div>
-        <div class="addAnnounce">
+        <div class="addAnnounce" v-if="challenge.canAnnounce && this.status !== 'Ended'">
           <button
             class="btnAdd ignore-vuetify-classes btn mx-1"
             @click="createAnnounce">
