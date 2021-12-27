@@ -28,7 +28,6 @@
     <!-- 3rd party libraries versions -->
     <org.exoplatform.social.version>6.3.x-SNAPSHOT</org.exoplatform.social.version>
     <org.exoplatform.platform-ui.version>6.3.x-SNAPSHOT</org.exoplatform.platform-ui.version>
-    <addon.exo.jcr.version>6.3.x-SNAPSHOT</addon.exo.jcr.version>
   </properties>
   <dependencyManagement>
     <dependencies>
@@ -37,14 +36,6 @@
         <groupId>org.exoplatform.social</groupId>
         <artifactId>social</artifactId>
         <version>${org.exoplatform.social.version}</version>
-        <type>pom</type>
-        <scope>import</scope>
-      </dependency>
-      <!-- Import versions from jcr project -->
-      <dependency>
-        <groupId>org.exoplatform.jcr</groupId>
-        <artifactId>jcr-parent</artifactId>
-        <version>${addon.exo.jcr.version}</version>
         <type>pom</type>
         <scope>import</scope>
       </dependency>
