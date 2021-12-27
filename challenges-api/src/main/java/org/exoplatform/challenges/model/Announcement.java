@@ -12,7 +12,7 @@ import java.util.List;
 public class Announcement implements Cloneable {
   private long       id;
 
-  private Challenge  challenge;
+  private Long       challengeId;
 
   private List<Long> assignee;
 
@@ -26,6 +26,6 @@ public class Announcement implements Cloneable {
 
   @Override
   public Announcement clone() { // NOSONAR
-    return new Announcement(id, challenge, assignee, comment, creator, createdDate, activityId);
+    return new Announcement(id, challengeId, assignee, comment, creator, createdDate, activityId);
   }
 }
