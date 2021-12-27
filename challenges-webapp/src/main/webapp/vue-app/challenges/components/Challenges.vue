@@ -78,6 +78,7 @@ export default {
       this.displayMessage(message);
     });
     this.$root.$on('challenge-added', this.pushChallenge);
+    this.$root.$on('challenge-updated', this.refreshChallenges);
   },
   methods: {
     pushChallenge(event) {
@@ -89,6 +90,9 @@ export default {
         }
 
       }
+    },
+    refreshChallenges() {
+      this.getChallenges(false);
     },
     loadMore() {
       this.getChallenges();
@@ -105,7 +109,7 @@ export default {
         } else {
           this.showLoadMoreButton = false;
         }
-        this.challenges = this.challenges.concat(challenges);
+        this.challenges = append && this.challenges.concat(challenges) || challenges;
         this.displayChallenges = this.challenges && this.challenges.length;
       }).finally(() => {
         this.loading = false;

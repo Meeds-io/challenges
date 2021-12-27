@@ -7,8 +7,9 @@
           :key="challenge.id"
           class="mb-4"
           cols="12"
-          sm="3"
-          md="3">
+          md="6"
+          lg="4"
+          xl="3">
           <challenge-card :challenge="challenge" @edit="$emit('edit-challenge',challenge)" />
         </v-col>
       </v-row>
