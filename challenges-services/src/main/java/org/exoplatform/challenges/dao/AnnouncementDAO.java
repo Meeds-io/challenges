@@ -10,7 +10,8 @@ import java.util.List;
 public class AnnouncementDAO extends GenericDAOJPAImpl<AnnouncementEntity, Long> {
 
   public List<AnnouncementEntity> findAllAnnouncementByChallenge(Long challengeId, int offset, int limit) {
-    TypedQuery<AnnouncementEntity> query = getEntityManager().createNamedQuery("Announcement.findAllAnnouncementByChallenge", AnnouncementEntity.class);
+    TypedQuery<AnnouncementEntity> query = getEntityManager().createNamedQuery("Announcement.findAllAnnouncementByChallenge",
+                                                                               AnnouncementEntity.class);
     query.setParameter("challengeId", challengeId);
     query.setFirstResult(offset);
     query.setMaxResults(limit);
