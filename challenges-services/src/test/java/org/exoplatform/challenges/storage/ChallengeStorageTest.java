@@ -14,8 +14,6 @@ import org.powermock.api.mockito.PowerMockito;
 import org.powermock.modules.junit4.PowerMockRunner;
 import org.exoplatform.challenges.dao.ChallengeDAO;
 import org.junit.runner.RunWith;
-import org.mockito.invocation.InvocationOnMock;
-import org.mockito.stubbing.Answer;
 import org.powermock.core.classloader.annotations.PowerMockIgnore;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 
@@ -54,16 +52,15 @@ public class ChallengeStorageTest {
     challengeEntity.setStartDate(new Date(System.currentTimeMillis()));
     challengeEntity.setEndDate(new Date(System.currentTimeMillis() + 1));
     challengeEntity.setId(challengeId);
-    when(challengeDAO.create(anyObject())).thenAnswer(new Answer<ChallengeEntity>() {
-      @Override
-      public ChallengeEntity answer(InvocationOnMock invocation) throws Throwable {
-        ChallengeEntity challengeEntity = invocation.getArgument(0, ChallengeEntity.class);
-        challengeEntity.setId(1l);
-        challengeEntity.setStartDate(new Date(System.currentTimeMillis()));
-        challengeEntity.setEndDate(new Date(System.currentTimeMillis() + 1));
-        return challengeEntity;
-      }
-    });
+
+    ChallengeEntity newChallengeEntity = new ChallengeEntity();
+    newChallengeEntity.setDescription("challenge description");
+    newChallengeEntity.setTitle("new challenge");
+    newChallengeEntity.setStartDate(challengeEntity.getStartDate());
+    newChallengeEntity.setEndDate(challengeEntity.getEndDate());
+    newChallengeEntity.setId(1l);
+
+    when(challengeDAO.create(anyObject())).thenReturn(newChallengeEntity);
     PowerMockito.mockStatic(Utils.class);
     PowerMockito.mockStatic(EntityMapper.class);
     Identity identity = mock(Identity.class);
@@ -78,7 +75,7 @@ public class ChallengeStorageTest {
                                                   true,
                                                   false,
                                                   Collections.emptyList());
-    when(EntityMapper.fromEntity(challengeEntity)).thenReturn(challengeFromEntity);
+    when(EntityMapper.fromEntity(newChallengeEntity)).thenReturn(challengeFromEntity);
     // When
     Challenge createdChallenge = challengeStorage.saveChallenge(challenge, "root");
 
