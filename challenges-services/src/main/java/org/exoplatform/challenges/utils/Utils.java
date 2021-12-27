@@ -24,12 +24,12 @@ import java.util.List;
 
 public class Utils {
 
-  private static final Log LOG = ExoLogger.getLogger(Utils.class);
-  public static final String ANNOUNCEMENT_ACTIVITY_EVENT = "announcement.activity";
+  private static final Log              LOG                         = ExoLogger.getLogger(Utils.class);
 
-  public static final DateTimeFormatter RFC_3339_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss[.SSS][XXX]")
-      .withResolverStyle(ResolverStyle.LENIENT);
+  public static final String            ANNOUNCEMENT_ACTIVITY_EVENT = "announcement.activity";
 
+  public static final DateTimeFormatter RFC_3339_FORMATTER          = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss[.SSS][XXX]")
+                                                                            .withResolverStyle(ResolverStyle.LENIENT);
 
   public static Identity getIdentityByTypeAndId(String type, String name) {
     IdentityManager identityManager = CommonsUtils.getService(IdentityManager.class);
@@ -49,11 +49,12 @@ public class Utils {
   }
 
   public static final boolean canAnnounce(String id) {
-    Space space = CommonsUtils.getService(SpaceService.class).getSpaceById(id);
+    SpaceService spaceService = CommonsUtils.getService(SpaceService.class);
+    Space space = spaceService.getSpaceById(id);
     if (space == null) {
       throw new IllegalArgumentException("space is not exist");
     }
-    return CommonsUtils.getService(SpaceService.class).isRedactor(space, getCurrentUser());
+    return spaceService.hasRedactor(space) ? spaceService.isRedactor(space, getCurrentUser()): spaceService.isMember(space, getCurrentUser());
   }
 
   public static String toRFC3339Date(Date dateTime) {
@@ -123,9 +124,6 @@ public class Utils {
     userInfo.setFullName(identity.getProfile().getFullName());
     userInfo.setRemoteId(identity.getRemoteId());
     userInfo.setId(identity.getId());
-    if (activityId != null) {
-      userInfo.setAnnouncementActivityId(activityId);
-    }
     return userInfo;
   }
 

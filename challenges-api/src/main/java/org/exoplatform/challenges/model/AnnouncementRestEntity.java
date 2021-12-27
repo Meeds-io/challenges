@@ -11,22 +11,22 @@ import java.util.List;
 @NoArgsConstructor
 public class AnnouncementRestEntity implements Cloneable {
 
-  private long id;
+  private long           id;
 
-  private Challenge challenge;
+  private Long           challengeId;
 
   private List<UserInfo> assignee;
 
-  private String comment;
+  private String         comment;
 
-  private UserInfo creator;
+  private UserInfo       creator;
 
-  private String createdDate;
+  private String         createdDate;
 
-  private Long activityId;
+  private Long           activityId;
 
   public AnnouncementRestEntity clone() { // NOSONAR
-    return new AnnouncementRestEntity(id, challenge, assignee, comment, creator, createdDate, activityId);
+    return new AnnouncementRestEntity(id, challengeId, assignee, comment, creator, createdDate, activityId);
   }
 
 }
