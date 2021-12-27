@@ -1,5 +1,6 @@
 package org.exoplatform.challenges.activity.processor;
 
+import org.apache.commons.lang3.StringUtils;
 import org.exoplatform.challenges.model.Announcement;
 import org.exoplatform.challenges.model.UserInfo;
 import org.exoplatform.challenges.service.AnnouncementService;
@@ -32,6 +33,10 @@ public class AnnouncementActivityProcessor extends BaseActivityProcessorPlugin {
       return;
     }
     String announcementId = activity.getTemplateParams().get("announcementId");
+    if (StringUtils.isBlank(announcementId)){
+      LOG.error("announcement id must not null");
+      return;
+    }
     try {
       Announcement announcement = announcementService.getAnnouncementById(Long.parseLong(announcementId));
 
