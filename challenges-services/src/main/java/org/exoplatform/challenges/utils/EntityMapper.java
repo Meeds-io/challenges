@@ -24,14 +24,14 @@ public class EntityMapper {
       return null;
     }
     return new Challenge(challengeEntity.getId(),
-        challengeEntity.getTitle(),
-        challengeEntity.getDescription(),
-        challengeEntity.getAudience(),
-        challengeEntity.getStartDate() == null ? null : Utils.toRFC3339Date(challengeEntity.getStartDate()),
-        challengeEntity.getEndDate() == null ? null : Utils.toRFC3339Date(challengeEntity.getEndDate()),
-        Utils.canEditChallenge(String.valueOf(challengeEntity.getAudience())),
-        Utils.canAnnounce(String.valueOf(challengeEntity.getAudience())),
-        challengeEntity.getManagers());
+                         challengeEntity.getTitle(),
+                         challengeEntity.getDescription(),
+                         challengeEntity.getAudience(),
+                         challengeEntity.getStartDate() == null ? null : Utils.toRFC3339Date(challengeEntity.getStartDate()),
+                         challengeEntity.getEndDate() == null ? null : Utils.toRFC3339Date(challengeEntity.getEndDate()),
+                         Utils.canEditChallenge(String.valueOf(challengeEntity.getAudience())),
+                         Utils.canAnnounce(String.valueOf(challengeEntity.getAudience())),
+                         challengeEntity.getManagers());
   }
 
   public static ChallengeEntity toEntity(Challenge challenge) {
@@ -68,36 +68,21 @@ public class EntityMapper {
     if (announcementEntity == null) {
       return null;
     }
-    Challenge challenge = new Challenge();
-    challenge.setId(announcementEntity.getChallenge().getId());
-    challenge.setAudience(announcementEntity.getChallenge().getAudience());
-    challenge.setDescription(announcementEntity.getChallenge().getDescription());
-    challenge.setEndDate(Utils.toRFC3339Date(announcementEntity.getChallenge().getEndDate()));
-    challenge.setManagers(announcementEntity.getChallenge().getManagers());
-    challenge.setTitle(announcementEntity.getChallenge().getTitle());
-    challenge.setStartDate(Utils.toRFC3339Date(announcementEntity.getChallenge().getStartDate()));
     return new Announcement(announcementEntity.getId(),
-        fromEntity(announcementEntity.getChallenge()),
-        announcementEntity.getAssignee(),
-        announcementEntity.getComment(),
-        announcementEntity.getCreator(),
-        announcementEntity.getCreatedDate() == null ? null
-            : Utils.toRFC3339Date(announcementEntity.getCreatedDate()),
-        announcementEntity.getActivityId());
+                            announcementEntity.getChallenge().getId(),
+                            announcementEntity.getAssignee(),
+                            announcementEntity.getComment(),
+                            announcementEntity.getCreator(),
+                            announcementEntity.getCreatedDate() == null ? null
+                                                                        : Utils.toRFC3339Date(announcementEntity.getCreatedDate()),
+                            announcementEntity.getActivityId());
   }
 
-  public static AnnouncementEntity toEntity(Announcement announcement) {
+  public static AnnouncementEntity toEntity(Announcement announcement, Challenge challenge) {
     if (announcement == null) {
       return null;
     }
-    ChallengeEntity challengeEntity = new ChallengeEntity();
-    challengeEntity.setId(announcement.getChallenge().getId());
-    challengeEntity.setTitle(announcement.getChallenge().getTitle());
-    challengeEntity.setDescription(announcement.getChallenge().getDescription());
-    challengeEntity.setAudience(announcement.getChallenge().getAudience());
-    challengeEntity.setManagers(announcement.getChallenge().getManagers());
-    challengeEntity.setStartDate(Utils.parseRFC3339Date(announcement.getChallenge().getStartDate()));
-    challengeEntity.setEndDate(Utils.parseRFC3339Date(announcement.getChallenge().getEndDate()));
+    ChallengeEntity challengeEntity = toEntity(challenge);
     AnnouncementEntity announcementEntity = new AnnouncementEntity();
     if (announcement.getId() != 0) {
       announcementEntity.setId(announcement.getId());
@@ -105,7 +90,7 @@ public class EntityMapper {
     if (announcement.getAssignee() != null) {
       announcementEntity.setAssignee(announcement.getAssignee());
     }
-    if (announcement.getActivityId() != 0) {
+    if (announcement.getActivityId() != null) {
       announcementEntity.setActivityId(announcement.getActivityId());
     }
     announcementEntity.setComment(announcement.getComment());
@@ -120,8 +105,8 @@ public class EntityMapper {
       return new ArrayList<>(Collections.emptyList());
     } else {
       List<Challenge> challenges = challengeEntities.stream()
-          .map(challengeEntity -> fromEntity(challengeEntity))
-          .collect(Collectors.toList());
+                                                    .map(challengeEntity -> fromEntity(challengeEntity))
+                                                    .collect(Collectors.toList());
       return challenges;
     }
   }
@@ -130,40 +115,51 @@ public class EntityMapper {
     if (challenge == null) {
       return null;
     }
-    return new ChallengeRestEntity(challenge.getId(), challenge.getTitle(), challenge.getDescription(), Utils.getSpaceById(String.valueOf(challenge.getAudience())), challenge.getStartDate(), challenge.getEndDate(), Utils.canEditChallenge(String.valueOf(challenge.getAudience())), Utils.canAnnounce(String.valueOf(challenge.getAudience())), Utils.getUsersByIds(challenge.getManagers()), Utils.getChallengeWinners(challengeAnnouncements));
+    List<AnnouncementRestEntity> announcementRestEntities = fromAnnouncementList(challengeAnnouncements);
+    return new ChallengeRestEntity(challenge.getId(),
+                                   challenge.getTitle(),
+                                   challenge.getDescription(),
+                                   Utils.getSpaceById(String.valueOf(challenge.getAudience())),
+                                   challenge.getStartDate(),
+                                   challenge.getEndDate(),
+                                   Utils.canEditChallenge(String.valueOf(challenge.getAudience())),
+                                   Utils.canAnnounce(String.valueOf(challenge.getAudience())),
+                                   Utils.getUsersByIds(challenge.getManagers()),
+                                   announcementRestEntities);
   }
-
 
   public static List<Announcement> fromAnnouncementEntities(List<AnnouncementEntity> announcementEntities) {
     if (CollectionUtils.isEmpty(announcementEntities)) {
       return new ArrayList<>(Collections.emptyList());
     } else {
       List<Announcement> announcements = announcementEntities.stream()
-          .map(announcementEntity -> fromEntity(announcementEntity))
-          .collect(Collectors.toList());
+                                                             .map(announcementEntity -> fromEntity(announcementEntity))
+                                                             .collect(Collectors.toList());
       return announcements;
     }
   }
-
 
   public static AnnouncementRestEntity fromAnnouncement(Announcement announcement) {
     if (announcement == null) {
       return null;
     }
     return new AnnouncementRestEntity(announcement.getId(),
-        announcement.getChallenge(),
-        Utils.getUsersByIds(announcement.getAssignee()),
-        announcement.getComment(),
-        Utils.getUsersByIds(new ArrayList<Long>(Collections.singleton(announcement.getCreator()))).get(0),
-        announcement.getCreatedDate(),
-        announcement.getActivityId());
+                                      announcement.getChallengeId(),
+                                      Utils.getUsersByIds(announcement.getAssignee()),
+                                      announcement.getComment(),
+                                      Utils.getUsersByIds(new ArrayList<Long>(Collections.singleton(announcement.getCreator())))
+                                           .get(0),
+                                      announcement.getCreatedDate(),
+                                      announcement.getActivityId());
   }
 
   public static List<AnnouncementRestEntity> fromAnnouncementList(List<Announcement> announcements) {
     if (CollectionUtils.isEmpty(announcements)) {
       return new ArrayList<>(Collections.emptyList());
     } else {
-      List<AnnouncementRestEntity> restEntities = announcements.stream().map(announcement -> fromAnnouncement(announcement)).collect(Collectors.toList());
+      List<AnnouncementRestEntity> restEntities = announcements.stream()
+                                                               .map(announcement -> fromAnnouncement(announcement))
+                                                               .collect(Collectors.toList());
       return restEntities;
     }
   }

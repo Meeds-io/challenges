@@ -45,7 +45,9 @@ public class ChallengeServiceImpl implements ChallengeService {
   }
 
   @Override
-  public Challenge updateChallenge(Challenge challenge, String username) throws  IllegalArgumentException, ObjectNotFoundException, IllegalAccessException {
+  public Challenge updateChallenge(Challenge challenge, String username) throws IllegalArgumentException,
+                                                                         ObjectNotFoundException,
+                                                                         IllegalAccessException {
     if (challenge == null) {
       throw new IllegalArgumentException("Challenge is mandatory");
     }
@@ -64,7 +66,7 @@ public class ChallengeServiceImpl implements ChallengeService {
     if (oldChallenge == null) {
       throw new ObjectNotFoundException("challenge is not exist");
     }
-    if(oldChallenge.equals(challenge)) {
+    if (oldChallenge.equals(challenge)) {
       throw new IllegalArgumentException("there are no changes to save");
     }
     return challengeStorage.saveChallenge(challenge, username);
@@ -108,7 +110,7 @@ public class ChallengeServiceImpl implements ChallengeService {
       offsetToFetch += limitToFetch;
       limitToFetch = (spacesSize - offsetToFetch) > 20 ? 20 : (spacesSize - offsetToFetch);
     }
-    if (listIdSpace.isEmpty()){
+    if (listIdSpace.isEmpty()) {
       return Collections.emptyList();
     }
     List<ChallengeEntity> challengeEntities = challengeStorage.findAllChallengesByUser(offset, limit, listIdSpace);
