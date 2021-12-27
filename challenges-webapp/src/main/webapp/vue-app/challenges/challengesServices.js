@@ -60,3 +60,20 @@ export function getAllChallengesByUser(offset, limit) {
   });
 }
 
+export function saveAnnouncement(announcement) {
+  return fetch(`${eXo.env.portal.context}/${eXo.env.portal.rest}/announcement/api/addAnnouncement`, {
+    method: 'POST',
+    credentials: 'include',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify(announcement),
+  }).then((resp) => {
+    if (resp && resp.ok) {
+      return resp.json();
+    } else {
+      throw new Error('Error saving announcement');
+    }
+  });
+}
+
