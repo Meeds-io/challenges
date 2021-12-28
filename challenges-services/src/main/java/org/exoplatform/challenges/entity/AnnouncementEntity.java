@@ -11,7 +11,8 @@ import java.util.List;
 @ExoEntity
 @Table(name = "ANNOUNCEMENT")
 @NamedQueries({
-    @NamedQuery(name = "Announcement.findAllAnnouncementByChallenge", query = "SELECT DISTINCT a FROM Announcement a where a.challenge.id = :challengeId order by a.createdDate desc"), })
+    @NamedQuery(name = "Announcement.findAllAnnouncementByChallenge", query = "SELECT DISTINCT a FROM Announcement a where a.challenge.id = :challengeId order by a.createdDate desc"),
+    @NamedQuery(name = "Announcement.findAnnouncementByChallengeIdAndAssignedId", query = "SELECT DISTINCT a FROM Announcement a where a.challenge.id = :challengeId and (:assignedId) in (SELECT us FROM a.assignee us)"), })
 
 public class AnnouncementEntity implements Serializable {
 

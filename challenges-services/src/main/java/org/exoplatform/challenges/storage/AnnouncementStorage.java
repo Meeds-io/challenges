@@ -46,4 +46,8 @@ public class AnnouncementStorage {
     return EntityMapper.fromAnnouncementEntities(announcementEntities);
   }
 
+  public Announcement findAnnouncementByChallengeIdAndAssignedId(Long challengeId, Long assignedId) {
+    AnnouncementEntity announcementEntity = announcementDAO.finAnnouncementByChallengeIdAndAssignedId(challengeId, assignedId);
+    return EntityMapper.fromEntity(announcementEntity);
+  }
 }

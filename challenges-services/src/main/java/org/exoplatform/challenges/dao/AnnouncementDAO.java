@@ -19,4 +19,14 @@ public class AnnouncementDAO extends GenericDAOJPAImpl<AnnouncementEntity, Long>
     return resultList == null ? Collections.emptyList() : resultList;
   }
 
+  public AnnouncementEntity finAnnouncementByChallengeIdAndAssignedId(Long challengeId, Long assignedId) {
+    TypedQuery<AnnouncementEntity> query =
+                                         getEntityManager().createNamedQuery("Announcement.findAnnouncementByChallengeIdAndAssignedId",
+                                                                             AnnouncementEntity.class);
+    query.setParameter("challengeId", challengeId);
+    query.setParameter("assignedId", assignedId);
+    AnnouncementEntity announcementEntity = query.getSingleResult();
+    return announcementEntity;
+  }
+
 }

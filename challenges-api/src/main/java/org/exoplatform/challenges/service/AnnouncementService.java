@@ -43,6 +43,18 @@ public interface AnnouncementService {
   Announcement getAnnouncementById(Long announcementId) throws ObjectNotFoundException;
 
   /**
+   * Retrieves a announcement identified by challenge id and assigned id.
+   *
+   * @param challengeId technical identifier of a challenge
+   * @param assignedId technical identifier of a user
+   * @return A {@link Announcement} object
+   * @throws ObjectNotFoundException when the announcement identified by its
+   *           technical identifier is not found
+   */
+
+  Announcement getAnnouncementByChallengeIdAndAssignedId(Long challengeId, Long assignedId) throws ObjectNotFoundException;
+
+  /**
    * Retrieves all Announcements by challengeId.
    *
    * @param offset Offset

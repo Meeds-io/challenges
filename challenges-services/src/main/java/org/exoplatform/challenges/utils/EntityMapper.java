@@ -30,7 +30,7 @@ public class EntityMapper {
                          challengeEntity.getStartDate() == null ? null : Utils.toRFC3339Date(challengeEntity.getStartDate()),
                          challengeEntity.getEndDate() == null ? null : Utils.toRFC3339Date(challengeEntity.getEndDate()),
                          Utils.canEditChallenge(String.valueOf(challengeEntity.getAudience())),
-                         Utils.canAnnounce(String.valueOf(challengeEntity.getAudience())),
+                         Utils.canAnnounce(String.valueOf(challengeEntity.getAudience()), challengeEntity.getId()),
                          challengeEntity.getManagers());
   }
 
@@ -123,7 +123,7 @@ public class EntityMapper {
                                    challenge.getStartDate(),
                                    challenge.getEndDate(),
                                    Utils.canEditChallenge(String.valueOf(challenge.getAudience())),
-                                   Utils.canAnnounce(String.valueOf(challenge.getAudience())),
+                                   Utils.canAnnounce(String.valueOf(challenge.getAudience()), challenge.getId()),
                                    Utils.getUsersByIds(challenge.getManagers()),
                                    announcementRestEntities);
   }

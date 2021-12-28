@@ -3,6 +3,7 @@ package org.exoplatform.challenges.utils;
 import org.apache.commons.lang3.StringUtils;
 import org.exoplatform.challenges.model.Announcement;
 import org.exoplatform.challenges.model.UserInfo;
+import org.exoplatform.challenges.service.AnnouncementService;
 import org.exoplatform.commons.utils.CommonsUtils;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
@@ -48,13 +49,29 @@ public class Utils {
     return CommonsUtils.getService(SpaceService.class).isManager(space, getCurrentUser());
   }
 
-  public static final boolean canAnnounce(String id) {
+  public static final boolean canAnnounce(String id, Long challengeId) {
     SpaceService spaceService = CommonsUtils.getService(SpaceService.class);
+    Identity identity = getIdentityByTypeAndId(OrganizationIdentityProvider.NAME, getCurrentUser());
+    String userId = identity.getId();
+    AnnouncementService announcementService = CommonsUtils.getService(AnnouncementService.class);
+    Announcement announcement = null;
+    try {
+      announcement = announcementService.getAnnouncementByChallengeIdAndAssignedId(challengeId, Long.parseLong(userId));
+    } catch (Exception e) {
+      // NOSONAR
+    }
     Space space = spaceService.getSpaceById(id);
     if (space == null) {
       throw new IllegalArgumentException("space is not exist");
     }
-    return spaceService.hasRedactor(space) ? spaceService.isRedactor(space, getCurrentUser()): spaceService.isMember(space, getCurrentUser());
+    if (!spaceService.hasRedactor(space) && spaceService.isMember(space, getCurrentUser()) && announcement != null) {
+      return false;
+    } else if ((!spaceService.hasRedactor(space) && spaceService.isMember(space, getCurrentUser()) && announcement == null)
+        || (spaceService.hasRedactor(space) && spaceService.isRedactor(space, getCurrentUser()))) {
+      return true;
+    } else {
+      return false;
+    }
   }
 
   public static String toRFC3339Date(Date dateTime) {

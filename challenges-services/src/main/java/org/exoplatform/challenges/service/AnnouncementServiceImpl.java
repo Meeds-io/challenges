@@ -53,7 +53,7 @@ public class AnnouncementServiceImpl implements AnnouncementService {
     if (announcement.getAssignee() == null) {
       throw new IllegalArgumentException("announcement assignee must have at least one winner");
     }
-    if (!Utils.canAnnounce(String.valueOf(challenge.getAudience()))) {
+    if (!Utils.canAnnounce(String.valueOf(challenge.getAudience()), challenge.getId())) {
       throw new IllegalAccessException("user is not allowed to announce challenge");
     }
 
@@ -103,5 +103,13 @@ public class AnnouncementServiceImpl implements AnnouncementService {
       throw new IllegalArgumentException("announcement id is mandatory");
     }
      return announcementStorage.getAnnouncementById(announcementId);
+  }
+
+  @Override
+  public Announcement getAnnouncementByChallengeIdAndAssignedId(Long challengeId, Long assignedId) throws ObjectNotFoundException {
+    if (challengeId == null || assignedId == null) {
+      throw new IllegalArgumentException("challenge id or assigned id is mandatory");
+    }
+    return announcementStorage.findAnnouncementByChallengeIdAndAssignedId(challengeId, assignedId);
   }
 }
