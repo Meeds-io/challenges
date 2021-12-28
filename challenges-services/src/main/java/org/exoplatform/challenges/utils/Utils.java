@@ -64,9 +64,7 @@ public class Utils {
     if (space == null) {
       throw new IllegalArgumentException("space is not exist");
     }
-    if (!spaceService.hasRedactor(space) && spaceService.isMember(space, getCurrentUser()) && announcement != null) {
-      return false;
-    } else if ((!spaceService.hasRedactor(space) && spaceService.isMember(space, getCurrentUser()) && announcement == null)
+     if ((!spaceService.hasRedactor(space) && spaceService.isMember(space, getCurrentUser()) && announcement == null)
         || (spaceService.hasRedactor(space) && spaceService.isRedactor(space, getCurrentUser()))) {
       return true;
     } else {

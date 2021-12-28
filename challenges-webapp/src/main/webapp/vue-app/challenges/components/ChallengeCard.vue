@@ -59,7 +59,10 @@
       </div>
     </v-card>
     <challenge-details-drawer :challenge="challenge" ref="challenge" />
-    <announce-drawer :challenge="challenge" ref="announceRef" />
+    <announce-drawer
+      :challenge="challenge"
+      :list-assignee="listAssignee"
+      ref="announceRef" />
   </v-app>
 </template>
 
@@ -75,7 +78,8 @@ export default {
   data: () => ({
     showMenu: false,
     label: '',
-    status: ''
+    status: '',
+    listAssignee: []
   }),
   computed: {
     classStatus() {
@@ -85,6 +89,15 @@ export default {
         return 'endedColor';
       } else {
         return 'endsColor';
+      }
+    }
+  },
+  mounted() {
+    for (let i=0; i<this.challenge.announcements.length;i++) {
+      if (this.challenge.announcements[i] && this.challenge.announcements[i].assignee){
+        for (let j=0;i<this.challenge.announcements[i].assignee.length;i++){
+          this.listAssignee.push(this.challenge.announcements[i].assignee[j].id);
+        }
       }
     }
   },

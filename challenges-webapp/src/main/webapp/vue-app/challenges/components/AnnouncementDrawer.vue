@@ -83,6 +83,10 @@ export default {
     challenge: {
       type: Object,
       default: null
+    },
+    listAssignee: {
+      type: Array,
+      default: () =>[],
     }
   },
   data() {
@@ -103,6 +107,7 @@ export default {
   methods: {
     open() {
       this.$refs.challengeDescription.initCKEditor();
+      this.$refs.challengeAssignment.initAssignment(this.listAssignee);
       this.$refs.announcementDrawer.open();
     },
     close() {
