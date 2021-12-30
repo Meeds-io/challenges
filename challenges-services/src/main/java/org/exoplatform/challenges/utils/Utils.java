@@ -2,8 +2,10 @@ package org.exoplatform.challenges.utils;
 
 import org.apache.commons.lang3.StringUtils;
 import org.exoplatform.challenges.model.Announcement;
+import org.exoplatform.challenges.model.Challenge;
 import org.exoplatform.challenges.model.UserInfo;
 import org.exoplatform.challenges.service.AnnouncementService;
+import org.exoplatform.challenges.service.ChallengeService;
 import org.exoplatform.commons.utils.CommonsUtils;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
@@ -64,8 +66,10 @@ public class Utils {
     if (space == null) {
       throw new IllegalArgumentException("space is not exist");
     }
-     if ((!spaceService.hasRedactor(space) && spaceService.isMember(space, getCurrentUser()) && announcement == null)
-        || (spaceService.hasRedactor(space) && spaceService.isRedactor(space, getCurrentUser()))) {
+    if ((!spaceService.hasRedactor(space) && spaceService.isMember(space, getCurrentUser()) && announcement == null)) {
+      return true;
+    } else if ((spaceService.hasRedactor(space) && spaceService.isRedactor(space, getCurrentUser()))
+        || spaceService.isManager(space, getCurrentUser())) {
       return true;
     } else {
       return false;
@@ -99,46 +103,44 @@ public class Utils {
     return space;
   }
 
-  public static List<UserInfo> getUsersByIds(List<Long> ids) {
-    IdentityManager identityManager = CommonsUtils.getService(IdentityManager.class);
-    if (ids.isEmpty()) {
-      return Collections.emptyList();
-    }
-    List<UserInfo> users = new ArrayList<>();
-    for (Long id : ids) {
-      Identity identity = identityManager.getIdentity(String.valueOf(id));
-      if (identity != null && OrganizationIdentityProvider.NAME.equals(identity.getProviderId())) {
-        users.add(createUser(identity, null));
+  public static List<UserInfo> getUsersByIds(List<Long> ids, Long challengeId) {
+    try {
+      ChallengeService challengeService = CommonsUtils.getService(ChallengeService.class);
+      Challenge challenge = challengeService.getChallengeById(challengeId, getCurrentUser());
+      if (challenge == null) {
+        LOG.error("challenge must not be null");
       }
-    }
-    return users;
-  }
-
-  public static List<UserInfo> getChallengeWinners(List<Announcement> announcements) {
-    if (announcements.isEmpty()) {
-      return Collections.emptyList();
-    }
-    List<UserInfo> users = new ArrayList<>();
-    IdentityManager identityManager = CommonsUtils.getService(IdentityManager.class);
-    for (Announcement announcement : announcements) {
-      List<Long> ids = new ArrayList<>();
-      ids.addAll(announcement.getAssignee());
+      Space space = getSpaceById(String.valueOf(challenge.getAudience()));
+      IdentityManager identityManager = CommonsUtils.getService(IdentityManager.class);
+      if (ids.isEmpty()) {
+        return Collections.emptyList();
+      }
+      List<UserInfo> users = new ArrayList<>();
       for (Long id : ids) {
         Identity identity = identityManager.getIdentity(String.valueOf(id));
         if (identity != null && OrganizationIdentityProvider.NAME.equals(identity.getProviderId())) {
-          users.add(createUser(identity, String.valueOf(announcement.getActivityId())));
+          users.add(createUser(identity, space));
         }
       }
+      return users;
+    } catch (Exception e) {
+      LOG.info("challenge not exist with this id {0}", challengeId);
+      return Collections.emptyList();
     }
-    return users;
   }
 
-  private static UserInfo createUser(Identity identity, String activityId) {
+  private static UserInfo createUser(Identity identity, Space space) {
+    SpaceService spaceService = CommonsUtils.getService(SpaceService.class);
     UserInfo userInfo = new UserInfo();
     userInfo.setAvatarUrl(identity.getProfile().getAvatarUrl());
     userInfo.setFullName(identity.getProfile().getFullName());
     userInfo.setRemoteId(identity.getRemoteId());
     userInfo.setId(identity.getId());
+    if (space !=null) {
+      userInfo.setManager(spaceService.isManager(space, getCurrentUser()));
+      userInfo.setMember(spaceService.isMember(space, getCurrentUser()));
+      userInfo.setRedactor(spaceService.isRedactor(space, getCurrentUser()));
+    }
     return userInfo;
   }
 

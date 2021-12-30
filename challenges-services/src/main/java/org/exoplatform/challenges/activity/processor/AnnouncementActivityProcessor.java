@@ -54,7 +54,7 @@ public class AnnouncementActivityProcessor extends BaseActivityProcessorPlugin {
       throw new IllegalArgumentException("announcement assignee must have at least one winner");
     }
     String AssigneeFullNames = "";
-    List<UserInfo> AssigneeIdentityList = Utils.getUsersByIds(assignee);
+    List<UserInfo> AssigneeIdentityList = Utils.getUsersByIds(assignee, null);
     for (UserInfo user : AssigneeIdentityList) {
       AssigneeFullNames = AssigneeFullNames + user.getFullName() + "#";
     }
@@ -66,7 +66,7 @@ public class AnnouncementActivityProcessor extends BaseActivityProcessorPlugin {
       throw new IllegalArgumentException("announcement assignee must have at least one winner");
     }
     String AssigneeUserNames = "";
-    List<UserInfo> AssigneeIdentityList = Utils.getUsersByIds(assignee);
+    List<UserInfo> AssigneeIdentityList = Utils.getUsersByIds(assignee, null);
     for (UserInfo user : AssigneeIdentityList) {
       AssigneeUserNames = AssigneeUserNames + user.getRemoteId() + "#";
     }

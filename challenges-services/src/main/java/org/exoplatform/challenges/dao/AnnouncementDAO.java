@@ -3,6 +3,7 @@ package org.exoplatform.challenges.dao;
 import org.exoplatform.challenges.entity.AnnouncementEntity;
 import org.exoplatform.commons.persistence.impl.GenericDAOJPAImpl;
 
+import javax.persistence.NoResultException;
 import javax.persistence.TypedQuery;
 import java.util.Collections;
 import java.util.List;
@@ -25,8 +26,11 @@ public class AnnouncementDAO extends GenericDAOJPAImpl<AnnouncementEntity, Long>
                                                                              AnnouncementEntity.class);
     query.setParameter("challengeId", challengeId);
     query.setParameter("assignedId", assignedId);
-    AnnouncementEntity announcementEntity = query.getSingleResult();
-    return announcementEntity;
+    try {
+      return query.getSingleResult();
+    } catch (NoResultException ex) {
+      return null;
+    }
   }
 
 }

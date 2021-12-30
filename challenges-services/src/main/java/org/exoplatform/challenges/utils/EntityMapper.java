@@ -124,7 +124,7 @@ public class EntityMapper {
                                    challenge.getEndDate(),
                                    Utils.canEditChallenge(String.valueOf(challenge.getAudience())),
                                    Utils.canAnnounce(String.valueOf(challenge.getAudience()), challenge.getId()),
-                                   Utils.getUsersByIds(challenge.getManagers()),
+                                   Utils.getUsersByIds(challenge.getManagers(), challenge.getId()),
                                    announcementRestEntities);
   }
 
@@ -145,9 +145,9 @@ public class EntityMapper {
     }
     return new AnnouncementRestEntity(announcement.getId(),
                                       announcement.getChallengeId(),
-                                      Utils.getUsersByIds(announcement.getAssignee()),
+                                      Utils.getUsersByIds(announcement.getAssignee(),announcement.getChallengeId()),
                                       announcement.getComment(),
-                                      Utils.getUsersByIds(new ArrayList<Long>(Collections.singleton(announcement.getCreator())))
+                                      Utils.getUsersByIds(new ArrayList<Long>(Collections.singleton(announcement.getCreator())), announcement.getChallengeId())
                                            .get(0),
                                       announcement.getCreatedDate(),
                                       announcement.getActivityId());

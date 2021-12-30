@@ -10,6 +10,7 @@ import org.exoplatform.common.http.HTTPStatus;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
 import org.exoplatform.services.rest.resource.ResourceContainer;
+import org.exoplatform.social.core.identity.provider.OrganizationIdentityProvider;
 
 import javax.annotation.security.RolesAllowed;
 import javax.ws.rs.*;
@@ -50,7 +51,13 @@ public class AnnouncementRest implements ResourceContainer {
       LOG.warn("current User is null");
       return Response.status(Response.Status.UNAUTHORIZED).build();
     }
+    String idUser = Utils.getIdentityByTypeAndId(OrganizationIdentityProvider.NAME, currentUser).getId();
     try {
+      Announcement announcementAlreadyCreated = announcementService.getAnnouncementByChallengeIdAndAssignedId(announcement.getChallengeId(), Long.valueOf(idUser));
+      if (announcementAlreadyCreated != null) {
+        LOG.warn("Announcement already created by this user");
+        return Response.status(Response.Status.UNAUTHORIZED).build();
+      }
       Announcement newAnnouncement = announcementService.createAnnouncement(announcement, currentUser);
       return Response.ok(EntityMapper.fromAnnouncement(newAnnouncement)).build();
     } catch (IllegalAccessException e) {

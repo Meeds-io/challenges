@@ -17,4 +17,10 @@ public class UserInfo implements Cloneable {
 
   private String avatarUrl;
 
+  private boolean isManager;
+
+  private boolean isMember;
+
+  private boolean isRedactor;
+
 }
