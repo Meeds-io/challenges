@@ -26,7 +26,8 @@
           class="my-2"
           v-model="announcement.assignee"
           @remove-user="removeAssignee"
-          @add-user="addAssignee" />
+          @add-user="addAssignee"
+          @add-item="addUser($event)" />
       </div>
       <div v-else-if="disableSuggester" class="pl-4 pr-4">
         <v-chip
@@ -44,10 +45,11 @@
         <challenge-description
           ref="challengeDescription"
           v-model="announcement.comment"
+          :is-challenge="false"
           :value="announcement.comment"
-          @invalidDescription="invalidDescription($event)"
-          @validDescription="validDescription($event)"
-          @addDescription="addDescription($event)" />
+          @invalidDescriptionAnnounce="invalidDescription($event)"
+          @validDescriptionAnnounce="validDescription($event)"
+          @addDescriptionAnnounce="addDescription($event)" />
       </div>
       <div
         class="
@@ -118,7 +120,16 @@ export default {
       return this.announcement.assignee && this.announcement.assignee.length > 0 && this.isValidDescription.description ;
     },
   },
+  mounted() {
+    this.invalidDescription();
+    if (this.disableSuggester) {
+      this.$set(this.announcement.assignee,this.announcement.assignee.length, this.challenge.userInfo.id);
+    }
+  },
   methods: {
+    addUser(id){
+      this.$set(this.announcement.assignee,this.announcement.assignee.length, id);
+    },
     open() {
       this.$refs.challengeDescription.initCKEditor();
       this.$refs.announcementDrawer.open();

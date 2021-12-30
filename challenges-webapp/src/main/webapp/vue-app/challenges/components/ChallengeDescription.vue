@@ -67,10 +67,12 @@ export default {
       this.editorReady = false;
     },
     charsCount() {
-      if (this.charsCount > this.maxLength) {
+      if (this.charsCount > this.maxLength || this.charsCount === 0) {
         this.$emit('invalidDescription');
+        this.$emit('invalidDescriptionAnnounce');
       } else {
         this.$emit('validDescription');
+        this.$emit('validDescriptionAnnounce');
       }
     },
   },
@@ -119,6 +121,7 @@ export default {
     urlVerify(text) {
       text = urlVerify(text);
       this.$emit('addDescription',text);
+      this.$emit('addDescriptionAnnounce',text);
       return text;
     },
 

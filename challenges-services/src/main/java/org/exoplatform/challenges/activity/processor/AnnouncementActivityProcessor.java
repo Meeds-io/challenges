@@ -41,32 +41,32 @@ public class AnnouncementActivityProcessor extends BaseActivityProcessorPlugin {
       Announcement announcement = announcementService.getAnnouncementById(Long.parseLong(announcementId));
 
       Map<String, String> params = new HashMap<>();
-      params.put("announcementAssigneeUsername", this.getAssigneeUserNames(announcement.getAssignee()));
-      params.put("announcementAssigneeFullName", this.getAssigneeFullNames(announcement.getAssignee()));
+      params.put("announcementAssigneeUsername", this.getAssigneeUserNames(announcement.getAssignee() , announcement.getChallengeId()));
+      params.put("announcementAssigneeFullName", this.getAssigneeFullNames(announcement.getAssignee(), announcement.getChallengeId()));
       activity.getTemplateParams().putAll(params);
     } catch (ObjectNotFoundException e) {
       LOG.error("Unexpected error", e);
     }
   }
 
-  private String getAssigneeFullNames(List<Long> assignee) {
+  private String getAssigneeFullNames(List<Long> assignee, Long challengeId) {
     if (assignee.isEmpty()) {
       throw new IllegalArgumentException("announcement assignee must have at least one winner");
     }
     String AssigneeFullNames = "";
-    List<UserInfo> AssigneeIdentityList = Utils.getUsersByIds(assignee, null);
+    List<UserInfo> AssigneeIdentityList = Utils.getUsersByIds(assignee, challengeId);
     for (UserInfo user : AssigneeIdentityList) {
       AssigneeFullNames = AssigneeFullNames + user.getFullName() + "#";
     }
     return AssigneeFullNames;
   }
 
-  private String getAssigneeUserNames(List<Long> assignee) {
+  private String getAssigneeUserNames(List<Long> assignee, Long challengeId) {
     if (assignee.isEmpty()) {
       throw new IllegalArgumentException("announcement assignee must have at least one winner");
     }
     String AssigneeUserNames = "";
-    List<UserInfo> AssigneeIdentityList = Utils.getUsersByIds(assignee, null);
+    List<UserInfo> AssigneeIdentityList = Utils.getUsersByIds(assignee, challengeId);
     for (UserInfo user : AssigneeIdentityList) {
       AssigneeUserNames = AssigneeUserNames + user.getRemoteId() + "#";
     }

@@ -102,20 +102,25 @@ export default {
   watch: {
     invitedChallengeAssignee() {
       const found = this.assigneeObj.find(attendee => {
-        return attendee.username === this.invitedChallengeAssignee.remoteId;
+        return attendee.remoteId === this.invitedChallengeAssignee && this.invitedChallengeAssignee.remoteId;
       });
       if (!found && this.invitedChallengeAssignee.remoteId) {
+        let newUser= {};
         this.$identityService.getIdentityByProviderIdAndRemoteId('organization',this.invitedChallengeAssignee.remoteId).then(user => {
-          const newManager= {
+          newUser= {
             id: user.profile.id,
             remoteId: user.profile.username,
             fullName: user.profile.fullname,
             avatarUrl: user.profile.avatar,
           };
-          this.assigneeObj.push(newManager);
-          this.$emit('add-manager',newManager.id);
+          this.assigneeObj.push(newUser);
+
           this.invitedChallengeAssignee = null;
           this.globalMenu = false;
+        }).finally(() => {
+          if (newUser) {
+            this.$emit('add-item',newUser.id);
+          }
         });
       }
     },
