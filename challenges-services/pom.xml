@@ -3,7 +3,7 @@
   <parent>
     <groupId>org.exoplatform.challenges</groupId>
     <artifactId>challenges-parent</artifactId>
-    <version>1.0.x-SNAPSHOT</version>
+    <version>1.0.0-20211230</version>
   </parent>
   <artifactId>challenges-services</artifactId>
   <name>eXo Challenges - Services</name>
