@@ -33,13 +33,13 @@
             <span>{{ $t('challenges.label.addMe') }}</span>
           </a>
         </v-card-text>
-
         <exo-identity-suggester
           ref="challengeSpaceSuggester"
           v-model="invitedChallengeAssignee"
           :labels="spaceSuggesterLabels"
           :search-options="searchOptions"
-          :ignore-items="assigneeObj"
+          :ignore-items="ignoredMembers"
+          :type-of-relations="relationsType"
           :width="220"
           name="challengeSpaceAutocomplete"
           include-users
@@ -66,6 +66,10 @@
 <script>
 export default {
   props: {
+    audience: {
+      type: Object,
+      default: () => null
+    },
     globalMenu: {
       type: Boolean,
       default: false,
@@ -73,6 +77,10 @@ export default {
     disableAddToMe: {
       type: Boolean,
       default: false
+    },
+    userIds: {
+      type: Array,
+      default: () => []
     }
   },
   data() {
@@ -87,11 +95,28 @@ export default {
     };
   },
   computed: {
+    relationsType(){
+      if (this.audience){
+        return 'member_of_space';
+      }
+      return '';
+    },
+    ignoredMembers() {
+      if (this.userIds){
+        return this.userIds.map(remoteId => `organization:${remoteId}`);
+      }
+      return '';
+    },
     searchOptions() {
       if (this.assigneeObj && this.assigneeObj.length >0) {
         return {
           currentUser: '',
-          spaceURL: this.space && this.space.remoteId
+          spaceURL: this.audience && this.audience.remoteId
+        };
+      } else if (this.audience && this.audience.url) {
+        return {
+          currentUser: '',
+          spaceURL: this.audience && this.audience.url
         };
       } else {
         return  {
@@ -105,10 +130,8 @@ export default {
   },
   watch: {
     invitedChallengeAssignee() {
-      const found = this.assigneeObj.find(attendee => {
-        return attendee.remoteId === this.invitedChallengeAssignee && this.invitedChallengeAssignee.remoteId;
-      });
-      if (!found && this.invitedChallengeAssignee.remoteId) {
+      const found = this.assigneeObj.find(attendee => attendee.remoteId === (this.invitedChallengeAssignee && this.invitedChallengeAssignee.remoteId));
+      if (!found && this.invitedChallengeAssignee && this.invitedChallengeAssignee.remoteId) {
         let newUser= {};
         this.$identityService.getIdentityByProviderIdAndRemoteId('organization',this.invitedChallengeAssignee.remoteId).then(user => {
           newUser= {
@@ -118,7 +141,7 @@ export default {
             avatarUrl: user.profile.avatar,
           };
           this.assigneeObj.push(newUser);
-
+          this.userIds.push(newUser.id);
           this.invitedChallengeAssignee = null;
           this.globalMenu = false;
         }).finally(() => {

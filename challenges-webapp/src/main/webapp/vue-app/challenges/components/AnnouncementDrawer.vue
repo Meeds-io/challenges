@@ -26,6 +26,8 @@
           class="my-2"
           v-model="announcement.assignee"
           :disable-add-to-me="disableAddToMe"
+          :user-ids="userIds"
+          :audience="space"
           @remove-user="removeAssignee"
           @add-user="addAssignee"
           @add-item="addUser($event)" />
@@ -106,7 +108,8 @@ export default {
       isValidDescription: {
         description: true },
       disableAddToMe: false,
-      listAnnouncers: []
+      listAnnouncers: [],
+      userIds: [],
 
     };
   },
@@ -142,6 +145,7 @@ export default {
           this.disableAddToMe = true;
         }
       });
+      this.userIds = this.listAnnouncers.map(user => user.remoteId);
     },
     addUser(id){
       this.$set(this.announcement.assignee,this.announcement.assignee.length, id);
@@ -152,6 +156,7 @@ export default {
       this.$refs.announcementDrawer.open();
     },
     close() {
+      this.reset();
       this.$refs.announcementDrawer.close();
     },
     removeAssignee(id) {
@@ -194,6 +199,12 @@ export default {
           this.$root.$emit('show-alert', {type: 'error',message: String(e)});
         });
     },
+    reset() {
+      this.announcement= { assignee: []};
+      this.isValidDescription= {
+        description: true };
+      this.$refs.challengeDescription.inputVal = '';
+    }
   }
 };
 </script>

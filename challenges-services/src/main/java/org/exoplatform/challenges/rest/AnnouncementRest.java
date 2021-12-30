@@ -51,12 +51,13 @@ public class AnnouncementRest implements ResourceContainer {
       LOG.warn("current User is null");
       return Response.status(Response.Status.UNAUTHORIZED).build();
     }
-    String idUser = Utils.getIdentityByTypeAndId(OrganizationIdentityProvider.NAME, currentUser).getId();
     try {
-      Announcement announcementAlreadyCreated = announcementService.getAnnouncementByChallengeIdAndAssignedId(announcement.getChallengeId(), Long.valueOf(idUser));
-      if (announcementAlreadyCreated != null) {
-        LOG.warn("Announcement already created by this user");
-        return Response.status(Response.Status.UNAUTHORIZED).build();
+      for (int i = 0; i < announcement.getAssignee().size(); i++) {
+        if (announcementService.getAnnouncementByChallengeIdAndAssignedId(announcement.getChallengeId(),
+                                                                          announcement.getAssignee().get(i)) != null) {
+          LOG.warn("Announcement already created by this user are id is {0}", announcement.getAssignee());
+          return Response.status(Response.Status.UNAUTHORIZED).build();
+        }
       }
       Announcement newAnnouncement = announcementService.createAnnouncement(announcement, currentUser);
       return Response.ok(EntityMapper.fromAnnouncement(newAnnouncement)).build();
