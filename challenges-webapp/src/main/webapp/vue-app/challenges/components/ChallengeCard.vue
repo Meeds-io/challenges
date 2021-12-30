@@ -60,7 +60,10 @@
       </div>
     </v-card>
     <challenge-details-drawer :challenge="challenge" ref="challenge" />
-    <announce-drawer :challenge="challenge" ref="announceRef" />
+    <announce-drawer
+      :challenge="challenge"
+      @announceCreated="disableAnnounce($event)"
+      ref="announceRef" />
   </v-app>
 </template>
 
@@ -76,14 +79,15 @@ export default {
   data: () => ({
     showMenu: false,
     label: '',
-    status: ''
+    status: '',
+    toAnnounce: true
   }),
   computed: {
     canAnnounce() {
-      return !(this.challenge.userInfo.canAnnounce && this.status !== 'Ended');
+      return !(this.challenge.userInfo.canAnnounce && this.status !== 'Ended' && this.status !== 'Starts') && this.toAnnounce ;
     },
     canEdit() {
-      return this.challenge && this.challenge.userInfo && this.challenge.userInfo.canEdit && this.status !== 'Ended';
+      return this.challenge && this.challenge.userInfo && this.challenge.userInfo.canEdit && this.status !== 'Ended' && this.status !== 'Starts';
     },
     classStatus() {
       if (this.status === 'Starts') {
@@ -96,6 +100,16 @@ export default {
     }
   },
   methods: {
+    disableAnnounce(id) {
+      this.$challengesServices.getAllChallengeById(id).then(challenge => {
+        if (challenge) {
+          this.challenge = challenge;
+        }
+      });
+      if (this.challenge.userInfo.member && !this.challenge.userInfo.manager && !this.challenge.userInfo.redactor) {
+        this.toAnnounce = true;
+      }
+    },
     createAnnounce() {
       this.$refs.announceRef.open();
     },

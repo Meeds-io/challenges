@@ -77,3 +77,16 @@ export function saveAnnouncement(announcement) {
   });
 }
 
+export function getAllChallengeById(id) {
+  return fetch(`${eXo.env.portal.context}/${eXo.env.portal.rest}/challenge/api/${id}`, {
+    method: 'GET',
+    credentials: 'include',
+  }).then((resp) => {
+    if (resp && resp.ok) {
+      return resp.json();
+    } else {
+      throw new Error('Error when getting challenges');
+    }
+  });
+}
+

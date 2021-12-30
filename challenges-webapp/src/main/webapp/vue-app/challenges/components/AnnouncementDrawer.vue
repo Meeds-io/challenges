@@ -25,6 +25,7 @@
           ref="challengeAssignment"
           class="my-2"
           v-model="announcement.assignee"
+          :disable-add-to-me="disableAddToMe"
           @remove-user="removeAssignee"
           @add-user="addAssignee"
           @add-item="addUser($event)" />
@@ -97,21 +98,24 @@ export default {
     challenge: {
       type: Object,
       default: null
-    }
+    },
   },
   data() {
     return {
       announcement: { assignee: []},
       isValidDescription: {
         description: true },
+      disableAddToMe: false,
+      listAnnouncers: []
+
     };
   },
   computed: {
     enableSuggester() {
-      return this.challenge && (this.challenge.userInfo.manager || this.challenge.userInfo.redactor);
+      return this.challenge && (this.challenge.userInfo && this.challenge.userInfo.manager || this.challenge.userInfo && this.challenge.userInfo.redactor);
     },
     disableSuggester(){
-      return this.challenge && !this.challenge.userInfo.manager && !this.challenge.userInfo.redactor && this.challenge.userInfo.member;
+      return this.challenge && this.challenge.userInfo && !this.challenge.userInfo.manager && !this.challenge.userInfo.redactor && this.challenge.userInfo.member;
     },
     space() {
       return this.challenge && this.challenge.space;
@@ -127,10 +131,23 @@ export default {
     }
   },
   methods: {
+    checkUserAnnounce() {
+      for (let i=0; i<this.challenge.announcements.length; i++) {
+        for (let k=0; k<this.challenge.announcements[i].assignee.length;k++) {
+          this.listAnnouncers.push(this.challenge.announcements[i].assignee[k]);
+        }
+      }
+      this.listAnnouncers.map(user => {
+        if (user.id === eXo.env.portal.userIdentityId){
+          this.disableAddToMe = true;
+        }
+      });
+    },
     addUser(id){
       this.$set(this.announcement.assignee,this.announcement.assignee.length, id);
     },
     open() {
+      this.checkUserAnnounce();
       this.$refs.challengeDescription.initCKEditor();
       this.$refs.announcementDrawer.open();
     },
@@ -169,6 +186,7 @@ export default {
       this.announcement.createdDate = new Date();
       this.$challengesServices.saveAnnouncement(this.announcement).then(() =>{
         this.$root.$emit('show-alert', {type: 'success',message: this.$t('challenges.announcementCreateSuccess')});
+        this.$emit('announceCreated',this.announcement.challengeId);
         this.close();
         this.challenge = {};
       })

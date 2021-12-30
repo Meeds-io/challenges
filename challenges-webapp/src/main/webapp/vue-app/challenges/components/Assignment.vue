@@ -26,7 +26,7 @@
         </div>
       </template>
       <v-card class="pb-4 assignChallengeMenu pa-4">
-        <v-card-text class="pb-0 d-flex justify-space-between">
+        <v-card-text v-if="!disableAddToMe" class="pb-0 d-flex justify-space-between">
           <span>{{ $t('challenges.label.assignTo') }} :</span>
           <a class="ml-4" @click="assignToMe()">
             <i class="uiIcon uiAssignToMeIcon"></i>
@@ -70,6 +70,10 @@ export default {
       type: Boolean,
       default: false,
     },
+    disableAddToMe: {
+      type: Boolean,
+      default: false
+    }
   },
   data() {
     return {
