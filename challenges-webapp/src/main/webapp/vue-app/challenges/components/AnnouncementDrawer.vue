@@ -20,7 +20,7 @@
       <div class="pl-4 pr-4 mt-7 descriptionLabel">
         {{ $t('challenges.label.assignedAchievement') }}
       </div>
-      <div class="pl-4" v-if="challenge && (challenge.userInfo.manager || challenge.userInfo.redactor)">
+      <div class="pl-4" v-if="enableSuggester">
         <challenge-assignment
           ref="challengeAssignment"
           class="my-2"
@@ -28,10 +28,10 @@
           @remove-user="removeAssignee"
           @add-user="addAssignee" />
       </div>
-      <div v-else-if="challenge && !challenge.userInfo.manager && !challenge.userInfo.redactor && challenge.userInfo.member" class="pl-4 pr-4">
+      <div v-else-if="disableSuggester" class="pl-4 pr-4">
         <v-chip
-            color="primary"
-            class="identitySuggesterItem mt-2">
+          color="primary"
+          class="identitySuggesterItem mt-2">
           <v-avatar left>
             <v-img :src="challenge && challenge.userInfo.avatarUrl" />
           </v-avatar>
@@ -105,6 +105,12 @@ export default {
     };
   },
   computed: {
+    enableSuggester() {
+      return this.challenge && (this.challenge.userInfo.manager || this.challenge.userInfo.redactor);
+    },
+    disableSuggester(){
+      return this.challenge && !this.challenge.userInfo.manager && !this.challenge.userInfo.redactor && this.challenge.userInfo.member;
+    },
     space() {
       return this.challenge && this.challenge.space;
     },
