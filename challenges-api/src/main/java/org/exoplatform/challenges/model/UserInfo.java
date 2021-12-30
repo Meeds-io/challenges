@@ -23,4 +23,8 @@ public class UserInfo implements Cloneable {
 
   private boolean isRedactor;
 
+  private boolean canEdit;
+
+  private boolean canAnnounce;
+
 }

@@ -7,6 +7,7 @@ import org.exoplatform.challenges.entity.ChallengeEntity;
 import org.exoplatform.challenges.model.*;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
+import org.exoplatform.social.core.identity.provider.OrganizationIdentityProvider;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -122,8 +123,10 @@ public class EntityMapper {
                                    Utils.getSpaceById(String.valueOf(challenge.getAudience())),
                                    challenge.getStartDate(),
                                    challenge.getEndDate(),
-                                   Utils.canEditChallenge(String.valueOf(challenge.getAudience())),
-                                   Utils.canAnnounce(String.valueOf(challenge.getAudience()), challenge.getId()),
+                                   Utils.createUser(Utils.getIdentityByTypeAndId(OrganizationIdentityProvider.NAME,
+                                                                                 Utils.getCurrentUser()),
+                                                    Utils.getSpaceById(String.valueOf(challenge.getAudience())),
+                                                    challenge.getId()),
                                    Utils.getUsersByIds(challenge.getManagers(), challenge.getId()),
                                    announcementRestEntities);
   }

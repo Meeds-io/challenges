@@ -20,13 +20,25 @@
       <div class="pl-4 pr-4 mt-7 descriptionLabel">
         {{ $t('challenges.label.assignedAchievement') }}
       </div>
-      <div class="pl-4">
+      <div class="pl-4" v-if="challenge && (challenge.userInfo.manager || challenge.userInfo.redactor)">
         <challenge-assignment
           ref="challengeAssignment"
           class="my-2"
           v-model="announcement.assignee"
           @remove-user="removeAssignee"
           @add-user="addAssignee" />
+      </div>
+      <div v-else-if="challenge && !challenge.userInfo.manager && !challenge.userInfo.redactor && challenge.userInfo.member" class="pl-4 pr-4">
+        <v-chip
+            color="primary"
+            class="identitySuggesterItem mt-2">
+          <v-avatar left>
+            <v-img :src="challenge && challenge.userInfo.avatarUrl" />
+          </v-avatar>
+          <span class="text-truncate">
+            {{ challenge && challenge.userInfo.fullName }}
+          </span>
+        </v-chip>
       </div>
       <div class="pl-4 pr-4 pt-9 py-4 my-2">
         <challenge-description
@@ -83,10 +95,6 @@ export default {
     challenge: {
       type: Object,
       default: null
-    },
-    listAssignee: {
-      type: Array,
-      default: () =>[],
     }
   },
   data() {
@@ -107,7 +115,6 @@ export default {
   methods: {
     open() {
       this.$refs.challengeDescription.initCKEditor();
-      this.$refs.challengeAssignment.initAssignment(this.listAssignee);
       this.$refs.announcementDrawer.open();
     },
     close() {

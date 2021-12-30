@@ -119,7 +119,7 @@ public class Utils {
       for (Long id : ids) {
         Identity identity = identityManager.getIdentity(String.valueOf(id));
         if (identity != null && OrganizationIdentityProvider.NAME.equals(identity.getProviderId())) {
-          users.add(createUser(identity, space));
+          users.add(createUser(identity, space, challengeId));
         }
       }
       return users;
@@ -129,7 +129,7 @@ public class Utils {
     }
   }
 
-  private static UserInfo createUser(Identity identity, Space space) {
+  public static UserInfo createUser(Identity identity, Space space, Long challengeId) {
     SpaceService spaceService = CommonsUtils.getService(SpaceService.class);
     UserInfo userInfo = new UserInfo();
     userInfo.setAvatarUrl(identity.getProfile().getAvatarUrl());
@@ -141,6 +141,8 @@ public class Utils {
       userInfo.setMember(spaceService.isMember(space, getCurrentUser()));
       userInfo.setRedactor(spaceService.isRedactor(space, getCurrentUser()));
     }
+    userInfo.setCanAnnounce(canAnnounce(space.getId(), challengeId));
+    userInfo.setCanEdit(canEditChallenge(space.getId()));
     return userInfo;
   }
 

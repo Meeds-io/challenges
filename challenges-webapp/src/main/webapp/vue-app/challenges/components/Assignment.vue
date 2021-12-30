@@ -141,9 +141,6 @@ export default {
     });
   },
   methods: {
-    initAssignment(list) {
-      this.assigneeObj = list;
-    },
     assignToMe() {
       if (!this.isAssigned(this.currentUser)){
         this.$identityService.getIdentityByProviderIdAndRemoteId('organization',this.currentUser).then(user => {

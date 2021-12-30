@@ -24,9 +24,7 @@ public class ChallengeRestEntity implements Cloneable {
 
   private String                       endDate;
 
-  private boolean                      canEdit;
-
-  private boolean                      canAnnounce;
+  private UserInfo                     userInfo;
 
   private List<UserInfo>               managers;
 
@@ -39,8 +37,7 @@ public class ChallengeRestEntity implements Cloneable {
                                    space,
                                    startDate,
                                    endDate,
-                                   canEdit,
-                                   canAnnounce,
+                                   userInfo,
                                    managers,
                                    announcements);
   }
