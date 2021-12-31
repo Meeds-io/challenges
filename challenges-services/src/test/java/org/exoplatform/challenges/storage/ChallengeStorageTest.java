@@ -36,12 +36,14 @@ public class ChallengeStorageTest {
   @Test
   public void testSaveChallenge() {
     // Given
+    String startDate = new Date(System.currentTimeMillis()).toString();
+    String endDate = new Date(System.currentTimeMillis() + 1).toString();
     Challenge challenge = new Challenge(0,
                                         "new challenge",
                                         "challenge description",
                                         1l,
-                                        new Date(System.currentTimeMillis()).toString(),
-                                        new Date(System.currentTimeMillis() + 1).toString(),
+                                        startDate,
+                                        endDate,
                                         true,
                                         false,
                                         Collections.emptyList());
@@ -70,8 +72,8 @@ public class ChallengeStorageTest {
                                                   "new challenge",
                                                   "challenge description",
                                                   1l,
-                                                  new Date(System.currentTimeMillis()).toString(),
-                                                  new Date(System.currentTimeMillis() + 1).toString(),
+                                                  startDate,
+                                                  endDate,
                                                   true,
                                                   false,
                                                   Collections.emptyList());
