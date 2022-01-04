@@ -52,9 +52,10 @@
           <challenge-assignment
             ref="challengeAssignment"
             class="my-2"
+            :audience="audience"
             v-model="challenge.managers"
             @remove-user="removeManager"
-            @add-user="addManager" />
+            @add-item="addManager" />
 
           <challenge-date-picker
             ref="challengeDatePicker"
@@ -248,7 +249,7 @@ export default {
       this.$refs.challengeDrawer.close();
     },
     removeManager(id) {
-      const index = this.challenge.managers.findIndex(manager => {
+      const index = this.challenge.managers && this.challenge.managers.findIndex(manager => {
         if (manager && manager.id) {
           return manager.id === id;
         } else {
@@ -260,7 +261,7 @@ export default {
       }
     },
     addManager(id) {
-      const index = this.challenge.managers.findIndex(manager => {
+      const index = this.challenge.managers && this.challenge.managers.findIndex(manager => {
         if (manager && manager.id) {
           return manager.id === id;
         } else {

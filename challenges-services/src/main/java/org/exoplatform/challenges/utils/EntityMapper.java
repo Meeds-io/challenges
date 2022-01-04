@@ -7,6 +7,7 @@ import org.exoplatform.challenges.entity.ChallengeEntity;
 import org.exoplatform.challenges.model.*;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
+import org.exoplatform.social.core.identity.provider.OrganizationIdentityProvider;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -29,7 +30,7 @@ public class EntityMapper {
                          challengeEntity.getAudience(),
                          challengeEntity.getStartDate() == null ? null : Utils.toRFC3339Date(challengeEntity.getStartDate()),
                          challengeEntity.getEndDate() == null ? null : Utils.toRFC3339Date(challengeEntity.getEndDate()),
-                         Utils.canEditChallenge(String.valueOf(challengeEntity.getAudience())),
+                         Utils.canEditChallenge(challengeEntity.getManagers()),
                          Utils.canAnnounce(String.valueOf(challengeEntity.getAudience())),
                          challengeEntity.getManagers());
   }
@@ -122,9 +123,10 @@ public class EntityMapper {
                                    Utils.getSpaceById(String.valueOf(challenge.getAudience())),
                                    challenge.getStartDate(),
                                    challenge.getEndDate(),
-                                   Utils.canEditChallenge(String.valueOf(challenge.getAudience())),
-                                   Utils.canAnnounce(String.valueOf(challenge.getAudience())),
-                                   Utils.getUsersByIds(challenge.getManagers()),
+                                   Utils.createUser(Utils.getIdentityByTypeAndId(OrganizationIdentityProvider.NAME,
+                                                                                 Utils.getCurrentUser()),
+                                                    Utils.getSpaceById(String.valueOf(challenge.getAudience())), challenge.getManagers()),
+                                   Utils.getUsersByIds(challenge.getManagers(), challenge.getId()),
                                    announcementRestEntities);
   }
 
@@ -145,9 +147,9 @@ public class EntityMapper {
     }
     return new AnnouncementRestEntity(announcement.getId(),
                                       announcement.getChallengeId(),
-                                      Utils.getUsersByIds(announcement.getAssignee()),
+                                      Utils.getUsersByIds(announcement.getAssignee(), announcement.getChallengeId()),
                                       announcement.getComment(),
-                                      Utils.getUsersByIds(new ArrayList<Long>(Collections.singleton(announcement.getCreator())))
+                                      Utils.getUsersByIds(new ArrayList<Long>(Collections.singleton(announcement.getCreator())), announcement.getChallengeId())
                                            .get(0),
                                       announcement.getCreatedDate(),
                                       announcement.getActivityId());
