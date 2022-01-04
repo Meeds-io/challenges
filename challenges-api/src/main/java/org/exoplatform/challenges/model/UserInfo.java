@@ -9,12 +9,22 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class UserInfo implements Cloneable {
 
-  private String id;
+  private String  id;
 
-  private String remoteId;
+  private String  remoteId;
 
-  private String fullName;
+  private String  fullName;
 
-  private String avatarUrl;
+  private String  avatarUrl;
+
+  private boolean canEdit;
+
+  private boolean canAnnounce;
+
+  private boolean isMember;
+
+  private boolean isRedactor;
+
+  private boolean isManager;
 
 }

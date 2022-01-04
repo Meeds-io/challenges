@@ -14,11 +14,12 @@
               </div>
               <div class="edit">
                 <v-menu
-                  v-if="challenge && challenge.canEdit"
+                  v-if="enableEdit"
                   v-model="showMenu"
                   offset-y
                   attach
-                  left>
+                  :left="!$vuetify.rtl"
+                  :right="$vuetify.rtl">
                   <template v-slot:activator="{ on }">
                     <v-btn
                       icon
@@ -49,9 +50,11 @@
       <div class="footer d-flex">
         <div class="winners">
         </div>
-        <div class="addAnnounce" v-if="challenge.canAnnounce && this.status !== 'Ended'">
+        <div class="addAnnounce">
           <button
             class="btnAdd ignore-vuetify-classes btn mx-1"
+            :disabled="!enableAnnounce"
+            :title="showMessage"
             @click="createAnnounce">
             {{ $t('challenges.button.announce') }}
           </button>
@@ -78,6 +81,9 @@ export default {
     status: ''
   }),
   computed: {
+    showMessage() {
+      return !this.enableAnnounce ? this.$t('challenges.permissionDenied') : '';
+    },
     classStatus() {
       if (this.status === 'Starts') {
         return 'startsColor';
@@ -86,7 +92,13 @@ export default {
       } else {
         return 'endsColor';
       }
-    }
+    },
+    enableAnnounce(){
+      return this.challenge && this.challenge.userInfo.canAnnounce && this.status !== 'Ended' && this.status !== 'Starts';
+    },
+    enableEdit(){
+      return this.challenge && this.challenge.userInfo.canEdit && this.status !== 'Ended';
+    },
   },
   methods: {
     createAnnounce() {

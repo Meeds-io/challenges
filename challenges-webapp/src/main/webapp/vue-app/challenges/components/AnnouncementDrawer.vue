@@ -20,13 +20,26 @@
       <div class="pl-4 pr-4 mt-7 descriptionLabel">
         {{ $t('challenges.label.assignedAchievement') }}
       </div>
-      <div class="pl-4">
+      <div class="pl-4" v-if="enableSuggester">
         <challenge-assignment
           ref="challengeAssignment"
           class="my-2"
+          :audience="space"
           v-model="announcement.assignee"
           @remove-user="removeAssignee"
-          @add-user="addAssignee" />
+          @add-item="addUser($event)" />
+      </div>
+      <div v-else-if="disableSuggester" class="pl-4 pr-4">
+        <v-chip
+          color="primary"
+          class="identitySuggesterItem mt-2">
+          <v-avatar left>
+            <v-img :src="challenge && challenge.userInfo.avatarUrl" />
+          </v-avatar>
+          <span class="text-truncate">
+            {{ challenge && challenge.userInfo.fullName }}
+          </span>
+        </v-chip>
       </div>
       <div class="pl-4 pr-4 pt-9 py-4 my-2">
         <challenge-description
@@ -99,13 +112,30 @@ export default {
     disabledSave() {
       return this.announcement.assignee && this.announcement.assignee.length > 0 && this.isValidDescription.description ;
     },
+    enableSuggester() {
+      return this.challenge && (this.challenge.userInfo && this.challenge.userInfo.manager || this.challenge.userInfo && this.challenge.userInfo.redactor);
+    },
+    disableSuggester(){
+      return this.challenge && this.challenge.userInfo && !this.challenge.userInfo.manager && !this.challenge.userInfo.redactor && this.challenge.userInfo.member;
+    },
   },
   methods: {
+    initAnnounce() {
+      this.announcement= { assignee: []};
+      this.invalidDescription();
+      if (this.disableSuggester) {
+        this.$set(this.announcement.assignee,this.announcement.assignee.length, this.challenge.userInfo.id);
+      } else {
+        this.$refs.challengeAssignment.assigneeObj = [];
+      }
+    },
     open() {
+      this.initAnnounce();
       this.$refs.challengeDescription.initCKEditor();
       this.$refs.announcementDrawer.open();
     },
     close() {
+      this.reset();
       this.$refs.announcementDrawer.close();
     },
     removeAssignee(id) {
@@ -140,13 +170,20 @@ export default {
       this.announcement.createdDate = new Date();
       this.$challengesServices.saveAnnouncement(this.announcement).then(() =>{
         this.$root.$emit('show-alert', {type: 'success',message: this.$t('challenges.announcementCreateSuccess')});
-        this.close();
-        this.challenge = {};
       })
         .catch(e => {
           this.$root.$emit('show-alert', {type: 'error',message: String(e)});
         });
+      this.close();
     },
+    addUser(id){
+      this.$set(this.announcement.assignee,this.announcement.assignee.length, id);
+    },
+    reset() {
+      this.isValidDescription= {
+        description: true };
+      this.$refs.challengeDescription.deleteDescription();
+    }
   }
 };
 </script>
