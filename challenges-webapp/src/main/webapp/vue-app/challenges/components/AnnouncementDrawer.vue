@@ -113,10 +113,10 @@ export default {
       return this.announcement.assignee && this.announcement.assignee.length > 0 && this.isValidDescription.description ;
     },
     enableSuggester() {
-      return this.challenge && this.challenge.userInfo && this.challenge.userInfo.redactor;
+      return this.challenge && (this.challenge.userInfo && this.challenge.userInfo.manager || this.challenge.userInfo && this.challenge.userInfo.redactor);
     },
     disableSuggester(){
-      return this.challenge && this.challenge.userInfo && !this.challenge.userInfo.redactor && this.challenge.userInfo.member;
+      return this.challenge && this.challenge.userInfo && !this.challenge.userInfo.manager && !this.challenge.userInfo.redactor && this.challenge.userInfo.member;
     },
   },
   methods: {

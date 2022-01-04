@@ -18,7 +18,8 @@
                   v-model="showMenu"
                   offset-y
                   attach
-                  left>
+                  :left="!$vuetify.rtl"
+                  :right="$vuetify.rtl">
                   <template v-slot:activator="{ on }">
                     <v-btn
                       icon
