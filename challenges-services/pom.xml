@@ -71,11 +71,11 @@
       <artifactId>powermock-api-mockito2</artifactId>
       <scope>test</scope>
     </dependency>
-      <dependency>
-          <groupId>org.exoplatform.commons</groupId>
-          <artifactId>commons-testing</artifactId>
-          <scope>test</scope>
-      </dependency>
+    <dependency>
+        <groupId>org.exoplatform.commons</groupId>
+        <artifactId>commons-testing</artifactId>
+        <scope>test</scope>
+    </dependency>
   </dependencies>
   <build>
     <finalName>challenges-services</finalName>
