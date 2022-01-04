@@ -123,7 +123,9 @@ export default {
     },
 
     deleteDescription: function() {
-      CKEDITOR.instances['descriptionContent'].destroy();
+      if (  CKEDITOR.instances['descriptionContent']) {
+        CKEDITOR.instances['descriptionContent'].destroy();
+      }
     },
   }
 };

@@ -14,7 +14,7 @@
               </div>
               <div class="edit">
                 <v-menu
-                  v-if="challenge && challenge.canEdit"
+                  v-if="enableEdit"
                   v-model="showMenu"
                   offset-y
                   attach
@@ -49,9 +49,10 @@
       <div class="footer d-flex">
         <div class="winners">
         </div>
-        <div class="addAnnounce" v-if="challenge.canAnnounce && this.status !== 'Ended'">
+        <div class="addAnnounce">
           <button
             class="btnAdd ignore-vuetify-classes btn mx-1"
+            :disabled="!enableAnnounce"
             @click="createAnnounce">
             {{ $t('challenges.button.announce') }}
           </button>
@@ -86,7 +87,13 @@ export default {
       } else {
         return 'endsColor';
       }
-    }
+    },
+    enableAnnounce(){
+      return this.challenge && this.challenge.userInfo.canAnnounce && this.status !== 'Ended' && this.status !== 'Starts';
+    },
+    enableEdit(){
+      return this.challenge && this.challenge.userInfo.canEdit && this.status !== 'Ended';
+    },
   },
   methods: {
     createAnnounce() {

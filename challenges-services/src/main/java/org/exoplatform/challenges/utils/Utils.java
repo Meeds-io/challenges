@@ -2,7 +2,9 @@ package org.exoplatform.challenges.utils;
 
 import org.apache.commons.lang3.StringUtils;
 import org.exoplatform.challenges.model.Announcement;
+import org.exoplatform.challenges.model.Challenge;
 import org.exoplatform.challenges.model.UserInfo;
+import org.exoplatform.challenges.service.ChallengeService;
 import org.exoplatform.commons.utils.CommonsUtils;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
@@ -40,12 +42,10 @@ public class Utils {
     return ConversationState.getCurrent().getIdentity().getUserId();
   }
 
-  public static final boolean canEditChallenge(String id) {
-    Space space = CommonsUtils.getService(SpaceService.class).getSpaceById(id);
-    if (space == null) {
-      throw new IllegalArgumentException("space is not exist");
-    }
-    return CommonsUtils.getService(SpaceService.class).isManager(space, getCurrentUser());
+  public static final boolean canEditChallenge(List<Long> managersId) {
+    Identity identity = getIdentityByTypeAndId(OrganizationIdentityProvider.NAME, getCurrentUser());
+
+    return  managersId.stream().anyMatch(i -> i == Long.parseLong(identity.getId()) );
   }
 
   public static final boolean canAnnounce(String id) {
@@ -84,7 +84,11 @@ public class Utils {
     return space;
   }
 
-  public static List<UserInfo> getUsersByIds(List<Long> ids) {
+  public static List<UserInfo> getUsersByIds(List<Long> ids,Long challengeId) {
+    try {
+    ChallengeService challengeService = CommonsUtils.getService(ChallengeService.class);
+    Challenge challenge = challengeService.getChallengeById(challengeId, getCurrentUser());
+    Space space = getSpaceById(String.valueOf(challenge.getAudience()));
     IdentityManager identityManager = CommonsUtils.getService(IdentityManager.class);
     if (ids.isEmpty()) {
       return Collections.emptyList();
@@ -93,37 +97,32 @@ public class Utils {
     for (Long id : ids) {
       Identity identity = identityManager.getIdentity(String.valueOf(id));
       if (identity != null && OrganizationIdentityProvider.NAME.equals(identity.getProviderId())) {
-        users.add(createUser(identity, null));
+        users.add(createUser(identity, space, challenge.getManagers()));
       }
     }
     return users;
+  } catch (Exception e) {
+    LOG.info("challenge not exist with this id {0}", challengeId);
+    return Collections.emptyList();
   }
 
-  public static List<UserInfo> getChallengeWinners(List<Announcement> announcements) {
-    if (announcements.isEmpty()) {
-      return Collections.emptyList();
-    }
-    List<UserInfo> users = new ArrayList<>();
-    IdentityManager identityManager = CommonsUtils.getService(IdentityManager.class);
-    for (Announcement announcement : announcements) {
-      List<Long> ids = new ArrayList<>();
-      ids.addAll(announcement.getAssignee());
-      for (Long id : ids) {
-        Identity identity = identityManager.getIdentity(String.valueOf(id));
-        if (identity != null && OrganizationIdentityProvider.NAME.equals(identity.getProviderId())) {
-          users.add(createUser(identity, String.valueOf(announcement.getActivityId())));
-        }
-      }
-    }
-    return users;
   }
 
-  private static UserInfo createUser(Identity identity, String activityId) {
+
+  public static UserInfo createUser(Identity identity, Space space, List<Long> managersId) {
+    SpaceService spaceService = CommonsUtils.getService(SpaceService.class);
     UserInfo userInfo = new UserInfo();
     userInfo.setAvatarUrl(identity.getProfile().getAvatarUrl());
     userInfo.setFullName(identity.getProfile().getFullName());
     userInfo.setRemoteId(identity.getRemoteId());
     userInfo.setId(identity.getId());
+    if (space !=null) {
+      userInfo.setManager(spaceService.isManager(space, getCurrentUser()));
+      userInfo.setMember(spaceService.isMember(space, getCurrentUser()));
+      userInfo.setRedactor(spaceService.isRedactor(space, getCurrentUser()));
+    }
+    userInfo.setCanAnnounce(canAnnounce(space.getId()));
+    userInfo.setCanEdit(canEditChallenge(managersId));
     return userInfo;
   }
 

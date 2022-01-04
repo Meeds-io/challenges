@@ -24,24 +24,13 @@ public class ChallengeRestEntity implements Cloneable {
 
   private String                       endDate;
 
-  private boolean                      canEdit;
-
-  private boolean                      canAnnounce;
+  private UserInfo                     userInfo;
 
   private List<UserInfo>               managers;
 
   private List<AnnouncementRestEntity> announcements;
 
   public ChallengeRestEntity clone() { // NOSONAR
-    return new ChallengeRestEntity(id,
-                                   title,
-                                   description,
-                                   space,
-                                   startDate,
-                                   endDate,
-                                   canEdit,
-                                   canAnnounce,
-                                   managers,
-                                   announcements);
+    return new ChallengeRestEntity(id, title, description, space, startDate, endDate, userInfo, managers, announcements);
   }
 }
