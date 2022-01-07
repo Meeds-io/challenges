@@ -17,15 +17,20 @@ import org.exoplatform.services.listener.Event;
 import org.exoplatform.services.listener.Listener;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
+import org.exoplatform.social.core.activity.ActivityLifeCycle;
 import org.exoplatform.social.core.activity.model.ExoSocialActivity;
 import org.exoplatform.social.core.activity.model.ExoSocialActivityImpl;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.space.model.Space;
 import org.exoplatform.social.core.storage.api.ActivityStorage;
+import org.exoplatform.social.websocket.ActivityStreamWebSocketService;
+import org.exoplatform.social.websocket.entity.ActivityStreamModification;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import static org.exoplatform.social.core.jpa.storage.entity.ActivityShareActionEntity_.activityId;
 
 public class AnnouncementActivityGenerator extends Listener<AnnouncementService, Announcement> {
   private static final Log   LOG                        = ExoLogger.getLogger(AnnouncementActivityGenerator.class);
@@ -38,12 +43,13 @@ public class AnnouncementActivityGenerator extends Listener<AnnouncementService,
 
   private ChallengeService   challengeService;
 
-  public AnnouncementActivityGenerator(ActivityStorage activityStorage,
-                                       ExoContainer container,
-                                       ChallengeService challengeService) {
+  private ActivityStreamWebSocketService activityStreamWebSocketService;
+
+  public AnnouncementActivityGenerator(ExoContainer container, ActivityStorage activityStorage, ChallengeService challengeService, ActivityStreamWebSocketService activityStreamWebSocketService) {
+    this.container = container;
     this.activityStorage = activityStorage;
     this.challengeService = challengeService;
-    this.container = container;
+    this.activityStreamWebSocketService = activityStreamWebSocketService;
   }
 
   @Override
@@ -57,7 +63,9 @@ public class AnnouncementActivityGenerator extends Listener<AnnouncementService,
       ExoSocialActivity activity = createActivity(announcement, challenge);
       announcement.setActivityId(Long.parseLong(activity.getId()));
       announcementService.updateAnnouncement(announcement);
-    } finally {
+      ActivityStreamModification activityStreamModification = new ActivityStreamModification(activity.getId(), "createActivity");
+      activityStreamWebSocketService.sendMessage(activityStreamModification);    }
+    finally {
       RequestLifeCycle.end();
     }
   }
