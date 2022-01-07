@@ -98,7 +98,6 @@
 </template>
 
 <script>
-import {getFromDate} from '../challengesUtils';
 
 export default {
   name: 'ChallengeDrawer',
@@ -314,7 +313,7 @@ export default {
       }
     },
     getFromDate(date) {
-      return getFromDate(date);
+      return this.$challengeUtils.getFromDate(date);
     },
     SaveChallenge() {
       if (this.challenge.startDate > this.challenge.endDate){
