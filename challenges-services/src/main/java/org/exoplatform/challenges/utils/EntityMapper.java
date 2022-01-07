@@ -125,9 +125,11 @@ public class EntityMapper {
                                    challenge.getEndDate(),
                                    Utils.createUser(Utils.getIdentityByTypeAndId(OrganizationIdentityProvider.NAME,
                                                                                  Utils.getCurrentUser()),
-                                                    Utils.getSpaceById(String.valueOf(challenge.getAudience())), challenge.getManagers()),
+                                                    Utils.getSpaceById(String.valueOf(challenge.getAudience())),
+                                                    challenge.getManagers()),
                                    Utils.getUsersByIds(challenge.getManagers(), challenge.getId()),
-                                   announcementRestEntities);
+                                   announcementRestEntities,
+                                   Utils.countAnnouncementsByChallenge(challenge.getId()));
   }
 
   public static List<Announcement> fromAnnouncementEntities(List<AnnouncementEntity> announcementEntities) {

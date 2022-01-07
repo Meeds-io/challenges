@@ -46,4 +46,9 @@ public class AnnouncementStorage {
     return EntityMapper.fromAnnouncementEntities(announcementEntities);
   }
 
+  public Long countAllAnnouncementByChallenge(Long challengeId) {
+    Long countAnnounce = announcementDAO.countAllAnnouncementByChallenge(challengeId);
+    return countAnnounce;
+  }
+
 }

@@ -30,7 +30,18 @@ public class ChallengeRestEntity implements Cloneable {
 
   private List<AnnouncementRestEntity> announcements;
 
+  private Long                         numberAllAnnouncements;
+
   public ChallengeRestEntity clone() { // NOSONAR
-    return new ChallengeRestEntity(id, title, description, space, startDate, endDate, userInfo, managers, announcements);
+    return new ChallengeRestEntity(id,
+                                   title,
+                                   description,
+                                   space,
+                                   startDate,
+                                   endDate,
+                                   userInfo,
+                                   managers,
+                                   announcements,
+                                   numberAllAnnouncements);
   }
 }

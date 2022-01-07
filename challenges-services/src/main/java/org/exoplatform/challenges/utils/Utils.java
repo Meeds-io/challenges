@@ -4,6 +4,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.exoplatform.challenges.model.Announcement;
 import org.exoplatform.challenges.model.Challenge;
 import org.exoplatform.challenges.model.UserInfo;
+import org.exoplatform.challenges.service.AnnouncementService;
 import org.exoplatform.challenges.service.ChallengeService;
 import org.exoplatform.commons.utils.CommonsUtils;
 import org.exoplatform.services.log.ExoLogger;
@@ -126,4 +127,13 @@ public class Utils {
     return userInfo;
   }
 
+  public static Long countAnnouncementsByChallenge(Long challengeId) {
+    AnnouncementService announcementService = CommonsUtils.getService(AnnouncementService.class);
+    try {
+      return announcementService.countAllAnnouncementByChallenge(challengeId);
+    } catch (Exception e) {
+      // NOSONAR
+      return 0l;
+    }
+  }
 }

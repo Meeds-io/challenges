@@ -48,7 +48,48 @@
       </div>
 
       <div class="footer d-flex">
-        <div class="winners">
+        <div class="winners pa-2" v-if="!(listWinners && listWinners.length)">
+          <p
+            class="emptyWinners my-auto pl-2 align-self-end text-no-wrap pt-1"
+            @click="openDetails">
+            {{ challenge && challenge.numberAllAnnouncements }} {{ $t('challenges.winners.details') }}
+          </p>
+        </div>
+        <div
+          v-else
+          :class="showAllAvatarList && 'AllUsersAvatar'"
+          class="winners winnersAvatarsList d-flex flex-nowrap my-2">
+          <exo-user-avatar
+            v-for="winner in avatarToDisplay"
+            :key="winner.user.id"
+            :username="winner.user.remoteId"
+            :title="winner.user.fullName"
+            :avatar-url="winner.user.avatarUrl"
+            :size="iconSize"
+            :style="'background-image: url('+winner.user.avatarUrl+')'"
+            class="me-1 projectManagersAvatar" />
+          <div class="seeMoreAvatars">
+            <div
+              v-if="listWinners.length > maxAvatarToShow"
+              class="seeMoreItem"
+              @click="openDetails">
+              <v-avatar
+                :size="iconSize">
+                <img
+                  :src="listWinners[maxAvatarToShow].user.avatarUrl"
+                  :title="listWinners[maxAvatarToShow].user.displayName"
+                  class="object-fit-cover"
+                  loading="lazy"
+                  role="presentation">
+                <span class="seeMoreAvatarList">+{{ showMoreAvatarsNumber }}</span>
+              </v-avatar>
+            </div>
+          </div>
+          <p
+            class="announcesNumber my-auto pl-2 align-self-end caption text-no-wrap pt-1"
+            @click="openDetails">
+            {{ challenge && challenge.numberAllAnnouncements }} {{ $t('challenges.label.announces') }}
+          </p>
         </div>
         <div class="addAnnounce">
           <v-btn
@@ -63,6 +104,10 @@
     </v-card>
     <challenge-details-drawer :challenge="challenge" ref="challenge" />
     <announce-drawer :challenge="challenge" ref="announceRef" />
+    <challenge-winners-details
+      :challenge-id="challenge && challenge.id"
+      :list-winners="listWinners"
+      ref="winnersDetails" />
   </v-app>
 </template>
 
@@ -78,9 +123,22 @@ export default {
   data: () => ({
     showMenu: false,
     label: '',
-    status: ''
+    status: '',
+    listWinners: [],
+    iconSize: 28,
+    maxAvatarToShow: 3
   }),
   computed: {
+    avatarToDisplay () {
+      if (this.listWinners.length > this.maxAvatarToShow) {
+        return this.listWinners.slice(0, this.maxAvatarToShow-1);
+      } else {
+        return this.listWinners;
+      }
+    },
+    showMoreAvatarsNumber() {
+      return this.challenge.numberAllAnnouncements - this.maxAvatarToShow;
+    },
     showMessage() {
       if (this.challenge && this.challenge.userInfo && !this.challenge.userInfo.canAnnounce) {
         return  this.$t('challenges.permissionDenied');
@@ -108,7 +166,22 @@ export default {
       return this.challenge && this.challenge.userInfo.canEdit && this.status !== 'Ended';
     },
   },
+  mounted() {
+    this.challenge.announcements.map(announce => {
+      for (const assignee of announce.assignee) {
+        const announcement = {
+          user: assignee,
+          activityId: announce.activityId,
+          createDate: announce.createdDate
+        };
+        this.listWinners.push(announcement);
+      }
+    });
+  },
   methods: {
+    openDetails() {
+      this.$refs.winnersDetails.open();
+    },
     createAnnounce() {
       this.$refs.announceRef.open();
     },

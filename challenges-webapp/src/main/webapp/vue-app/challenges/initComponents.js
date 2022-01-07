@@ -8,6 +8,7 @@ import ChallengeDatePicker from './components/ChallengeDatePicker.vue';
 import ChallengeDescription from './components/ChallengeDescription.vue';
 import ChallengeDetailsDrawer from './components/ChallengeDetailsDrawer.vue';
 import AnnouncementDrawer from './components/AnnouncementDrawer.vue';
+import WinnersDrawer from './components/WinnersDrawer.vue';
 const components = {
   'challenges': Challenges,
   'welcome-message': WelcomeMessage,
@@ -18,7 +19,8 @@ const components = {
   'challenge-date-picker': ChallengeDatePicker,
   'challenge-description': ChallengeDescription,
   'challenge-details-drawer': ChallengeDetailsDrawer,
-  'announce-drawer': AnnouncementDrawer
+  'announce-drawer': AnnouncementDrawer,
+  'challenge-winners-details': WinnersDrawer
 };
 
 for (const key in components) {
