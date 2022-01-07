@@ -95,6 +95,9 @@ export default {
         removePlugins: 'confirmBeforeReload,maximize,resize',
         toolbarLocation: 'bottom',
         autoGrow_onStartup: true,
+        toolbar: [
+          ['Bold', 'Italic', 'BulletedList', 'NumberedList', 'Blockquote'],
+        ],
         on: {
           blur: function () {
             $(document.body).trigger('click');
