@@ -51,13 +51,13 @@
         <div class="winners">
         </div>
         <div class="addAnnounce">
-          <button
-            class="btnAdd ignore-vuetify-classes btn mx-1"
+          <v-btn
+            class="btn btnAdd mx-1"
             :disabled="!enableAnnounce"
             :title="showMessage"
             @click="createAnnounce">
             {{ $t('challenges.button.announce') }}
-          </button>
+          </v-btn>
         </div>
       </div>
     </v-card>
@@ -82,7 +82,15 @@ export default {
   }),
   computed: {
     showMessage() {
-      return !this.enableAnnounce ? this.$t('challenges.permissionDenied') : '';
+      if (this.challenge && this.challenge.userInfo && !this.challenge.userInfo.canAnnounce) {
+        return  this.$t('challenges.permissionDenied');
+      } else if (this.status === 'Starts') {
+        return  this.$t('challenges.challengeNotStarted');
+      } else if (this.status === 'Ended') {
+        return  this.$t('challenges.challengeEnded');
+      } else {
+        return '';
+      }
     },
     classStatus() {
       if (this.status === 'Starts') {
