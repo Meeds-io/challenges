@@ -191,12 +191,8 @@ export default {
           createDate: announcement.createdDate
         };
         this.listWinners.unshift(newAnnouncement);
-<<<<<<< HEAD
-        this.$refs.winnersDetails.listWinners.unshift(newAnnouncement);      }
-=======
         this.$refs.winnersDetails.listWinners.unshift(newAnnouncement);
       }
->>>>>>> faf8272 (Task-51907: fix winners list in card and drawer)
       this.challenge.announcementsCount = this.challenge.announcementsCount +1;
     },
     openDetails() {
