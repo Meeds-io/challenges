@@ -27,9 +27,7 @@
       <welcome-message
         :can-add-challenge="canAddChallenge" />
     </template>
-    <challenge-drawer
-      ref="challengeDrawer"
-      :challenge="selectedChallenge" />
+    <challenge-drawer ref="challengeDrawer" />
     <v-alert
       v-model="alert"
       :type="type"
@@ -56,7 +54,6 @@ export default {
     canAddChallenge: false,
     loading: true,
     challenges: [],
-    selectedChallenge: {},
     showLoadMoreButton: false,
     challengePerPage: 20,
     displayChallenges: true,
@@ -122,7 +119,7 @@ export default {
       window.setTimeout(() => this.alert = false, 5000);
     },
     editChallenge(challenge) {
-      this.selectedChallenge = Object.assign({}, this.selectedChallenge,challenge) ;
+      this.$refs.challengeDrawer.challenge = challenge;
       this.$nextTick().then(() => this.openChallengeDrawer());
     },
   }
