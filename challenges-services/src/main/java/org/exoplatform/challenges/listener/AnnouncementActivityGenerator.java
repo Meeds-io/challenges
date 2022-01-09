@@ -64,8 +64,8 @@ public class AnnouncementActivityGenerator extends Listener<AnnouncementService,
       announcement.setActivityId(Long.parseLong(activity.getId()));
       announcementService.updateAnnouncement(announcement);
       ActivityStreamModification activityStreamModification = new ActivityStreamModification(activity.getId(), "createActivity");
-      activityStreamWebSocketService.sendMessage(activityStreamModification);    }
-    finally {
+      activityStreamWebSocketService.sendMessage(activityStreamModification);    
+    } finally {
       RequestLifeCycle.end();
     }
   }
