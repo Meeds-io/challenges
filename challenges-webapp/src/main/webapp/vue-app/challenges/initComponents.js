@@ -31,3 +31,10 @@ if (!Vue.prototype.$challengesServices) {
     value: challengesServices,
   });
 }
+import  * as challengeUtils  from './challengesUtils';
+
+if (!Vue.prototype.$challengeUtils) {
+  window.Object.defineProperty(Vue.prototype, '$challengeUtils', {
+    value: challengeUtils,
+  });
+}

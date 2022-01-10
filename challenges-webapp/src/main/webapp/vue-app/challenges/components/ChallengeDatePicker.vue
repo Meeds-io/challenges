@@ -40,7 +40,6 @@
 
 
 <script>
-import {getFromDate} from '../challengesUtils.js';
 
 export default {
   name: 'ChallengeDatePicker',
@@ -90,7 +89,7 @@ export default {
       this.$emit('endDateChanged',new Date(date));
     },
     getFormatDate(date) {
-      return getFromDate(date);
+      return this.$challengeUtils.getFromDate(date);
     }
   }
 };

@@ -69,7 +69,6 @@
 </template>
 
 <script>
-import {getFromDate} from '../challengesUtils.js';
 export default {
   props: {
     challenge: {
@@ -97,7 +96,7 @@ export default {
       }
     },
     getFromDate(date) {
-      return getFromDate(date);
+      return this.$challengeUtils.getFromDate(date);
     }
   }
 };

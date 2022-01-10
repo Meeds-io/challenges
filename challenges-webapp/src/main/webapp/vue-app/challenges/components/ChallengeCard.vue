@@ -128,7 +128,7 @@ export default {
         this.status = 'Starts';
         this.label=this.$t('challenges.status.starts');
         return `${this.label } ${ this.formattedDate(new Date(this.challenge.startDate)) }`;
-      } else if (startDate.getTime()<currentDate.getTime() && endDate.getTime() > currentDate.getTime()) {
+      } else if ((startDate.getTime()<currentDate.getTime() && endDate.getTime() > currentDate.getTime()) || (this.formattedDate(endDate) ===  this.formattedDate(currentDate))) {
         this.status = 'Ends';
         this.label=this.$t('challenges.status.ends');
         return `${this.label } ${ this.formattedDate(new Date(this.challenge.endDate))}`;
