@@ -33,7 +33,7 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 @RunWith(PowerMockRunner.class)
-@PowerMockIgnore("javax.management.*")
+@PowerMockIgnore({ "javax.management.*", "javax.xml.*", "org.xml.*" })
 public class AnnouncementServiceTest extends BaseExoTestCase {
   private AnnouncementStorage announcementStorage;
 
