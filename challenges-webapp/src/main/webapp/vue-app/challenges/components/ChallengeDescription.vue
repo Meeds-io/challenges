@@ -20,7 +20,6 @@
 </template>
 
 <script>
-import {urlVerify} from '../challengesUtils.js';
 export default {
   props: {
     value: {
@@ -120,7 +119,7 @@ export default {
     },
 
     urlVerify(text) {
-      text = urlVerify(text);
+      text = this.$challengeUtils.urlVerify(text);
       this.$emit('addDescription',text);
       return text;
     },

@@ -50,6 +50,12 @@ public class AnnouncementServiceImpl implements AnnouncementService {
     if (challenge == null) {
       throw new ObjectNotFoundException("challenge does not exist");
     }
+    if (announcement.getCreatedDate().split("T")[0].compareTo(challenge.getEndDate().split("T")[0]) > 0) {
+      throw new IllegalArgumentException("announcement is not allowed when challenge is ended ");
+    }
+    if (announcement.getCreatedDate().split("T")[0].compareTo(challenge.getStartDate().split("T")[0]) < 0) {
+      throw new IllegalArgumentException("announcement is not allowed when challenge is not started ");
+    }
     if (announcement.getAssignee() == null) {
       throw new IllegalArgumentException("announcement assignee must have at least one winner");
     }
