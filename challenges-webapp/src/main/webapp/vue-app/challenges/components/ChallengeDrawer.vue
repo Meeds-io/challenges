@@ -98,6 +98,7 @@
 </template>
 
 <script>
+
 export default {
   name: 'ChallengeDrawer',
   props: {
@@ -305,13 +306,15 @@ export default {
       const endDate = new Date(this.challenge && this.challenge.endDate);
       if (startDate.getTime() > currentDate.getTime() && endDate.getTime() > currentDate.getTime()) {
         return status.NOTSTARTED;
-      } else if (startDate.getTime()<currentDate.getTime() && endDate.getTime() > currentDate.getTime()) {
+      } else if ((startDate.getTime()<currentDate.getTime() && endDate.getTime() > currentDate.getTime()) || ((this.getFromDate(endDate) ===  this.getFromDate(currentDate)))) {
         return status.STARTED;
       } else if (endDate.getTime() < currentDate.getTime() && startDate.getTime()< currentDate.getTime()) {
         return status.ENDED;
       }
     },
-
+    getFromDate(date) {
+      return this.$challengeUtils.getFromDate(date);
+    },
     SaveChallenge() {
       if (this.challenge.startDate > this.challenge.endDate){
         this.$root.$emit('show-alert', {type: 'error',message: this.$t('challenges.challengeDateError')});
