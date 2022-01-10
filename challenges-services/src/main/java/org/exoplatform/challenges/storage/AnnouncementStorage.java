@@ -7,6 +7,7 @@ import org.exoplatform.challenges.model.Announcement;
 import org.exoplatform.challenges.model.Challenge;
 import org.exoplatform.challenges.utils.EntityMapper;
 
+import java.util.Date;
 import java.util.List;
 
 public class AnnouncementStorage {
@@ -26,7 +27,15 @@ public class AnnouncementStorage {
     }
     Challenge challenge = challengeStorage.getChallengeById(announcement.getChallengeId());
     AnnouncementEntity announcementEntity = EntityMapper.toEntity(announcement, challenge);
+    long MILLIS_IN_A_DAY = 1000 * 60 * 60 * 24;
+    Date nextToEndDate =   new Date(announcementEntity.getChallenge().getEndDate().getTime() + MILLIS_IN_A_DAY);
 
+    if (!announcementEntity.getCreatedDate().before(nextToEndDate)) {
+      throw new IllegalArgumentException("announcement is not allowed when challenge is ended ");
+    }
+    if (!announcementEntity.getCreatedDate().after(announcementEntity.getChallenge().getStartDate())) {
+      throw new IllegalArgumentException("announcement is not allowed when challenge is not started ");
+    }
     if (announcementEntity.getId() == null) {
       announcementEntity = announcementDAO.create(announcementEntity);
     } else {
