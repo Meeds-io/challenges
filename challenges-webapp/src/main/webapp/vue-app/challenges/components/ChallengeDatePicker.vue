@@ -18,7 +18,12 @@
           @input="emitStartDate(startDate)" />
       </div>
     </div>
-    <div class="challengeEndDateCalender d-flex align-center">
+    <div v-if="!startDate" class="mx-3 mt-n2 justify-center">
+      <span class="error--text">
+        * {{ $t('challenges.label.requiredStartDate') }}
+      </span>
+    </div>
+    <div class="challengeEndDateCalender d-flex align-center mt-1">
       <i class="uiIconEndDate uiIconBlue"></i>
       <div v-if="disabledEndDate" class="subtitle-1 mx-4 mt-1">
         {{ getFormatDate(endDate) }}
@@ -34,6 +39,11 @@
           class="flex-grow-1 my-auto"
           @input="emitEndDate(endDate)" />
       </div>
+    </div>
+    <div v-if="!endDate" class="mx-3 mt-n2 justify-center">
+      <span class="error--text">
+        * {{ $t('challenges.label.requiredEndDate') }}
+      </span>
     </div>
   </div>
 </template>
