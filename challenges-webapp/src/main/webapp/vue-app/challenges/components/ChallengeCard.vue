@@ -105,7 +105,7 @@ export default {
       return this.challenge && this.challenge.userInfo.canAnnounce && this.status !== 'Ended' && this.status !== 'Starts';
     },
     enableEdit(){
-      return this.challenge && this.challenge.userInfo.canEdit && this.status !== 'Ended';
+      return this.challenge && this.challenge.userInfo.canEdit;
     },
   },
   methods: {
