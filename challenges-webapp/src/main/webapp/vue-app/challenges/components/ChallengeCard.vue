@@ -103,7 +103,10 @@
       </div>
     </v-card>
     <challenge-details-drawer :challenge="challenge" ref="challenge" />
-    <announce-drawer :challenge="challenge" ref="announceRef" />
+    <announce-drawer
+      :challenge="challenge"
+      @announcementAdded="announcementAdded($event)"
+      ref="announceRef" />
     <challenge-winners-details
       :challenge-id="challenge && challenge.id"
       :list-winners="listWinners"
@@ -167,18 +170,32 @@ export default {
     },
   },
   mounted() {
-    this.challenge.announcements.map(announce => {
-      for (const assignee of announce.assignee) {
-        const announcement = {
-          user: assignee,
-          activityId: announce.activityId,
-          createDate: announce.createdDate
-        };
-        this.listWinners.push(announcement);
-      }
-    });
+    this.getListWinners();
   },
   methods: {
+    getListWinners() {
+      this.challenge.announcements.map(announce => {
+        for (const assignee of announce.assignee) {
+          const announcement = {
+            user: assignee,
+            activityId: announce.activityId,
+            createDate: announce.createdDate
+          };
+          this.listWinners.push(announcement);
+        }
+      });
+    },
+    announcementAdded(announcement) {
+      for (const assignee of announcement.assignee) {
+        const newAnnouncement = {
+          user: assignee,
+          activityId: announcement.activityId,
+          createDate: announcement.createdDate
+        };
+        this.listWinners.unshift(newAnnouncement);
+      }
+      this.challenge.numberAllAnnouncements = this.challenge.numberAllAnnouncements +1;
+    },
     openDetails() {
       this.$refs.winnersDetails.open();
     },
