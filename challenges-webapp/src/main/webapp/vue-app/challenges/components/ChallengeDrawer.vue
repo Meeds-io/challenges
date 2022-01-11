@@ -36,7 +36,7 @@
             required
             autofocus />
           <v-divider class="my-2" />
-          <span class="subtitle-1"> {{ $t('challenges.label.audienceSpace') }}</span>
+          <span class="subtitle-1"> {{ $t('challenges.label.audienceSpace') }} *</span>
           <exo-identity-suggester
             ref="challengeSpaceSuggester"
             v-model="audience"
@@ -48,7 +48,7 @@
             include-spaces
             only-manager />
 
-          <span class="subtitle-1"> {{ $t('challenges.label.challengeOwners') }}</span>
+          <span class="subtitle-1"> {{ $t('challenges.label.challengeOwners') }} *</span>
           <challenge-assignment
             ref="challengeAssignment"
             class="my-2"
@@ -57,13 +57,15 @@
             @remove-user="removeManager"
             @add-item="addManager" />
 
-          <challenge-date-picker
-            ref="challengeDatePicker"
-            :challenge="challenge"
-            class="challengeDates my-2"
-            @startDateChanged="updateChallengeStartDate($event)"
-            @endDateChanged="updateChallengeEndDate($event)" />
-
+          <div class="mt-4">
+            <span class="subtitle-1"> {{ $t('challenges.label.ChallengeDates') }} *</span>
+            <challenge-date-picker
+              ref="challengeDatePicker"
+              :challenge="challenge"
+              class="challengeDates my-2"
+              @startDateChanged="updateChallengeStartDate($event)"
+              @endDateChanged="updateChallengeEndDate($event)" />
+          </div>
           <div class="challengeDescription py-4 my-2">
             <challenge-description
               ref="challengeDescription"
