@@ -18,7 +18,9 @@ import java.util.Map;
 
 public class AnnouncementActivityProcessor extends BaseActivityProcessorPlugin {
 
-  private static final Log LOG = ExoLogger.getLogger(AnnouncementActivityProcessor.class);
+  private static final Log    LOG           = ExoLogger.getLogger(AnnouncementActivityProcessor.class);
+
+  private static final String ACTIVITY_TYPE = "challenges-announcement";
 
   AnnouncementService      announcementService;
 
@@ -29,6 +31,9 @@ public class AnnouncementActivityProcessor extends BaseActivityProcessorPlugin {
 
   @Override
   public void processActivity(ExoSocialActivity activity) {
+    if (!ACTIVITY_TYPE.equals(activity.getType())) {
+      return;
+    }
     if (activity.isComment() || activity.getType() == null) {
       return;
     }
