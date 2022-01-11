@@ -190,25 +190,12 @@ export default {
         notToChange: true,
       };
       const status= this.getChallengeStatus();
-      if (status === 'STARTED'){
+      if (status === 'STARTED' || status === 'ENDED'){
         this.$refs.challengeDatePicker.startDate = new Date(this.challenge.startDate);
         this.$refs.challengeDatePicker.endDate = this.challenge.endDate;
         this.$refs.challengeDatePicker.disabledStartDate = true;
         this.$refs.challengeSpaceSuggester.emitSelectedValue(NewAudience);
         this.disabledSuggester = true ;
-      } else if (status === 'ENDED'){
-        this.$refs.challengeDatePicker.startDate = new Date(this.challenge.startDate);
-        this.$refs.challengeDatePicker.endDate = new Date(this.challenge.endDate);
-        this.$refs.challengeDatePicker.disabledStartDate = true;
-        this.$refs.challengeDatePicker.disabledEndDate = true;
-        this.$refs.challengeSpaceSuggester.emitSelectedValue(NewAudience);
-        this.$refs.challengeSpaceSuggester.disabledUnAssign = true;
-        this.disabledSuggester = true ;
-        this.disabledTitleEdit = true ;
-        this.disabledUpdate = true ;
-        this.$refs.challengeAssignment.disabledUnAssign = true;
-        this.$refs.challengeDescription.disabled = true;
-        this.warning = this.$t('challenges.warn.challengeEnded');
       } else {
         this.$refs.challengeDatePicker.startDate = this.challenge.startDate;
         this.$refs.challengeDatePicker.endDate = this.challenge.endDate;
