@@ -2,7 +2,6 @@ package org.exoplatform.challenges.storage;
 
 import org.exoplatform.challenges.dao.AnnouncementDAO;
 import org.exoplatform.challenges.entity.AnnouncementEntity;
-import org.exoplatform.challenges.entity.ChallengeEntity;
 import org.exoplatform.challenges.model.Announcement;
 import org.exoplatform.challenges.model.Challenge;
 import org.exoplatform.challenges.utils.EntityMapper;
@@ -16,6 +15,8 @@ public class AnnouncementStorage {
 
   private ChallengeStorage challengeStorage;
 
+  public static final long  MILLIS_IN_A_DAY = 1000 * 60 * 60 * 24;
+
   public AnnouncementStorage(AnnouncementDAO announcementDAO, ChallengeStorage challengeStorage) {
     this.announcementDAO = announcementDAO;
     this.challengeStorage = challengeStorage;
@@ -27,7 +28,6 @@ public class AnnouncementStorage {
     }
     Challenge challenge = challengeStorage.getChallengeById(announcement.getChallengeId());
     AnnouncementEntity announcementEntity = EntityMapper.toEntity(announcement, challenge);
-    long MILLIS_IN_A_DAY = 1000 * 60 * 60 * 24;
     Date nextToEndDate =   new Date(announcementEntity.getChallenge().getEndDate().getTime() + MILLIS_IN_A_DAY);
 
     if (!announcementEntity.getCreatedDate().before(nextToEndDate)) {
