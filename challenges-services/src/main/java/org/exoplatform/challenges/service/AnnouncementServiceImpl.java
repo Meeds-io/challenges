@@ -86,7 +86,7 @@ public class AnnouncementServiceImpl implements AnnouncementService {
   }
 
   @Override
-  public Long countAllAnnouncementByChallenge(long challengeId) throws ObjectNotFoundException {
+  public Long countAllAnnouncementsByChallenge(long challengeId) throws ObjectNotFoundException {
     if (challengeId <= 0) {
       throw new IllegalArgumentException("Challenge id has to be positive integer");
     }
@@ -94,7 +94,7 @@ public class AnnouncementServiceImpl implements AnnouncementService {
     if (challenge == null) {
       throw new ObjectNotFoundException("challenge does not exist");
     }
-    return announcementStorage.countAllAnnouncementByChallenge(challengeId);
+    return announcementStorage.countAnnouncementsByChallenge(challengeId);
   }
 
   @Override

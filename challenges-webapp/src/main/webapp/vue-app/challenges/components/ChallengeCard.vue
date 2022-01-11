@@ -52,7 +52,7 @@
           <p
             class="emptyWinners my-auto pl-2 align-self-end text-no-wrap pt-1"
             @click="openDetails">
-            {{ challenge && challenge.numberAllAnnouncements }} {{ $t('challenges.winners.details') }}
+            {{ challenge && challenge.announcementsCount }} {{ $t('challenges.winners.details') }}
           </p>
         </div>
         <div
@@ -88,7 +88,7 @@
           <p
             class="announcesNumber my-auto pl-2 align-self-end caption text-no-wrap pt-1"
             @click="openDetails">
-            {{ challenge && challenge.numberAllAnnouncements }} {{ $t('challenges.label.announces') }}
+            {{ challenge && challenge.announcementsCount }} {{ $t('challenges.label.announces') }}
           </p>
         </div>
         <div class="addAnnounce">
@@ -140,7 +140,7 @@ export default {
       }
     },
     showMoreAvatarsNumber() {
-      return this.challenge.numberAllAnnouncements - this.maxAvatarToShow;
+      return this.challenge.announcementsCount - this.maxAvatarToShow;
     },
     showMessage() {
       if (this.challenge && this.challenge.userInfo && !this.challenge.userInfo.canAnnounce) {
@@ -194,7 +194,7 @@ export default {
         };
         this.listWinners.unshift(newAnnouncement);
       }
-      this.challenge.numberAllAnnouncements = this.challenge.numberAllAnnouncements +1;
+      this.challenge.announcementsCount = this.challenge.announcementsCount +1;
     },
     openDetails() {
       this.$refs.winnersDetails.open();

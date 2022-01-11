@@ -30,7 +30,7 @@ public class ChallengeRestEntity implements Cloneable {
 
   private List<AnnouncementRestEntity> announcements;
 
-  private Long                         numberAllAnnouncements;
+  private Long                         announcementsCount;
 
   public ChallengeRestEntity clone() { // NOSONAR
     return new ChallengeRestEntity(id,
@@ -42,6 +42,6 @@ public class ChallengeRestEntity implements Cloneable {
                                    userInfo,
                                    managers,
                                    announcements,
-                                   numberAllAnnouncements);
+                                   announcementsCount);
   }
 }

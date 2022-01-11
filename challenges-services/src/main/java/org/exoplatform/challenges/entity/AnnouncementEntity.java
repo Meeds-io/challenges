@@ -12,7 +12,7 @@ import java.util.List;
 @Table(name = "ANNOUNCEMENT")
 @NamedQueries({
     @NamedQuery(name = "Announcement.findAllAnnouncementByChallenge", query = "SELECT DISTINCT a FROM Announcement a where a.challenge.id = :challengeId order by a.createdDate desc"),
-    @NamedQuery(name = "Announcement.countAllAnnouncementByChallenge", query = "SELECT COUNT(us) FROM Announcement a LEFT JOIN a.assignee us where a.challenge.id = :challengeId"), })
+    @NamedQuery(name = "Announcement.countAnnouncementsByChallenge", query = "SELECT COUNT(us) FROM Announcement a LEFT JOIN a.assignee us where a.challenge.id = :challengeId"), })
 
 public class AnnouncementEntity implements Serializable {
 

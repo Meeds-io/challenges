@@ -20,8 +20,8 @@ public class AnnouncementDAO extends GenericDAOJPAImpl<AnnouncementEntity, Long>
     return resultList == null ? Collections.emptyList() : resultList;
   }
 
-  public Long countAllAnnouncementByChallenge(Long challengeId) {
-    TypedQuery<Long> query = getEntityManager().createNamedQuery("Announcement.countAllAnnouncementByChallenge", Long.class);
+  public Long countAnnouncementsByChallenge(Long challengeId) {
+    TypedQuery<Long> query = getEntityManager().createNamedQuery("Announcement.countAnnouncementsByChallenge", Long.class);
     query.setParameter("challengeId", challengeId);
     try {
       Long count = query.getSingleResult();

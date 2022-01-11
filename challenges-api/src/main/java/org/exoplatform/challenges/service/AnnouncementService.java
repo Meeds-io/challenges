@@ -63,6 +63,6 @@ public interface AnnouncementService {
    * @throws ObjectNotFoundException when the challenge identified by its
    *           technical identifier is not found
    */
-  Long countAllAnnouncementByChallenge(long challengeId) throws ObjectNotFoundException;
+  Long countAllAnnouncementsByChallenge(long challengeId) throws ObjectNotFoundException;
 
 }

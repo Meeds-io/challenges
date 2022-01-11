@@ -2,7 +2,6 @@ package org.exoplatform.challenges.storage;
 
 import org.exoplatform.challenges.dao.AnnouncementDAO;
 import org.exoplatform.challenges.entity.AnnouncementEntity;
-import org.exoplatform.challenges.entity.ChallengeEntity;
 import org.exoplatform.challenges.model.Announcement;
 import org.exoplatform.challenges.model.Challenge;
 import org.exoplatform.challenges.utils.EntityMapper;
@@ -46,8 +45,8 @@ public class AnnouncementStorage {
     return EntityMapper.fromAnnouncementEntities(announcementEntities);
   }
 
-  public Long countAllAnnouncementByChallenge(Long challengeId) {
-    Long countAnnounce = announcementDAO.countAllAnnouncementByChallenge(challengeId);
+  public Long countAnnouncementsByChallenge(Long challengeId) {
+    Long countAnnounce = announcementDAO.countAnnouncementsByChallenge(challengeId);
     return countAnnounce;
   }
 
