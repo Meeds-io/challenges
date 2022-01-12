@@ -168,8 +168,9 @@ export default {
     createAnnouncement() {
       this.announcement.challengeId =  this.challenge.id;
       this.announcement.createdDate = new Date();
-      this.$challengesServices.saveAnnouncement(this.announcement).then(() =>{
+      this.$challengesServices.saveAnnouncement(this.announcement).then((announcement) =>{
         this.$root.$emit('show-alert', {type: 'success',message: this.$t('challenges.announcementCreateSuccess')});
+        this.$emit('announcementAdded', announcement);
       })
         .catch(e => {
           this.$root.$emit('show-alert', {type: 'error',message: String(e)});
