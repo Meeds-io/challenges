@@ -69,7 +69,8 @@ public class AnnouncementServiceTest extends BaseExoTestCase {
                                         new Date(System.currentTimeMillis() + 1).toString(),
                                         true,
                                         false,
-                                        Collections.emptyList());
+                                        Collections.emptyList(),
+                                        0l);
     List<Long> assignee = new ArrayList<Long>();
     assignee.add(1L);
     Announcement announcement = new Announcement(0,
@@ -78,14 +79,16 @@ public class AnnouncementServiceTest extends BaseExoTestCase {
                                                  "announcement comment",
                                                  1L,
                                                  new Date(System.currentTimeMillis()).toString(),
-                                                 null);
+                                                 null,
+                                                 0l);
     Announcement createdAnnouncement = new Announcement(1,
                                                         challenge.getId(),
                                                         new ArrayList<>(1),
                                                         "announcement comment",
                                                         1L,
                                                         new Date(System.currentTimeMillis()).toString(),
-                                                        null);
+                                                        null,
+                                                        0l);
     Identity spaceIdentity = new Identity();
     spaceIdentity.setId("1");
     spaceIdentity.setProviderId("space");
@@ -133,7 +136,8 @@ public class AnnouncementServiceTest extends BaseExoTestCase {
                                         new Date(System.currentTimeMillis() + 1).toString(),
                                         true,
                                         false,
-                                        Collections.emptyList());
+                                        Collections.emptyList(),
+                                        0l);
     List<Long> assignee = new ArrayList<Long>();
     assignee.add(1L);
     Announcement announcement = new Announcement(0,
@@ -142,21 +146,24 @@ public class AnnouncementServiceTest extends BaseExoTestCase {
                                                  "announcement comment",
                                                  1L,
                                                  new Date(System.currentTimeMillis()).toString(),
-                                                 null);
+                                                 null,
+                                                 0l);
     Announcement createdAnnouncement = new Announcement(1,
                                                         challenge.getId(),
                                                         new ArrayList<>(1),
                                                         "announcement comment",
                                                         1L,
                                                         new Date(System.currentTimeMillis()).toString(),
-                                                        null);
+                                                        null,
+                                                        0l);
     Announcement editedAnnouncement = new Announcement(1,
                                                        challenge.getId(),
                                                        new ArrayList<>(1),
                                                        "announcement comment",
                                                        1L,
                                                        new Date(System.currentTimeMillis()).toString(),
-                                                       1L);
+                                                       1L,
+                                                       0l);
     Identity spaceIdentity = new Identity();
     spaceIdentity.setId("1");
     spaceIdentity.setProviderId("space");
@@ -209,7 +216,8 @@ public class AnnouncementServiceTest extends BaseExoTestCase {
                                         new Date(System.currentTimeMillis() + 1).toString(),
                                         true,
                                         false,
-                                        Collections.emptyList());
+                                        Collections.emptyList(),
+                                        0l);
     List<Long> assignee = new ArrayList<Long>();
     assignee.add(1L);
     Announcement announcement1 = new Announcement(0,
@@ -218,21 +226,24 @@ public class AnnouncementServiceTest extends BaseExoTestCase {
                                                   "announcement comment",
                                                   1L,
                                                   new Date(System.currentTimeMillis()).toString(),
-                                                  null);
+                                                  null,
+                                                  0l);
     Announcement announcement2 = new Announcement(1,
                                                   challenge.getId(),
                                                   new ArrayList<>(1),
                                                   "announcement comment",
                                                   1L,
                                                   new Date(System.currentTimeMillis()).toString(),
-                                                  null);
+                                                  null,
+                                                  0l);
     Announcement announcement3 = new Announcement(1,
                                                   challenge.getId(),
                                                   new ArrayList<>(1),
                                                   "announcement comment",
                                                   1L,
                                                   new Date(System.currentTimeMillis()).toString(),
-                                                  1L);
+                                                  1L,
+                                                  0l);
     List<Announcement> announcementList = new ArrayList<>();
     announcementList.add(announcement1);
     announcementList.add(announcement2);

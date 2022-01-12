@@ -2,6 +2,7 @@ package org.exoplatform.challenges.entity;
 
 import org.exoplatform.commons.api.persistence.ExoEntity;
 import javax.persistence.*;
+import javax.validation.constraints.Size;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
@@ -33,6 +34,9 @@ public class ChallengeEntity implements Serializable {
 
   @Column(name = "END_DATE", nullable = false)
   private Date       endDate;
+
+  @Column(name = "POINTS", nullable = false)
+  private Long       points;
 
   @ElementCollection
   @CollectionTable(name = "CHALLENGE_MANAGER", joinColumns = @JoinColumn(name = "CHALLENGE_ID"))
@@ -93,5 +97,13 @@ public class ChallengeEntity implements Serializable {
 
   public void setManagers(List<Long> managers) {
     this.managers = managers;
+  }
+
+  public Long getPoints() {
+    return points;
+  }
+
+  public void setPoints(Long points) {
+    this.points = points;
   }
 }

@@ -24,8 +24,10 @@ public class Announcement implements Cloneable {
 
   private Long       activityId;
 
+  private Long       points;
+
   @Override
   public Announcement clone() { // NOSONAR
-    return new Announcement(id, challengeId, assignee, comment, creator, createdDate, activityId);
+    return new Announcement(id, challengeId, assignee, comment, creator, createdDate, activityId, points);
   }
 }

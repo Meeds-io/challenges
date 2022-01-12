@@ -25,8 +25,10 @@ public class AnnouncementRestEntity implements Cloneable {
 
   private Long           activityId;
 
+  private Long           points;
+
   public AnnouncementRestEntity clone() { // NOSONAR
-    return new AnnouncementRestEntity(id, challengeId, assignee, comment, creator, createdDate, activityId);
+    return new AnnouncementRestEntity(id, challengeId, assignee, comment, creator, createdDate, activityId, points);
   }
 
 }
