@@ -48,7 +48,7 @@ public class AnnouncementStorageTest {
   @Test
   public void testSaveAnnouncement() {
     Date startDate = new Date(System.currentTimeMillis());
-    Date endDate = new Date(System.currentTimeMillis() + 1);
+    Date endDate = new Date(System.currentTimeMillis() + 2);
     Challenge challenge = new Challenge(1l,
         "new challenge",
         "challenge description",
@@ -68,7 +68,7 @@ public class AnnouncementStorageTest {
 
     List<Long> assignee = new ArrayList<Long>();
     assignee.add(1L);
-    Date createDate = new Date(System.currentTimeMillis());
+    Date createDate =  new Date(System.currentTimeMillis() + 1);
     Announcement announcement = new Announcement(0,
         challenge.getId(),
         assignee,
