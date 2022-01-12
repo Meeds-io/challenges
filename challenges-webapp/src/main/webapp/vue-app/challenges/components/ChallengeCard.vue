@@ -191,8 +191,7 @@ export default {
           createDate: announcement.createdDate
         };
         this.listWinners.unshift(newAnnouncement);
-        this.$refs.winnersDetails.listWinners.unshift(newAnnouncement);
-      }
+        this.$refs.winnersDetails.listWinners.unshift(newAnnouncement);      }
       this.challenge.announcementsCount = this.challenge.announcementsCount +1;
     },
     openDetails() {
