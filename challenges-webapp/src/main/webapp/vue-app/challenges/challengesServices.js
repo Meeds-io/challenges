@@ -60,6 +60,19 @@ export function getAllChallengesByUser(offset, limit) {
   });
 }
 
+export function getAllAnnouncementsByChallenge(challengeId, offset, limit) {
+  return fetch(`${eXo.env.portal.context}/${eXo.env.portal.rest}/announcement/api/ByChallengeId/${challengeId}?offset=${offset || 0}&limit=${limit|| 10}`, {
+    method: 'GET',
+    credentials: 'include',
+  }).then((resp) => {
+    if (resp && resp.ok) {
+      return resp.json();
+    } else {
+      throw new Error('Error when getting challenges');
+    }
+  });
+}
+
 export function saveAnnouncement(announcement) {
   return fetch(`${eXo.env.portal.context}/${eXo.env.portal.rest}/announcement/api/addAnnouncement`, {
     method: 'POST',
