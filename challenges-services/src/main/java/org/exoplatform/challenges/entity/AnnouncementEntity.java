@@ -3,6 +3,7 @@ package org.exoplatform.challenges.entity;
 import org.exoplatform.commons.api.persistence.ExoEntity;
 
 import javax.persistence.*;
+import javax.validation.constraints.Size;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
@@ -43,6 +44,9 @@ public class AnnouncementEntity implements Serializable {
 
   @Column(name = "ACTIVITY_ID")
   private Long            activityId;
+
+  @Column(name = "POINTS", nullable = false)
+  private Long            points;
 
   public Long getId() {
     return id;
@@ -98,5 +102,13 @@ public class AnnouncementEntity implements Serializable {
 
   public void setActivityId(Long activityId) {
     this.activityId = activityId;
+  }
+
+  public Long getPoints() {
+    return points;
+  }
+
+  public void setPoints(Long points) {
+    this.points = points;
   }
 }

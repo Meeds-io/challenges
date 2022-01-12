@@ -32,6 +32,8 @@ public class ChallengeRestEntity implements Cloneable {
 
   private Long                         announcementsCount;
 
+  private Long                         points;
+
   public ChallengeRestEntity clone() { // NOSONAR
     return new ChallengeRestEntity(id,
                                    title,
@@ -42,6 +44,7 @@ public class ChallengeRestEntity implements Cloneable {
                                    userInfo,
                                    managers,
                                    announcements,
-                                   announcementsCount);
+                                   announcementsCount,
+                                   points);
   }
 }

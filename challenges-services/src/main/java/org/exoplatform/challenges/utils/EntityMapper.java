@@ -32,7 +32,8 @@ public class EntityMapper {
                          challengeEntity.getEndDate() == null ? null : Utils.toRFC3339Date(challengeEntity.getEndDate()),
                          Utils.canEditChallenge(challengeEntity.getManagers()),
                          Utils.canAnnounce(String.valueOf(challengeEntity.getAudience())),
-                         challengeEntity.getManagers());
+                         challengeEntity.getManagers(),
+                         challengeEntity.getPoints());
   }
 
   public static ChallengeEntity toEntity(Challenge challenge) {
@@ -62,6 +63,7 @@ public class EntityMapper {
     }
     challengeEntity.setAudience(challenge.getAudience());
     challengeEntity.setManagers(challenge.getManagers());
+    challengeEntity.setPoints(challenge.getPoints());
     return challengeEntity;
   }
 
@@ -76,7 +78,8 @@ public class EntityMapper {
                             announcementEntity.getCreator(),
                             announcementEntity.getCreatedDate() == null ? null
                                                                         : Utils.toRFC3339Date(announcementEntity.getCreatedDate()),
-                            announcementEntity.getActivityId());
+                            announcementEntity.getActivityId(),
+                            announcementEntity.getPoints());
   }
 
   public static AnnouncementEntity toEntity(Announcement announcement, Challenge challenge) {
@@ -98,6 +101,7 @@ public class EntityMapper {
     announcementEntity.setCreatedDate(Utils.parseRFC3339Date(announcement.getCreatedDate()));
     announcementEntity.setChallenge(challengeEntity);
     announcementEntity.setCreator(announcement.getCreator());
+    announcementEntity.setPoints(announcement.getPoints());
     return announcementEntity;
   }
 
@@ -129,7 +133,8 @@ public class EntityMapper {
                                                     challenge.getManagers()),
                                    Utils.getUsersByIds(challenge.getManagers(), challenge.getId()),
                                    announcementRestEntities,
-                                   Utils.countAnnouncementsByChallenge(challenge.getId()));
+                                   Utils.countAnnouncementsByChallenge(challenge.getId()),
+                                   challenge.getPoints());
   }
 
   public static List<Announcement> fromAnnouncementEntities(List<AnnouncementEntity> announcementEntities) {
@@ -154,7 +159,8 @@ public class EntityMapper {
                                       Utils.getUsersByIds(new ArrayList<Long>(Collections.singleton(announcement.getCreator())), announcement.getChallengeId())
                                            .get(0),
                                       announcement.getCreatedDate(),
-                                      announcement.getActivityId());
+                                      announcement.getActivityId(),
+                                      announcement.getPoints());
   }
 
   public static List<AnnouncementRestEntity> fromAnnouncementList(List<Announcement> announcements) {

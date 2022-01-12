@@ -31,17 +31,17 @@ import static org.mockito.Mockito.when;
 @PowerMockIgnore("javax.management.*")
 public class AnnouncementStorageTest {
 
+  private AnnouncementDAO     announcementDAO;
 
-  private AnnouncementDAO announcementDAO;
+  private ChallengeStorage    challengeStorage;
 
-  private ChallengeStorage challengeStorage;
   private AnnouncementStorage announcementStorage;
 
   @Before
   public void setUp() throws Exception { // NOSONAR
     announcementDAO = mock(AnnouncementDAO.class);
     challengeStorage = mock(ChallengeStorage.class);
-    announcementStorage = new AnnouncementStorage(announcementDAO,challengeStorage);
+    announcementStorage = new AnnouncementStorage(announcementDAO, challengeStorage);
   }
 
   @PrepareForTest({ Utils.class, EntityMapper.class })
@@ -50,14 +50,15 @@ public class AnnouncementStorageTest {
     Date startDate = new Date(System.currentTimeMillis());
     Date endDate = new Date(System.currentTimeMillis() + 2);
     Challenge challenge = new Challenge(1l,
-        "new challenge",
-        "challenge description",
-        1l,
-        startDate.toString(),
-        endDate.toString(),
-        true,
-        false,
-        Collections.emptyList());
+                                        "new challenge",
+                                        "challenge description",
+                                        1l,
+                                        startDate.toString(),
+                                        endDate.toString(),
+                                        true,
+                                        false,
+                                        Collections.emptyList(),
+                                        0l);
 
     ChallengeEntity challengeEntity = new ChallengeEntity();
     challengeEntity.setDescription(challenge.getDescription());
@@ -70,12 +71,13 @@ public class AnnouncementStorageTest {
     assignee.add(1L);
     Date createDate =  new Date(System.currentTimeMillis() + 1);
     Announcement announcement = new Announcement(0,
-        challenge.getId(),
-        assignee,
-        "announcement comment",
-        1L,
-        createDate.toString(),
-        null);
+                                                 challenge.getId(),
+                                                 assignee,
+                                                 "announcement comment",
+                                                 1L,
+                                                 createDate.toString(),
+                                                 null,
+                                                 0l);
 
     AnnouncementEntity announcementEntity = new AnnouncementEntity();
     announcementEntity.setAssignee(announcement.getAssignee());
@@ -100,7 +102,6 @@ public class AnnouncementStorageTest {
     announcementFromEntity.setChallengeId(newAnnouncementEntity.getChallenge().getId());
     announcementFromEntity.setId(newAnnouncementEntity.getId());
 
-
     PowerMockito.mockStatic(Utils.class);
     PowerMockito.mockStatic(EntityMapper.class);
     Identity identity = mock(Identity.class);
@@ -108,11 +109,10 @@ public class AnnouncementStorageTest {
     when(challengeStorage.getChallengeById(anyLong())).thenReturn(challenge);
     when(Utils.getIdentityByTypeAndId(any(), any())).thenReturn(identity);
     when(EntityMapper.toEntity(challenge)).thenReturn(challengeEntity);
-    when(EntityMapper.toEntity(announcement,challenge)).thenReturn(announcementEntity);
+    when(EntityMapper.toEntity(announcement, challenge)).thenReturn(announcementEntity);
     when(EntityMapper.fromEntity(newAnnouncementEntity)).thenReturn(announcementFromEntity);
 
     Announcement createdAnnouncement = announcementStorage.saveAnnouncement(announcement);
-
 
     // Then
     assertNotNull(createdAnnouncement);
@@ -123,134 +123,136 @@ public class AnnouncementStorageTest {
 
   @PrepareForTest({ EntityMapper.class })
   @Test
- public void testGetAnnouncementById(){
-   Date startDate = new Date(System.currentTimeMillis());
-   Date endDate = new Date(System.currentTimeMillis() + 1);
-   ChallengeEntity challengeEntity = new ChallengeEntity();
-   challengeEntity.setDescription("challenge description");
-   challengeEntity.setTitle("new challenge");
-   challengeEntity.setStartDate(startDate);
-   challengeEntity.setEndDate(endDate);
-   challengeEntity.setId(1l);
+  public void testGetAnnouncementById() {
+    Date startDate = new Date(System.currentTimeMillis());
+    Date endDate = new Date(System.currentTimeMillis() + 1);
+    ChallengeEntity challengeEntity = new ChallengeEntity();
+    challengeEntity.setDescription("challenge description");
+    challengeEntity.setTitle("new challenge");
+    challengeEntity.setStartDate(startDate);
+    challengeEntity.setEndDate(endDate);
+    challengeEntity.setId(1l);
 
-   List<Long> assignee = new ArrayList<Long>();
-   assignee.add(1L);
-   Date createDate = new Date(System.currentTimeMillis());
+    List<Long> assignee = new ArrayList<Long>();
+    assignee.add(1L);
+    Date createDate = new Date(System.currentTimeMillis());
 
-   AnnouncementEntity announcementEntity = new AnnouncementEntity();
-   announcementEntity.setId(1l);
-   announcementEntity.setAssignee(assignee);
-   announcementEntity.setCreator(1L);
-   announcementEntity.setChallenge(challengeEntity);
-   announcementEntity.setComment("announcement comment");
-   announcementEntity.setCreatedDate(createDate);
+    AnnouncementEntity announcementEntity = new AnnouncementEntity();
+    announcementEntity.setId(1l);
+    announcementEntity.setAssignee(assignee);
+    announcementEntity.setCreator(1L);
+    announcementEntity.setChallenge(challengeEntity);
+    announcementEntity.setComment("announcement comment");
+    announcementEntity.setCreatedDate(createDate);
 
-   Announcement announcementFromEntity = new Announcement();
-   announcementFromEntity.setId(announcementEntity.getId());
-   announcementFromEntity.setAssignee(announcementEntity.getAssignee());
-   announcementFromEntity.setCreator(announcementEntity.getCreator());
-   announcementFromEntity.setComment(announcementEntity.getComment());
-   announcementFromEntity.setCreatedDate(createDate.toString());
-   announcementFromEntity.setChallengeId(announcementEntity.getChallenge().getId());
-   announcementFromEntity.setId(announcementEntity.getId());
+    Announcement announcementFromEntity = new Announcement();
+    announcementFromEntity.setId(announcementEntity.getId());
+    announcementFromEntity.setAssignee(announcementEntity.getAssignee());
+    announcementFromEntity.setCreator(announcementEntity.getCreator());
+    announcementFromEntity.setComment(announcementEntity.getComment());
+    announcementFromEntity.setCreatedDate(createDate.toString());
+    announcementFromEntity.setChallengeId(announcementEntity.getChallenge().getId());
+    announcementFromEntity.setId(announcementEntity.getId());
 
+    PowerMockito.mockStatic(EntityMapper.class);
+    when(announcementDAO.find(anyLong())).thenReturn(announcementEntity);
+    when(EntityMapper.fromEntity(announcementEntity)).thenReturn(announcementFromEntity);
 
-   PowerMockito.mockStatic(EntityMapper.class);
-   when(announcementDAO.find(anyLong())).thenReturn(announcementEntity);
-   when(EntityMapper.fromEntity(announcementEntity)).thenReturn(announcementFromEntity);
+    Announcement createdAnnouncement = announcementStorage.getAnnouncementById(1l);
 
-   Announcement createdAnnouncement = announcementStorage.getAnnouncementById(1l);
+    // Then
+    assertNotNull(createdAnnouncement);
+    assertEquals(createdAnnouncement.getId(), 1l);
+    assertEquals(announcementFromEntity, createdAnnouncement);
+  }
 
-   // Then
-   assertNotNull(createdAnnouncement);
-   assertEquals(createdAnnouncement.getId(), 1l);
-   assertEquals(announcementFromEntity, createdAnnouncement);
- }
   @PrepareForTest({ EntityMapper.class })
   @Test
- public void testGetAnnouncementByChallengeId(){
-   Date startDate = new Date(System.currentTimeMillis());
-   Date endDate = new Date(System.currentTimeMillis() + 1);
-   ChallengeEntity challengeEntity = new ChallengeEntity();
-   challengeEntity.setDescription("challenge description");
-   challengeEntity.setTitle("new challenge");
-   challengeEntity.setStartDate(startDate);
-   challengeEntity.setEndDate(endDate);
-   challengeEntity.setId(1l);
+  public void testGetAnnouncementByChallengeId() {
+    Date startDate = new Date(System.currentTimeMillis());
+    Date endDate = new Date(System.currentTimeMillis() + 1);
+    ChallengeEntity challengeEntity = new ChallengeEntity();
+    challengeEntity.setDescription("challenge description");
+    challengeEntity.setTitle("new challenge");
+    challengeEntity.setStartDate(startDate);
+    challengeEntity.setEndDate(endDate);
+    challengeEntity.setId(1l);
 
-   List<Long> assignee = new ArrayList<Long>();
-   assignee.add(1L);
-   Date createDate = new Date(System.currentTimeMillis());
+    List<Long> assignee = new ArrayList<Long>();
+    assignee.add(1L);
+    Date createDate = new Date(System.currentTimeMillis());
 
-   AnnouncementEntity announcementEntity1 = new AnnouncementEntity();
-   announcementEntity1.setId(1l);
-   announcementEntity1.setAssignee(assignee);
-   announcementEntity1.setCreator(1L);
-   announcementEntity1.setChallenge(challengeEntity);
-   announcementEntity1.setComment("announcement comment 1");
-   announcementEntity1.setCreatedDate(createDate);
+    AnnouncementEntity announcementEntity1 = new AnnouncementEntity();
+    announcementEntity1.setId(1l);
+    announcementEntity1.setAssignee(assignee);
+    announcementEntity1.setCreator(1L);
+    announcementEntity1.setChallenge(challengeEntity);
+    announcementEntity1.setComment("announcement comment 1");
+    announcementEntity1.setCreatedDate(createDate);
 
-   Announcement announcementFromEntity1 = new Announcement();
-   announcementFromEntity1.setId(announcementEntity1.getId());
-   announcementFromEntity1.setAssignee(announcementEntity1.getAssignee());
-   announcementFromEntity1.setCreator(announcementEntity1.getCreator());
-   announcementFromEntity1.setComment(announcementEntity1.getComment());
-   announcementFromEntity1.setCreatedDate(createDate.toString());
-   announcementFromEntity1.setChallengeId(announcementEntity1.getChallenge().getId());
-   announcementFromEntity1.setId(announcementEntity1.getId());
+    Announcement announcementFromEntity1 = new Announcement();
+    announcementFromEntity1.setId(announcementEntity1.getId());
+    announcementFromEntity1.setAssignee(announcementEntity1.getAssignee());
+    announcementFromEntity1.setCreator(announcementEntity1.getCreator());
+    announcementFromEntity1.setComment(announcementEntity1.getComment());
+    announcementFromEntity1.setCreatedDate(createDate.toString());
+    announcementFromEntity1.setChallengeId(announcementEntity1.getChallenge().getId());
+    announcementFromEntity1.setId(announcementEntity1.getId());
 
-   AnnouncementEntity announcementEntity2 = new AnnouncementEntity();
-   announcementEntity2.setId(1l);
-   announcementEntity2.setAssignee(assignee);
-   announcementEntity2.setCreator(1L);
-   announcementEntity2.setChallenge(challengeEntity);
-   announcementEntity2.setComment("announcement comment 2");
-   announcementEntity2.setCreatedDate(createDate);
+    AnnouncementEntity announcementEntity2 = new AnnouncementEntity();
+    announcementEntity2.setId(1l);
+    announcementEntity2.setAssignee(assignee);
+    announcementEntity2.setCreator(1L);
+    announcementEntity2.setChallenge(challengeEntity);
+    announcementEntity2.setComment("announcement comment 2");
+    announcementEntity2.setCreatedDate(createDate);
 
-   Announcement announcementFromEntity2 = new Announcement();
-   announcementFromEntity2.setId(announcementEntity2.getId());
-   announcementFromEntity2.setAssignee(announcementEntity2.getAssignee());
-   announcementFromEntity2.setCreator(announcementEntity2.getCreator());
-   announcementFromEntity2.setComment(announcementEntity2.getComment());
-   announcementFromEntity2.setCreatedDate(createDate.toString());
-   announcementFromEntity2.setChallengeId(announcementEntity2.getChallenge().getId());
-   announcementFromEntity2.setId(announcementEntity2.getId());
+    Announcement announcementFromEntity2 = new Announcement();
+    announcementFromEntity2.setId(announcementEntity2.getId());
+    announcementFromEntity2.setAssignee(announcementEntity2.getAssignee());
+    announcementFromEntity2.setCreator(announcementEntity2.getCreator());
+    announcementFromEntity2.setComment(announcementEntity2.getComment());
+    announcementFromEntity2.setCreatedDate(createDate.toString());
+    announcementFromEntity2.setChallengeId(announcementEntity2.getChallenge().getId());
+    announcementFromEntity2.setId(announcementEntity2.getId());
 
-   AnnouncementEntity announcementEntity3 = new AnnouncementEntity();
-   announcementEntity3.setId(1l);
-   announcementEntity3.setAssignee(assignee);
-   announcementEntity3.setCreator(1L);
-   announcementEntity3.setChallenge(challengeEntity);
-   announcementEntity3.setComment("announcement comment 3");
-   announcementEntity3.setCreatedDate(createDate);
+    AnnouncementEntity announcementEntity3 = new AnnouncementEntity();
+    announcementEntity3.setId(1l);
+    announcementEntity3.setAssignee(assignee);
+    announcementEntity3.setCreator(1L);
+    announcementEntity3.setChallenge(challengeEntity);
+    announcementEntity3.setComment("announcement comment 3");
+    announcementEntity3.setCreatedDate(createDate);
 
-   Announcement announcementFromEntity3 = new Announcement();
-   announcementFromEntity3.setId(announcementEntity3.getId());
-   announcementFromEntity3.setAssignee(announcementEntity3.getAssignee());
-   announcementFromEntity3.setCreator(announcementEntity3.getCreator());
-   announcementFromEntity3.setComment(announcementEntity3.getComment());
-   announcementFromEntity3.setCreatedDate(createDate.toString());
-   announcementFromEntity3.setChallengeId(announcementEntity3.getChallenge().getId());
-   announcementFromEntity3.setId(announcementEntity3.getId());
+    Announcement announcementFromEntity3 = new Announcement();
+    announcementFromEntity3.setId(announcementEntity3.getId());
+    announcementFromEntity3.setAssignee(announcementEntity3.getAssignee());
+    announcementFromEntity3.setCreator(announcementEntity3.getCreator());
+    announcementFromEntity3.setComment(announcementEntity3.getComment());
+    announcementFromEntity3.setCreatedDate(createDate.toString());
+    announcementFromEntity3.setChallengeId(announcementEntity3.getChallenge().getId());
+    announcementFromEntity3.setId(announcementEntity3.getId());
 
-   List<Announcement> announcementList = new ArrayList<>();
-   announcementList.add(announcementFromEntity1);
-   announcementList.add(announcementFromEntity2);
-   announcementList.add(announcementFromEntity3);
+    List<Announcement> announcementList = new ArrayList<>();
+    announcementList.add(announcementFromEntity1);
+    announcementList.add(announcementFromEntity2);
+    announcementList.add(announcementFromEntity3);
 
-   List<AnnouncementEntity> announcementEntities = new ArrayList<>();
+    List<AnnouncementEntity> announcementEntities = new ArrayList<>();
     announcementEntities.add(announcementEntity1);
     announcementEntities.add(announcementEntity2);
     announcementEntities.add(announcementEntity3);
 
-   PowerMockito.mockStatic(EntityMapper.class);
-   when(announcementDAO.findAllAnnouncementByChallenge(anyLong(),anyInt(),anyInt())).thenReturn(announcementEntities);
-   when(EntityMapper.fromAnnouncementEntities(announcementEntities)).thenReturn(announcementList);
+    PowerMockito.mockStatic(EntityMapper.class);
+    when(announcementDAO.findAllAnnouncementByChallenge(anyLong(), anyInt(), anyInt())).thenReturn(announcementEntities);
+    when(EntityMapper.fromAnnouncementEntities(announcementEntities)).thenReturn(announcementList);
 
-    List<Announcement> announcementListByChallenge = announcementStorage.findAllAnnouncementByChallenge(challengeEntity.getId(),0,10);
+    List<Announcement> announcementListByChallenge = announcementStorage.findAllAnnouncementByChallenge(challengeEntity.getId(),
+                                                                                                        0,
+                                                                                                        10);
 
-   // Then
-   assertNotNull(announcementListByChallenge);
-   assertEquals(announcementListByChallenge.size(),3);
- }
+    // Then
+    assertNotNull(announcementListByChallenge);
+    assertEquals(announcementListByChallenge.size(), 3);
+  }
 }
