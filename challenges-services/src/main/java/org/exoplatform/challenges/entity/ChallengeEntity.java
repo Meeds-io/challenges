@@ -38,6 +38,9 @@ public class ChallengeEntity implements Serializable {
   @Column(name = "POINTS", nullable = false)
   private Long       points;
 
+  @Column(name = "PROGRAM")
+  private String       program;
+
   @ElementCollection
   @CollectionTable(name = "CHALLENGE_MANAGER", joinColumns = @JoinColumn(name = "CHALLENGE_ID"))
   @Column(name = "MANAGER_ID")
@@ -106,4 +109,8 @@ public class ChallengeEntity implements Serializable {
   public void setPoints(Long points) {
     this.points = points;
   }
+
+  public String getProgram() { return program;  }
+
+  public void setProgram(String program) {  this.program = program; }
 }

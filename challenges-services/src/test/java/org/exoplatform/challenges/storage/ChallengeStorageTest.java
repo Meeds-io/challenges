@@ -47,7 +47,8 @@ public class ChallengeStorageTest {
                                         true,
                                         false,
                                         Collections.emptyList(),
-                                        0l);
+                                        0l,
+                                "challenge");
     long challengeId = 0;
     ChallengeEntity challengeEntity = new ChallengeEntity();
     challengeEntity.setDescription("challenge description");
@@ -78,7 +79,8 @@ public class ChallengeStorageTest {
                                                   true,
                                                   false,
                                                   Collections.emptyList(),
-                                                  0l);
+                                                  0l,
+                                          "challenge");
     when(EntityMapper.fromEntity(newChallengeEntity)).thenReturn(challengeFromEntity);
     // When
     Challenge createdChallenge = challengeStorage.saveChallenge(challenge, "root");
@@ -112,7 +114,8 @@ public class ChallengeStorageTest {
                                         true,
                                         false,
                                         Collections.emptyList(),
-                                        0l);
+                                        0l,
+                                "challenge");
 
     when(EntityMapper.fromEntity(challengeEntity)).thenReturn(challenge);
     when(challengeDAO.find(eq(1l))).thenReturn(challengeEntity);

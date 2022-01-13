@@ -30,8 +30,10 @@ public class Challenge implements Cloneable {
 
   private Long       points;
 
+  private String       program;
+
   @Override
   public Challenge clone() { // NOSONAR
-    return new Challenge(id, title, description, audience, startDate, endDate, canEdit, canAnnounce, managers, points);
+    return new Challenge(id, title, description, audience, startDate, endDate, canEdit, canAnnounce, managers, points, program);
   }
 }

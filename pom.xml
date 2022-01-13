@@ -28,6 +28,7 @@
     <!-- 3rd party libraries versions -->
     <org.exoplatform.social.version>6.3.x-rewards-SNAPSHOT</org.exoplatform.social.version>
     <org.exoplatform.platform-ui.version>6.3.x-rewards-SNAPSHOT</org.exoplatform.platform-ui.version>
+    <addon.exo.gamification.version>2.3.x-SNAPSHOT</addon.exo.gamification.version>
   </properties>
   <dependencyManagement>
     <dependencies>
@@ -47,7 +48,14 @@
         <type>pom</type>
         <scope>import</scope>
       </dependency>
-
+      <!-- Import versions from gamification project -->
+      <dependency>
+        <groupId>org.exoplatform.addons.gamification</groupId>
+        <artifactId>gamification</artifactId>
+        <version>${addon.exo.gamification.version}</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
       <!-- Current project artifacts -->
       <dependency>
         <groupId>${project.groupId}</groupId>
@@ -80,33 +88,4 @@
       </dependency>
     </dependencies>
   </dependencyManagement>
-  <!-- This profile is used to allow github action to build branches. The github action is used for sonar analysis -->
-  <profiles>
-    <profile>
-      <id>project-repositories</id>
-      <activation>
-        <property>
-          <name>!skip-project-repositories</name>
-        </property>
-      </activation>
-      <repositories>
-        <repository>
-          <snapshots>
-            <enabled>true</enabled>
-          </snapshots>
-          <id>repository.exoplatform.org</id>
-          <url>https://repository.exoplatform.org/public</url>
-        </repository>
-      </repositories>
-      <pluginRepositories>
-        <pluginRepository>
-          <snapshots>
-            <enabled>true</enabled>
-          </snapshots>
-          <id>repository.exoplatform.org</id>
-          <url>https://repository.exoplatform.org/public</url>
-        </pluginRepository>
-      </pluginRepositories>
-    </profile>
-  </profiles>
 </project>

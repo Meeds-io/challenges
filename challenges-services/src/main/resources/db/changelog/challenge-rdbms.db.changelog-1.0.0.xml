@@ -126,4 +126,9 @@ Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.-->
         </addColumn>
     </changeSet>
 
+    <changeSet author="challenge" id="1.0.0-8">
+        <addColumn tableName="CHALLENGE">
+            <column name="PROGRAM" type="VARCHAR(50)"/>
+        </addColumn>
+    </changeSet>
 </databaseChangeLog>

@@ -44,7 +44,8 @@ public class ChallengeServiceTest {
                                         true,
                                         false,
                                         Collections.emptyList(),
-                                        0l);
+                                        0l,
+                                "challenge");
     Challenge challengeCreated = new Challenge(1l,
                                                "new challenge",
                                                "challenge description",
@@ -54,7 +55,8 @@ public class ChallengeServiceTest {
                                                true,
                                                false,
                                                Collections.emptyList(),
-                                               0l);
+                                               0l,
+                                        "challenge");
     Space space = new Space();
     when(spaceService.getSpaceById("1")).thenReturn(space);
     when(spaceService.isManager(space, "root")).thenReturn(true);
@@ -80,7 +82,8 @@ public class ChallengeServiceTest {
                                         true,
                                         false,
                                         Collections.emptyList(),
-                                        0l);
+                                        0l,
+                                "challenge");
     Challenge challenge1 = new Challenge(1l,
                                          "new challenge",
                                          "challenge description",
@@ -90,7 +93,8 @@ public class ChallengeServiceTest {
                                          true,
                                          false,
                                          Collections.emptyList(),
-                                         0l);
+                                         0l,
+                                  "challenge");
 
     Challenge challenge2 = new Challenge(1l,
                                          "update challenge",
@@ -101,7 +105,8 @@ public class ChallengeServiceTest {
                                          true,
                                          false,
                                          Collections.emptyList(),
-                                         0l);
+                                         0l,
+                                  "challenge");
     Space space = new Space();
     when(spaceService.getSpaceById("1")).thenReturn(space);
     when(spaceService.isManager(space, "root")).thenReturn(true);

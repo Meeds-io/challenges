@@ -58,7 +58,8 @@ public class AnnouncementStorageTest {
                                         true,
                                         false,
                                         Collections.emptyList(),
-                                        0l);
+                                        0l,
+                                        "challenge");
 
     ChallengeEntity challengeEntity = new ChallengeEntity();
     challengeEntity.setDescription(challenge.getDescription());

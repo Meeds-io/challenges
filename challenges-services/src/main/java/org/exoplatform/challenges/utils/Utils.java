@@ -1,6 +1,7 @@
 package org.exoplatform.challenges.utils;
 
 import org.apache.commons.lang3.StringUtils;
+import org.exoplatform.addons.gamification.service.configuration.DomainService;
 import org.exoplatform.challenges.model.Challenge;
 import org.exoplatform.challenges.model.UserInfo;
 import org.exoplatform.challenges.service.AnnouncementService;
@@ -134,5 +135,9 @@ public class Utils {
       // NOSONAR
       return 0l;
     }
+  }
+  public static Boolean DomainExists(String domain){
+    DomainService domainService = CommonsUtils.getService(DomainService.class);
+    return  domainService.findDomainByTitle(domain) != null;
   }
 }

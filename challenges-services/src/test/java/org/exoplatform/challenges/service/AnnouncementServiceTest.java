@@ -70,7 +70,8 @@ public class AnnouncementServiceTest extends BaseExoTestCase {
                                         true,
                                         false,
                                         Collections.emptyList(),
-                                        0l);
+                                        0l,
+                                "challenge");
     List<Long> assignee = new ArrayList<Long>();
     assignee.add(1L);
     Announcement announcement = new Announcement(0,
@@ -137,7 +138,8 @@ public class AnnouncementServiceTest extends BaseExoTestCase {
                                         true,
                                         false,
                                         Collections.emptyList(),
-                                        0l);
+                                        0l,
+                                        "challenge");
     List<Long> assignee = new ArrayList<Long>();
     assignee.add(1L);
     Announcement announcement = new Announcement(0,
@@ -217,7 +219,8 @@ public class AnnouncementServiceTest extends BaseExoTestCase {
                                         true,
                                         false,
                                         Collections.emptyList(),
-                                        0l);
+                                        0l,
+                                "challenge");
     List<Long> assignee = new ArrayList<Long>();
     assignee.add(1L);
     Announcement announcement1 = new Announcement(0,

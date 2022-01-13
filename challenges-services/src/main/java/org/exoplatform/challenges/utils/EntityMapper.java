@@ -33,7 +33,8 @@ public class EntityMapper {
                          Utils.canEditChallenge(challengeEntity.getManagers()),
                          Utils.canAnnounce(String.valueOf(challengeEntity.getAudience())),
                          challengeEntity.getManagers(),
-                         challengeEntity.getPoints());
+                         challengeEntity.getPoints(),
+                         challengeEntity.getProgram() );
   }
 
   public static ChallengeEntity toEntity(Challenge challenge) {
@@ -64,6 +65,7 @@ public class EntityMapper {
     challengeEntity.setAudience(challenge.getAudience());
     challengeEntity.setManagers(challenge.getManagers());
     challengeEntity.setPoints(challenge.getPoints());
+    challengeEntity.setProgram(challengeEntity.getProgram());
     return challengeEntity;
   }
 
@@ -134,7 +136,8 @@ public class EntityMapper {
                                    Utils.getUsersByIds(challenge.getManagers(), challenge.getId()),
                                    announcementRestEntities,
                                    Utils.countAnnouncementsByChallenge(challenge.getId()),
-                                   challenge.getPoints());
+                                   challenge.getPoints(),
+                                   challenge.getProgram());
   }
 
   public static List<Announcement> fromAnnouncementEntities(List<AnnouncementEntity> announcementEntities) {

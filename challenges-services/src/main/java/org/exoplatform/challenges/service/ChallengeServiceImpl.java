@@ -5,6 +5,7 @@ import org.exoplatform.challenges.entity.ChallengeEntity;
 import org.exoplatform.challenges.model.Challenge;
 import org.exoplatform.challenges.storage.ChallengeStorage;
 import org.exoplatform.challenges.utils.EntityMapper;
+import org.exoplatform.challenges.utils.Utils;
 import org.exoplatform.commons.exception.ObjectNotFoundException;
 import org.exoplatform.commons.utils.ListAccess;
 import org.exoplatform.social.core.space.model.Space;
@@ -40,6 +41,13 @@ public class ChallengeServiceImpl implements ChallengeService {
     Space space = spaceService.getSpaceById(idSpace);
     if (!spaceService.isManager(space, username)) {
       throw new IllegalAccessException("user is not allowed to create challenge");
+    }
+    String idProgram = String.valueOf(challenge.getProgram());
+    if (StringUtils.isBlank(idProgram)) {
+      throw new IllegalArgumentException("program id must not be null or empty");
+    }
+    if (!Utils.DomainExists(idProgram)) {
+      throw new IllegalAccessException("program doesn't exist");
     }
     return challengeStorage.saveChallenge(challenge, username);
   }
