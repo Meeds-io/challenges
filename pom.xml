@@ -28,6 +28,7 @@
     <!-- 3rd party libraries versions -->
     <org.exoplatform.social.version>6.3.x-rewards-SNAPSHOT</org.exoplatform.social.version>
     <org.exoplatform.platform-ui.version>6.3.x-rewards-SNAPSHOT</org.exoplatform.platform-ui.version>
+    <addon.exo.gamification.version>2.3.x-SNAPSHOT</addon.exo.gamification.version>
   </properties>
   <dependencyManagement>
     <dependencies>
@@ -47,7 +48,14 @@
         <type>pom</type>
         <scope>import</scope>
       </dependency>
-
+      <!-- Import versions from gamification project -->
+      <dependency>
+        <groupId>org.exoplatform.addons.gamification</groupId>
+        <artifactId>gamification</artifactId>
+        <version>${addon.exo.gamification.version}</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
       <!-- Current project artifacts -->
       <dependency>
         <groupId>${project.groupId}</groupId>

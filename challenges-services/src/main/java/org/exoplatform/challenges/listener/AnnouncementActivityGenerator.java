@@ -15,6 +15,7 @@ import org.exoplatform.container.ExoContainerContext;
 import org.exoplatform.container.component.RequestLifeCycle;
 import org.exoplatform.services.listener.Event;
 import org.exoplatform.services.listener.Listener;
+import org.exoplatform.services.listener.ListenerService;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
 import org.exoplatform.social.core.activity.ActivityLifeCycle;
@@ -37,6 +38,8 @@ public class AnnouncementActivityGenerator extends Listener<AnnouncementService,
 
   public static final String ANNOUNCEMENT_ACTIVITY_TYPE = "challenges-announcement";
 
+  public static final String GAMIFICATION_EVENT = "exo.gamification.challenge.announcement";
+
   private ExoContainer       container;
 
   private ActivityStorage    activityStorage;
@@ -45,15 +48,18 @@ public class AnnouncementActivityGenerator extends Listener<AnnouncementService,
 
   private ActivityStreamWebSocketService activityStreamWebSocketService;
 
-  public AnnouncementActivityGenerator(ExoContainer container, ActivityStorage activityStorage, ChallengeService challengeService, ActivityStreamWebSocketService activityStreamWebSocketService) {
+  private ListenerService listenerService;
+
+  public AnnouncementActivityGenerator(ExoContainer container, ActivityStorage activityStorage, ChallengeService challengeService, ActivityStreamWebSocketService activityStreamWebSocketService,  ListenerService listenerService) {
     this.container = container;
     this.activityStorage = activityStorage;
     this.challengeService = challengeService;
     this.activityStreamWebSocketService = activityStreamWebSocketService;
+    this.listenerService = listenerService;
   }
 
   @Override
-  public void onEvent(Event<AnnouncementService, Announcement> event) throws ObjectNotFoundException, IllegalAccessException {
+  public void onEvent(Event<AnnouncementService, Announcement> event){
     ExoContainerContext.setCurrentContainer(container);
     RequestLifeCycle.begin(container);
     try {
@@ -64,7 +70,10 @@ public class AnnouncementActivityGenerator extends Listener<AnnouncementService,
       announcement.setActivityId(Long.parseLong(activity.getId()));
       announcementService.updateAnnouncement(announcement);
       ActivityStreamModification activityStreamModification = new ActivityStreamModification(activity.getId(), "createActivity");
-      activityStreamWebSocketService.sendMessage(activityStreamModification);    
+      activityStreamWebSocketService.sendMessage(activityStreamModification);
+      listenerService.broadcast(GAMIFICATION_EVENT,challengeService,announcement);
+    } catch (Exception e) {
+      e.printStackTrace();
     } finally {
       RequestLifeCycle.end();
     }
