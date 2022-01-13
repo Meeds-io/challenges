@@ -11,7 +11,7 @@
         <v-flex v-for="winner in listWinners" :key="winner.user.id">
           <v-row class="accountTitleWrapper mx-0">
             <v-list-item
-              :href="getProfileUrl()"
+              :href="getProfileUrl(winner.user.remoteId)"
               class="accountTitleItem py-3">
               <v-list-item-avatar size="44" class="me-3 mt-0 mb-0 elevation-1">
                 <v-img :src="winner.user.avatarUrl" eager />
@@ -31,6 +31,8 @@
             </v-list-item>
           </v-row>
         </v-flex>
+      </template>
+      <template v-if="showLoadMoreButton" slot="footer">
         <v-row class="ml-6 mr-6 mb-6 mt-n4 d-none d-lg-inline">
           <v-btn
             v-if="showLoadMoreButton"

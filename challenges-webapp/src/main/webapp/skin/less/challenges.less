@@ -262,6 +262,8 @@
         .announcesNumber {
           color: @baseColorLight;
           cursor: pointer;
+          overflow: hidden;
+          text-overflow: ellipsis;
         }
         .projectManagersAvatar {
           background-position: center;
@@ -293,7 +295,7 @@
       }
 
       .winners {
-        width: 50%;
+        width: 60%;
         .emptyWinners {
           color: @baseColorLight;
           cursor: pointer;
@@ -301,7 +303,7 @@
         }
       }
       .addAnnounce {
-        width: 50%;
+        width: 40%;
         margin-right: 12px ~'; /** orientation=lt */ ';
         margin-left: 12px ~'; /** orientation=rt */ ';
         .btnAdd {

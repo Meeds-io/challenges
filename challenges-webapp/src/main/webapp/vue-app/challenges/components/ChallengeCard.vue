@@ -50,8 +50,7 @@
       <div class="footer d-flex">
         <div class="winners pa-2" v-if="!(listWinners && listWinners.length)">
           <p
-            class="emptyWinners my-auto pl-2 align-self-end text-no-wrap pt-1"
-            @click="openDetails">
+            class="emptyWinners my-auto pl-2 align-self-end text-no-wrap pt-1">
             {{ challenge && challenge.announcementsCount }} {{ $t('challenges.winners.details') }}
           </p>
         </div>
@@ -109,7 +108,6 @@
       ref="announceRef" />
     <challenge-winners-details
       :challenge-id="challenge && challenge.id"
-      :list-winners="listWinners"
       ref="winnersDetails" />
   </v-app>
 </template>
@@ -193,6 +191,7 @@ export default {
           createDate: announcement.createdDate
         };
         this.listWinners.unshift(newAnnouncement);
+        this.$refs.winnersDetails.listWinners.unshift(newAnnouncement);
       }
       this.challenge.announcementsCount = this.challenge.announcementsCount +1;
     },
