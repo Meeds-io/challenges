@@ -116,13 +116,13 @@ Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.-->
 
     <changeSet author="challenge" id="1.0.0-6">
         <addColumn tableName="CHALLENGE">
-            <column name="POINTS" type="BIGINT" defaultValueNumeric="20"/>
+            <column name="POINTS" type="BIGINT" defaultValueNumeric="0"/>
         </addColumn>
     </changeSet>
 
     <changeSet author="challenge" id="1.0.0-7">
         <addColumn tableName="ANNOUNCEMENT">
-            <column name="POINTS" type="BIGINT" defaultValueNumeric="0"/>
+            <column name="POINTS" type="BIGINT" defaultValueNumeric="-1"/>
         </addColumn>
     </changeSet>
 
