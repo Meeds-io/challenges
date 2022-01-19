@@ -14,7 +14,7 @@ import java.util.List;
 public class ChallengeEntity implements Serializable {
 
   @Id
-  @SequenceGenerator(name = "SEQ_CHALLENGE_ID", sequenceName = "SEQ_CHALLENGE_ID")
+  @SequenceGenerator(name = "SEQ_CHALLENGE_ID", sequenceName = "SEQ_CHALLENGE_ID", allocationSize = 1)
   @GeneratedValue(strategy = GenerationType.AUTO, generator = "SEQ_CHALLENGE_ID")
   @Column(name = "CHALLENGE_ID", nullable = false)
   private Long       id;

@@ -16,7 +16,7 @@ import java.util.List;
 public class AnnouncementEntity implements Serializable {
 
   @Id
-  @SequenceGenerator(name = "SEQ_ANNOUNCEMENT_ID", sequenceName = "SEQ_ANNOUNCEMENT_ID")
+  @SequenceGenerator(name = "SEQ_ANNOUNCEMENT_ID", sequenceName = "SEQ_ANNOUNCEMENT_ID", allocationSize = 1)
   @GeneratedValue(strategy = GenerationType.AUTO, generator = "SEQ_ANNOUNCEMENT_ID")
   @Column(name = "ANNOUNCEMENT_ID", nullable = false)
   private Long            id;
