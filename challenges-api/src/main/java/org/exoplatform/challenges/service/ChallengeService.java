@@ -20,7 +20,7 @@ public interface ChallengeService {
   /**
    * Updates an existing challenge
    *
-   * @param  challenge {@link Challenge} object to update
+   * @param challenge {@link Challenge} object to update
    * @param username Username updating challenge
    * @throws IllegalArgumentException when user is not authorized to update the
    *           challenge
@@ -29,21 +29,23 @@ public interface ChallengeService {
    * @throws IllegalAccessException when user is not authorized to create a
    *           challenge for the designated owner defined in object
    */
-  Challenge updateChallenge(Challenge challenge, String username) throws  IllegalArgumentException, ObjectNotFoundException, IllegalAccessException;
+  Challenge updateChallenge(Challenge challenge,
+                            String username) throws IllegalArgumentException, ObjectNotFoundException, IllegalAccessException;
 
-    /**
-     * Retrieves a challenge identified by its technical identifier.
-     *
-     * @param challengeId technical identifier of a challenge
-     * @param username User name accessing challenge
-     * @return A {@link Challenge} object
-     * @throws IllegalAccessException when user is not authorized to access
-     *           challenge
-     */
-    Challenge getChallengeById(long challengeId, String username) throws IllegalAccessException;
+  /**
+   * Retrieves a challenge identified by its technical identifier.
+   *
+   * @param challengeId technical identifier of a challenge
+   * @param username User name accessing challenge
+   * @return A {@link Challenge} object
+   * @throws IllegalAccessException when user is not authorized to access
+   *           challenge
+   */
+  Challenge getChallengeById(long challengeId, String username) throws IllegalAccessException;
 
   /**
    * Retrieves all challenges by user.
+   * 
    * @param offset Offset
    * @param limit Limit
    * @param username User name accessing challenge
@@ -54,20 +56,24 @@ public interface ChallengeService {
   List<Challenge> getAllChallengesByUser(int offset, int limit, String username) throws Exception;
 
   /**
-   * Return a boolean that indicates if the current user can add a challenge or not
+   * Return a boolean that indicates if the current user can add a challenge or
+   * not
    *
    * @param currentUser
-   * @return if the user can add a challenge or not    */
+   * @return if the user can add a challenge or not
+   */
   boolean canAddChallenge(String currentUser) throws Exception;
 
   /**
    * Retrieves all challenges.
+   * 
    * @return A {@link List<Challenge>} object
    */
   List<Challenge> getAllChallenges() throws Exception;
 
   /**
    * delete challenge by id.
+   * 
    * @param id the id of challenge
    */
   void deleteChallengeById(Long id) throws Exception;

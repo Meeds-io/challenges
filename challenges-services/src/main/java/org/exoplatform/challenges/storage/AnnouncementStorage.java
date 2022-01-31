@@ -11,11 +11,11 @@ import java.util.List;
 
 public class AnnouncementStorage {
 
-  private AnnouncementDAO announcementDAO;
+  private AnnouncementDAO  announcementDAO;
 
   private ChallengeStorage challengeStorage;
 
-  public static final long  MILLIS_IN_A_DAY = 1000 * 60 * 60 * 24;
+  public static final long MILLIS_IN_A_DAY = 1000 * 60 * 60 * 24;
 
   public AnnouncementStorage(AnnouncementDAO announcementDAO, ChallengeStorage challengeStorage) {
     this.announcementDAO = announcementDAO;
@@ -28,7 +28,7 @@ public class AnnouncementStorage {
     }
     Challenge challenge = challengeStorage.getChallengeById(announcement.getChallengeId());
     AnnouncementEntity announcementEntity = EntityMapper.toEntity(announcement, challenge);
-    Date nextToEndDate =   new Date(announcementEntity.getChallenge().getEndDate().getTime() + MILLIS_IN_A_DAY);
+    Date nextToEndDate = new Date(announcementEntity.getChallenge().getEndDate().getTime() + MILLIS_IN_A_DAY);
 
     if (!announcementEntity.getCreatedDate().before(nextToEndDate)) {
       throw new IllegalArgumentException("announcement is not allowed when challenge is ended ");
@@ -51,7 +51,7 @@ public class AnnouncementStorage {
   }
 
   public List<Announcement> findAllAnnouncementByChallenge(Long challengeId, int offset, int limit) {
-    List<AnnouncementEntity> announcementEntities= announcementDAO.findAllAnnouncementByChallenge(challengeId, offset, limit);
+    List<AnnouncementEntity> announcementEntities = announcementDAO.findAllAnnouncementByChallenge(challengeId, offset, limit);
     return EntityMapper.fromAnnouncementEntities(announcementEntities);
   }
 
