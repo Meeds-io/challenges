@@ -92,6 +92,16 @@ public class AnnouncementServiceImpl implements AnnouncementService {
   }
 
   @Override
+  public void deleteAnnouncementById(Long id) throws Exception {
+    announcementStorage.deleteAnnouncementById(id);
+  }
+
+  @Override
+  public List<Announcement> getAllAnnouncements() throws Exception {
+    return announcementStorage.getAllAnnouncements();
+  }
+
+  @Override
   public Announcement updateAnnouncement(Announcement announcement) throws IllegalArgumentException, ObjectNotFoundException {
     if (announcement == null) {
       throw new IllegalArgumentException("announcement is mandatory");

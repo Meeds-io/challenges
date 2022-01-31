@@ -48,4 +48,21 @@ public class ChallengeStorage {
   public List<ChallengeEntity> findAllChallengesByUser(int offset, int limit, List<Long> ids) {
     return challengeDAO.findAllChallengesByUser(offset, limit, ids);
   }
+<<<<<<< Updated upstream
+=======
+
+  public List<Challenge> getAllChallenges() {
+    return EntityMapper.fromChallengeEntities(challengeDAO.findAll());
+  }
+
+  public void deleteChallengeById(Long id) {
+    if (id == null) {
+      throw new IllegalArgumentException("id must not be null");
+    }
+    Challenge challenge = getChallengeById(id);
+    if (challenge != null) {
+      challengeDAO.delete(EntityMapper.toEntity(challenge));
+    }
+  }
+>>>>>>> Stashed changes
 }

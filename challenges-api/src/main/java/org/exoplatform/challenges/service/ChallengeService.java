@@ -60,4 +60,19 @@ public interface ChallengeService {
    * @return if the user can add a challenge or not    */
   boolean canAddChallenge(String currentUser) throws Exception;
 
+<<<<<<< Updated upstream
+=======
+  /**
+   * Retrieves all challenges.
+   * @return A {@link List<Challenge>} object
+   */
+  List<Challenge> getAllChallenges() throws Exception;
+
+  /**
+   * delete challenge by id.
+   * @param id the id of challenge
+   */
+  void deleteChallengeById(Long id) throws Exception;
+
+>>>>>>> Stashed changes
 }

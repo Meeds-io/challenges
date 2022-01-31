@@ -60,4 +60,25 @@ public class AnnouncementStorage {
     return countAnnounce;
   }
 
+<<<<<<< Updated upstream
+=======
+  public List<Announcement> getAllAnnouncement() {
+    return EntityMapper.fromAnnouncementEntities(announcementDAO.findAll());
+  }
+
+  public void deleteAnnouncementById(Long id) {
+    if (id == null) {
+      throw new IllegalArgumentException("id must not be null");
+    }
+    Announcement announcement = getAnnouncementById(id);
+    if (announcement != null) {
+      Challenge challenge = challengeStorage.getChallengeById(announcement.getChallengeId());
+      announcementDAO.delete(EntityMapper.toEntity(announcement, challenge));
+    }
+  }
+
+  public List<Announcement> getAllAnnouncements() {
+    return EntityMapper.fromAnnouncementEntities(announcementDAO.findAll());
+  }
+>>>>>>> Stashed changes
 }

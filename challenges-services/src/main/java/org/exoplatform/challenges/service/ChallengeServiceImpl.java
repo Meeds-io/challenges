@@ -122,4 +122,17 @@ public class ChallengeServiceImpl implements ChallengeService {
     return spaceService.getManagerSpaces(currentUser).getSize() > 0;
   }
 
+<<<<<<< Updated upstream
+=======
+  @Override
+  public List<Challenge> getAllChallenges() throws Exception {
+    return challengeStorage.getAllChallenges();
+  }
+
+  @Override
+  public void deleteChallengeById(Long id) throws Exception {
+    challengeStorage.deleteChallengeById(id);
+  }
+
+>>>>>>> Stashed changes
 }
