@@ -65,4 +65,16 @@ public interface AnnouncementService {
    */
   Long countAllAnnouncementsByChallenge(long challengeId) throws ObjectNotFoundException;
 
+  /**
+   * delete announcement by id.
+   * @param id the id of challenge
+   */
+  void deleteAnnouncementById(Long id) throws Exception;
+
+  /**
+   * Retrieves all announcements.
+   * @return A {@link List<Announcement>} object
+   */
+  List<Announcement> getAllAnnouncements() throws Exception;
+
 }

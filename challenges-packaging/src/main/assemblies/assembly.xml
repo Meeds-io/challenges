@@ -6,16 +6,6 @@
   </formats>
   <includeBaseDirectory>false</includeBaseDirectory>
   <dependencySets>
-    <!-- War -->
-    <dependencySet>
-      <useProjectArtifact>false</useProjectArtifact>
-      <outputDirectory>/</outputDirectory>
-      <includes>
-        <include>${project.groupId}:challenges-webapp:war</include>
-      </includes>
-      <scope>provided</scope>
-      <outputFileNameMapping>${artifact.build.finalName}.${artifact.extension}</outputFileNameMapping>
-    </dependencySet>
     <!-- Libraries -->
     <dependencySet>
       <useProjectArtifact>false</useProjectArtifact>

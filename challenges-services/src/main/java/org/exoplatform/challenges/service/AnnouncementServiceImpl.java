@@ -80,6 +80,16 @@ public class AnnouncementServiceImpl implements AnnouncementService {
   }
 
   @Override
+  public void deleteAnnouncementById(Long id) throws Exception {
+    announcementStorage.deleteAnnouncementById(id);
+  }
+
+  @Override
+  public List<Announcement> getAllAnnouncements() throws Exception {
+    return announcementStorage.getAllAnnouncements();
+  }
+
+  @Override
   public Long countAllAnnouncementsByChallenge(long challengeId) throws ObjectNotFoundException {
     if (challengeId <= 0) {
       throw new IllegalArgumentException("Challenge id has to be positive integer");
