@@ -20,12 +20,6 @@
       <artifactId>challenges-services</artifactId>
       <scope>provided</scope>
     </dependency>
-    <dependency>
-      <groupId>${project.groupId}</groupId>
-      <artifactId>challenges-webapp</artifactId>
-      <scope>provided</scope>
-      <type>war</type>
-    </dependency>
   </dependencies>
   <build>
     <finalName>challenges-addon</finalName>

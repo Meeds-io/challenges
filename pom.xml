@@ -15,7 +15,6 @@
   <modules>
     <module>challenges-api</module>
     <module>challenges-services</module>
-    <module>challenges-webapp</module>
     <module>challenges-packaging</module>
   </modules>
   <scm>
@@ -28,6 +27,7 @@
     <!-- 3rd party libraries versions -->
     <org.exoplatform.social.version>6.3.x-SNAPSHOT</org.exoplatform.social.version>
     <org.exoplatform.platform-ui.version>6.3.x-SNAPSHOT</org.exoplatform.platform-ui.version>
+    <addon.exo.gamification.version>2.3.x-SNAPSHOT</addon.exo.gamification.version>
   </properties>
   <dependencyManagement>
     <dependencies>
@@ -63,12 +63,13 @@
         <scope>provided</scope>
       </dependency>
 
+      <!-- Import versions from gamification project -->
       <dependency>
-        <groupId>${project.groupId}</groupId>
-        <artifactId>challenges-webapp</artifactId>
-        <version>${project.version}</version>
-        <scope>provided</scope>
-        <type>war</type>
+        <groupId>org.exoplatform.addons.gamification</groupId>
+        <artifactId>gamification</artifactId>
+        <version>${addon.exo.gamification.version}</version>
+        <type>pom</type>
+        <scope>import</scope>
       </dependency>
 
       <dependency>
