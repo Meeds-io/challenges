@@ -52,11 +52,13 @@ public class DataMigrationChallengeJob implements Job {
 
   @Override
   public void execute(JobExecutionContext jobExecutionContext) throws JobExecutionException {
+    LOG.info("CHALLENGE DATA MIGRATION HAS STARTED");
     ExoContainer currentContainer = ExoContainerContext.getCurrentContainer();
     ExoContainerContext.setCurrentContainer(container);
     RequestLifeCycle.begin(this.container);
     try {
       List<Challenge> challenges = getChallengeService().getAllChallenges();
+      LOG.info(challenges.size() + "CHALLENGES WILL BE MIGRATED TO OTHER TABLES");
       for (Challenge c : challenges) {
         org.exoplatform.addons.gamification.service.dto.configuration.Challenge challenge =
                                                                                           new org.exoplatform.addons.gamification.service.dto.configuration.Challenge(0l,
@@ -90,6 +92,8 @@ public class DataMigrationChallengeJob implements Job {
           org.exoplatform.addons.gamification.service.dto.configuration.Challenge newChallenge =
                                                                                                getChallengeServiceGamification().createChallenge(challenge,
                                                                                                                                                  remoteId);
+          LOG.info("CHALLENGE" + newChallenge.getTitle() + " with old id" + c.getId() + "is migrated with new id"
+              + newChallenge.getId());
           List<Announcement> announcements = getAnnouncementService().findAllAnnouncementByChallenge(c.getId(), 0, 100);
           for (Announcement a : announcements) {
             Identity creator = getIdentityById(String.valueOf(a.getCreator()));
@@ -107,7 +111,12 @@ public class DataMigrationChallengeJob implements Job {
                                                                                                                                                                                        creator.getRemoteId(),
                                                                                                                                                                                        null,
                                                                                                                                                                                        null);
-                getAnnouncementServiceChallenge().createAnnouncement(announcement, creator.getRemoteId());
+                org.exoplatform.addons.gamification.service.dto.configuration.Announcement newAnnouncement =
+                                                                                                           getAnnouncementServiceChallenge().createAnnouncement(announcement,
+                                                                                                                                                                creator.getRemoteId(),
+                                                                                                                                                                true);
+                LOG.info("THE ANNOUNCEMENT OF USER ID" + a.getAssignee().get(i) + "WITH THE OLD ID" + a.getId() + " FOR CHALLENGE"
+                    + newChallenge.getTitle() + " MIGRATED WITH NEW ID" + newAnnouncement.getId());
               }
             } else {
               org.exoplatform.addons.gamification.service.dto.configuration.Announcement announcement =
@@ -124,16 +133,23 @@ public class DataMigrationChallengeJob implements Job {
                                                                                                                                                                                      null);
               org.exoplatform.addons.gamification.service.dto.configuration.Announcement newAnnouncement =
                                                                                                          getAnnouncementServiceChallenge().createAnnouncement(announcement,
-                                                                                                                                                              creator.getRemoteId());
-              ExoSocialActivity activity = getActivityStorageService().getActivity(String.valueOf(newAnnouncement.getActivityId()));
+                                                                                                                                                              creator.getRemoteId(),
+                                                                                                                                                              true);
+              LOG.info("THE ANNOUNCEMENT OF USER ID" + a.getAssignee().get(0) + "WITH THE OLD ID" + a.getId() + " FOR CHALLENGE"
+                  + newChallenge.getTitle() + " MIGRATED WITH NEW ID" + newAnnouncement.getId());
+
+              ExoSocialActivity activity =
+                                         getActivityStorageService().getActivity(String.valueOf(newAnnouncement.getActivityId()));
               activity.getTemplateParams().put("announcementId", String.valueOf(newAnnouncement.getId()));
             }
             getAnnouncementService().deleteAnnouncementById(a.getId());
-
+            LOG.info("THE ANNOUNCEMENT WITH ID" + a.getId() + " FOR CHALLENGE" + newChallenge.getTitle() + " IS DELETED");
           }
           getChallengeService().deleteChallengeById(c.getId());
+          LOG.info("CHALLENGE WITH ID" + c.getId() + " IS DELETED ");
         }
       }
+      LOG.info("CHALLENGE DATA MIGRATION COMPLETED");
     } catch (Exception e) {
       LOG.error("Error while migration data", e);
     } finally {
