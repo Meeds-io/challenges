@@ -68,7 +68,9 @@ public class AnnouncementServiceImpl implements AnnouncementService {
   }
 
   @Override
-  public List<Announcement> findAllAnnouncementByChallenge(long challengeId, int offset, int limit) throws  ObjectNotFoundException {
+  public List<Announcement> findAllAnnouncementByChallenge(long challengeId,
+                                                           int offset,
+                                                           int limit) throws ObjectNotFoundException {
     if (challengeId <= 0) {
       throw new IllegalArgumentException("Challenge id has to be positive integer");
     }
@@ -77,6 +79,16 @@ public class AnnouncementServiceImpl implements AnnouncementService {
       throw new ObjectNotFoundException("challenge does not exist");
     }
     return announcementStorage.findAllAnnouncementByChallenge(challengeId, offset, limit);
+  }
+
+  @Override
+  public void deleteAnnouncementById(Long id) throws Exception {
+    announcementStorage.deleteAnnouncementById(id);
+  }
+
+  @Override
+  public List<Announcement> getAllAnnouncements() throws Exception {
+    return announcementStorage.getAllAnnouncements();
   }
 
   @Override
@@ -112,6 +124,6 @@ public class AnnouncementServiceImpl implements AnnouncementService {
     if (announcementId == null || announcementId <= 0) {
       throw new IllegalArgumentException("announcement id is mandatory");
     }
-     return announcementStorage.getAnnouncementById(announcementId);
+    return announcementStorage.getAnnouncementById(announcementId);
   }
 }
