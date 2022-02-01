@@ -29,10 +29,6 @@
   </component>
 
   <component>
-    <type>org.exoplatform.challenges.rest.AnnouncementRest</type>
-  </component>
-
-  <component>
     <type>org.exoplatform.challenges.dao.ChallengeDAO</type>
   </component>
 
@@ -43,10 +39,6 @@
   <component>
     <key>org.exoplatform.challenges.service.ChallengeService</key>
     <type>org.exoplatform.challenges.service.ChallengeServiceImpl</type>
-  </component>
-
-  <component>
-    <type>org.exoplatform.challenges.rest.ChallengeRest</type>
   </component>
 
   <external-component-plugins>
@@ -72,7 +64,25 @@
       </init-params>
     </component-plugin>
   </external-component-plugins>
-
+  <external-component-plugins>
+    <target-component>org.exoplatform.services.scheduler.JobSchedulerService</target-component>
+    <component-plugin>
+      <name>AddCronJob</name>
+      <set-method>addCronJob</set-method>
+      <type>org.exoplatform.services.scheduler.CronJob</type>
+      <description>Add a job to migration data from challenges tables to gamification tables</description>
+      <init-params>
+        <properties-param>
+          <name>cronjob.info</name>
+          <description>migration data of challenge to rule table</description>
+          <property name="jobName" value="DataMigrationChallengeJob"/>
+          <property name="groupName" value="Challenges"/>
+          <property name="job" value="org.exoplatform.challenges.job.DataMigrationChallengeJob"/>
+          <property name="expression" value="${exo.challenge.DataMigrationChallenge.expression:0 0 0 * * ?}"/>
+        </properties-param>
+      </init-params>
+    </component-plugin>
+  </external-component-plugins>
 <external-component-plugins>
   <target-component>org.exoplatform.commons.api.persistence.DataInitializer</target-component>
   <component-plugin>
