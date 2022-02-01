@@ -45,6 +45,16 @@ public class ChallengeServiceImpl implements ChallengeService {
   }
 
   @Override
+  public List<Challenge> getAllChallenges() throws Exception {
+    return challengeStorage.getAllChallenges();
+  }
+
+  @Override
+  public void deleteChallengeById(Long id) throws Exception {
+    challengeStorage.deleteChallengeById(id);
+  }
+
+  @Override
   public Challenge updateChallenge(Challenge challenge, String username) throws IllegalArgumentException,
                                                                          ObjectNotFoundException,
                                                                          IllegalAccessException {
