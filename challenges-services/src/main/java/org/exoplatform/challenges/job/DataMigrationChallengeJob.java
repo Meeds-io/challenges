@@ -125,7 +125,7 @@ public class DataMigrationChallengeJob implements Job {
               org.exoplatform.addons.gamification.service.dto.configuration.Announcement newAnnouncement =
                                                                                                          getAnnouncementServiceChallenge().createAnnouncement(announcement,
                                                                                                                                                               creator.getRemoteId());
-              ExoSocialActivity activity = getActivityStorage().getActivity(String.valueOf(newAnnouncement.getActivityId()));
+              ExoSocialActivity activity = getActivityStorageService().getActivity(String.valueOf(newAnnouncement.getActivityId()));
               activity.getTemplateParams().put("announcementId", String.valueOf(newAnnouncement.getId()));
             }
             getAnnouncementService().deleteAnnouncementById(a.getId());
@@ -175,7 +175,7 @@ public class DataMigrationChallengeJob implements Job {
     return announcementServiceChallenge;
   }
 
-  private ActivityStorage getActivityStorage() {
+  private ActivityStorage getActivityStorageService() {
     if (activityStorage == null) {
       activityStorage = CommonsUtils.getService(ActivityStorage.class);
     }
