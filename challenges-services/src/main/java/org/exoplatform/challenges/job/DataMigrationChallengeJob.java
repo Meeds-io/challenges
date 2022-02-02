@@ -12,10 +12,12 @@ import org.exoplatform.container.PortalContainer;
 import org.exoplatform.container.component.RequestLifeCycle;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
+import org.exoplatform.social.core.activity.model.ExoSocialActivity;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.manager.IdentityManager;
 import org.exoplatform.social.core.space.model.Space;
 import org.exoplatform.social.core.space.spi.SpaceService;
+import org.exoplatform.social.core.storage.api.ActivityStorage;
 import org.quartz.DisallowConcurrentExecution;
 import org.quartz.Job;
 import org.quartz.JobExecutionContext;
@@ -39,6 +41,8 @@ public class DataMigrationChallengeJob implements Job {
   private SpaceService                                           spaceService;
 
   private ExoContainer                                           container;
+
+  private ActivityStorage                                        activityStorage;
 
   private static final String                                    SOCIAL = "social";
 
@@ -118,7 +122,11 @@ public class DataMigrationChallengeJob implements Job {
                                                                                                                                                                                      creator.getRemoteId(),
                                                                                                                                                                                      null,
                                                                                                                                                                                      null);
-              getAnnouncementServiceChallenge().createAnnouncement(announcement, creator.getRemoteId());
+              org.exoplatform.addons.gamification.service.dto.configuration.Announcement newAnnouncement =
+                                                                                                         getAnnouncementServiceChallenge().createAnnouncement(announcement,
+                                                                                                                                                              creator.getRemoteId());
+              ExoSocialActivity activity = getActivityStorageService().getActivity(String.valueOf(newAnnouncement.getActivityId()));
+              activity.getTemplateParams().put("announcementId", String.valueOf(newAnnouncement.getId()));
             }
             getAnnouncementService().deleteAnnouncementById(a.getId());
 
@@ -165,6 +173,13 @@ public class DataMigrationChallengeJob implements Job {
       announcementServiceChallenge = CommonsUtils.getService(AnnouncementService.class);
     }
     return announcementServiceChallenge;
+  }
+
+  private ActivityStorage getActivityStorageService() {
+    if (activityStorage == null) {
+      activityStorage = CommonsUtils.getService(ActivityStorage.class);
+    }
+    return activityStorage;
   }
 
   private org.exoplatform.challenges.service.AnnouncementService getAnnouncementService() {
