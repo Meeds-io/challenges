@@ -139,8 +139,12 @@ public class DataMigrationChallengeJob implements Job {
                   + newChallenge.getTitle() + " MIGRATED WITH NEW ID" + newAnnouncement.getId());
 
               ExoSocialActivity activity =
-                                         getActivityStorageService().getActivity(String.valueOf(newAnnouncement.getActivityId()));
-              activity.getTemplateParams().put("announcementId", String.valueOf(newAnnouncement.getId()));
+                                         getActivityStorageService().getActivity(String.valueOf(a.getActivityId()));
+              if (activity !=null) {
+                activity.getTemplateParams().put("announcementId", String.valueOf(newAnnouncement.getId()));
+              } else {
+                LOG.warn("ACTIVITY WITH ID "+a.getActivityId()+" IS NOT FOUNT FOR ANNOUNCEMENT WITH ID "+a.getId());
+              }
             }
             getAnnouncementService().deleteAnnouncementById(a.getId());
             LOG.info("THE ANNOUNCEMENT WITH ID" + a.getId() + " FOR CHALLENGE" + newChallenge.getTitle() + " IS DELETED");
