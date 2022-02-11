@@ -115,7 +115,6 @@ public class Utils {
       }
       return users;
     } catch (Exception e) {
-      LOG.info("challenge not exist with this id {0}", challengeId);
       return Collections.emptyList();
     }
 
