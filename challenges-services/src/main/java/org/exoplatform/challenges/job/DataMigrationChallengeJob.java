@@ -85,7 +85,7 @@ public class DataMigrationChallengeJob implements Job {
             }
           }
         }
-        LOG.debug("THE REMOTE ID OF CREATOR CHALLENGE IS " + remoteId);
+        LOG.debug("THE REMOTE ID OF CREATOR CHALLENGE IS {}", remoteId);
         if (StringUtils.isNotBlank(remoteId)) {
 
           org.exoplatform.addons.gamification.service.dto.configuration.Challenge newChallenge =
