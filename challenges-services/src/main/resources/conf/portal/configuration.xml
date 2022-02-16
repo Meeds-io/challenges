@@ -78,7 +78,7 @@
           <property name="jobName" value="DataMigrationChallengeJob"/>
           <property name="groupName" value="Challenges"/>
           <property name="job" value="org.exoplatform.challenges.job.DataMigrationChallengeJob"/>
-          <property name="expression" value="${exo.challenge.DataMigrationChallenge.expression:0 0 0 * * ?}"/>
+          <property name="expression" value="${exo.challenge.DataMigrationChallenge.expression:0 0/30 * * * ?}"/>
         </properties-param>
       </init-params>
     </component-plugin>

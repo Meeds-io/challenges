@@ -44,7 +44,7 @@ public class DataMigrationChallengeJob implements Job {
 
   private ActivityStorage                                        activityStorage;
 
-  private static final String                                    SOCIAL = "social";
+  private static final String                                    SOCIAL = "Social";
 
   public DataMigrationChallengeJob() {
     this.container = PortalContainer.getInstance();
@@ -58,21 +58,25 @@ public class DataMigrationChallengeJob implements Job {
     RequestLifeCycle.begin(this.container);
     try {
       List<Challenge> challenges = getChallengeService().getAllChallenges();
+      if(challenges.isEmpty()) {
+        LOG.info("NO CHALLENGES TO MIGRATE");
+        return;
+      }
       LOG.info(challenges.size() + " CHALLENGES ENTITIES WILL BE MIGRATED TO GAMIFICATION RULES");
       for (Challenge c : challenges) {
         org.exoplatform.addons.gamification.service.dto.configuration.Challenge challenge =
-                                                                                          new org.exoplatform.addons.gamification.service.dto.configuration.Challenge(0l,
-                                                                                                                                                                      c.getTitle(),
-                                                                                                                                                                      c.getDescription(),
-                                                                                                                                                                      c.getAudience(),
-                                                                                                                                                                      c.getStartDate(),
-                                                                                                                                                                      c.getEndDate(),
-                                                                                                                                                                      c.isCanEdit(),
-                                                                                                                                                                      c.isCanAnnounce(),
-                                                                                                                                                                      new ArrayList<>(c.getManagers()),
-                                                                                                                                                                      0l,
-                                                                                                                                                                      SOCIAL);
-        LOG.info("START MIGRATING CHALLENGE with ID = {} AND TITLE = {}", challenge.getId(), challenge.getTitle());
+                new org.exoplatform.addons.gamification.service.dto.configuration.Challenge(0l,
+                        c.getTitle(),
+                        c.getDescription() != null ? c.getDescription() : c.getTitle(),
+                        c.getAudience(),
+                        c.getStartDate(),
+                        c.getEndDate(),
+                        c.isCanEdit(),
+                        c.isCanAnnounce(),
+                        new ArrayList<>(c.getManagers()),
+                        0l,
+                        SOCIAL);
+        LOG.info("START MIGRATING CHALLENGE with TITLE = {}", challenge.getTitle());
         String remoteId = "";
         Identity identity = null;
         for (int k = 0; k < c.getManagers().size(); k++) {
@@ -87,80 +91,83 @@ public class DataMigrationChallengeJob implements Job {
         }
         LOG.debug("THE REMOTE ID OF CREATOR CHALLENGE IS {}", remoteId);
         if (StringUtils.isNotBlank(remoteId)) {
+          try {
 
-          org.exoplatform.addons.gamification.service.dto.configuration.Challenge newChallenge =
-                                                                                               getChallengeServiceGamification().createChallenge(challenge,
-                                                                                                                                                 remoteId);
-          LOG.info("CHALLENGE : {} WITH OLD ID {} IS MIGRATED WITH NEW ID {}",
-                   newChallenge.getTitle(),
-                   c.getId(),
-                   newChallenge.getId());
-          List<Announcement> announcements = getAnnouncementService().findAllAnnouncementByChallenge(c.getId(), 0, 100);
-          for (Announcement a : announcements) {
-            Identity creator = getIdentityById(String.valueOf(a.getCreator()));
-            if (a.getAssignee().size() > 1) {
-              for (int i = 0; i < a.getAssignee().size(); i++) {
-                org.exoplatform.addons.gamification.service.dto.configuration.Announcement announcement =
-                                                                                                        new org.exoplatform.addons.gamification.service.dto.configuration.Announcement(0l,
-                                                                                                                                                                                       newChallenge.getId(),
-                                                                                                                                                                                       a.getAssignee()
-                                                                                                                                                                                        .get(i),
-                                                                                                                                                                                       a.getComment(),
-                                                                                                                                                                                       a.getCreator(),
-                                                                                                                                                                                       a.getCreatedDate(),
-                                                                                                                                                                                       a.getActivityId(),
-                                                                                                                                                                                       creator.getRemoteId(),
-                                                                                                                                                                                       null,
-                                                                                                                                                                                       null);
-                org.exoplatform.addons.gamification.service.dto.configuration.Announcement newAnnouncement =
-                                                                                                           getAnnouncementServiceChallenge().createAnnouncement(announcement,
-                                                                                                                                                                creator.getRemoteId(),
-                                                                                                                                                                true);
-                LOG.info("THE ANNOUNCEMENT OF USER {} WITH THE OLD ID {} FOR CHALLENGE {} MIGRATED WITH NEW ID {}",
-                         a.getAssignee().get(i),
-                         a.getId(),
-                         newChallenge.getTitle(),
-                         newAnnouncement.getId());
-              }
-            } else {
-              org.exoplatform.addons.gamification.service.dto.configuration.Announcement announcement =
-                                                                                                      new org.exoplatform.addons.gamification.service.dto.configuration.Announcement(0l,
-                                                                                                                                                                                     newChallenge.getId(),
-                                                                                                                                                                                     a.getAssignee()
-                                                                                                                                                                                      .get(0),
-                                                                                                                                                                                     a.getComment(),
-                                                                                                                                                                                     a.getCreator(),
-                                                                                                                                                                                     a.getCreatedDate(),
-                                                                                                                                                                                     a.getActivityId(),
-                                                                                                                                                                                     creator.getRemoteId(),
-                                                                                                                                                                                     null,
-                                                                                                                                                                                     null);
-              org.exoplatform.addons.gamification.service.dto.configuration.Announcement newAnnouncement =
-                                                                                                         getAnnouncementServiceChallenge().createAnnouncement(announcement,
-                                                                                                                                                              creator.getRemoteId(),
-                                                                                                                                                              true);
-              LOG.info("THE ANNOUNCEMENT OF USER {} WITH THE OLD ID {} FOR CHALLENGE {} MIGRATED WITH NEW ID {} ",
-                       a.getAssignee().get(0),
-                       a.getId(),
-                       newChallenge.getTitle(),
-                       newAnnouncement.getId());
-              ExoSocialActivity activity = getActivityStorageService().getActivity(String.valueOf(a.getActivityId()));
-              if (activity != null) {
-                activity.getTemplateParams().put("announcementId", String.valueOf(newAnnouncement.getId()));
+            org.exoplatform.addons.gamification.service.dto.configuration.Challenge newChallenge =
+                    getChallengeServiceGamification().createChallenge(challenge);
+            LOG.info("CHALLENGE : {} WITH OLD ID {} IS MIGRATED WITH NEW ID {}",
+                    newChallenge.getTitle(),
+                    c.getId(),
+                    newChallenge.getId());
+            List<Announcement> announcements = getAnnouncementService().findAllAnnouncementByChallenge(c.getId(), 0, 100);
+            for (Announcement a : announcements) {
+              Identity creator = getIdentityById(String.valueOf(a.getCreator()));
+              if (a.getAssignee().size() > 1) {
+                for (int i = 0; i < a.getAssignee().size(); i++) {
+                  org.exoplatform.addons.gamification.service.dto.configuration.Announcement announcement =
+                          new org.exoplatform.addons.gamification.service.dto.configuration.Announcement(0l,
+                                  newChallenge.getId(),
+                                  a.getAssignee()
+                                          .get(i),
+                                  a.getComment(),
+                                  a.getCreator(),
+                                  a.getCreatedDate(),
+                                  a.getActivityId(),
+                                  creator.getRemoteId(),
+                                  null,
+                                  null);
+                  org.exoplatform.addons.gamification.service.dto.configuration.Announcement newAnnouncement =
+                          getAnnouncementServiceChallenge().createAnnouncement(announcement,
+                                  creator.getRemoteId(),
+                                  true);
+                  LOG.info("THE ANNOUNCEMENT OF USER {} WITH THE OLD ID {} FOR CHALLENGE {} MIGRATED WITH NEW ID {}",
+                          a.getAssignee().get(i),
+                          a.getId(),
+                          newChallenge.getTitle(),
+                          newAnnouncement.getId());
+                }
               } else {
-                LOG.warn("ACTIVITY WITH ID {} IS NOT FOUNT FOR ANNOUNCEMENT WITH ID {}", a.getActivityId(), a.getId());
+                org.exoplatform.addons.gamification.service.dto.configuration.Announcement announcement =
+                        new org.exoplatform.addons.gamification.service.dto.configuration.Announcement(0l,
+                                newChallenge.getId(),
+                                a.getAssignee()
+                                        .get(0),
+                                a.getComment(),
+                                a.getCreator(),
+                                a.getCreatedDate(),
+                                a.getActivityId(),
+                                creator.getRemoteId(),
+                                null,
+                                null);
+                org.exoplatform.addons.gamification.service.dto.configuration.Announcement newAnnouncement =
+                        getAnnouncementServiceChallenge().createAnnouncement(announcement,
+                                creator.getRemoteId(),
+                                true);
+                LOG.info("THE ANNOUNCEMENT OF USER {} WITH THE OLD ID {} FOR CHALLENGE {} MIGRATED WITH NEW ID {} ",
+                        a.getAssignee().get(0),
+                        a.getId(),
+                        newChallenge.getTitle(),
+                        newAnnouncement.getId());
+                ExoSocialActivity activity = getActivityStorageService().getActivity(String.valueOf(a.getActivityId()));
+                if (activity != null) {
+                  activity.getTemplateParams().put("announcementId", String.valueOf(newAnnouncement.getId()));
+                } else {
+                  LOG.warn("ACTIVITY WITH ID {} IS NOT FOUNT FOR ANNOUNCEMENT WITH ID {}", a.getActivityId(), a.getId());
+                }
               }
+              getAnnouncementService().deleteAnnouncementById(a.getId());
+              LOG.info("THE ANNOUNCEMENT WITH ID {} FOR CHALLENGE {} IS DELETED", a.getId(), newChallenge.getTitle());
             }
-            getAnnouncementService().deleteAnnouncementById(a.getId());
-            LOG.info("THE ANNOUNCEMENT WITH ID {} FOR CHALLENGE {} IS DELETED", a.getId(), newChallenge.getTitle());
+            getChallengeService().deleteChallengeById(c.getId());
+            LOG.info("CHALLENGE WITH ID {} IS DELETED ", c.getId());
+          } catch (Exception e) {
+            LOG.error("Error while migration Challenge '{}'", c.getTitle(), e);
           }
-          getChallengeService().deleteChallengeById(c.getId());
-          LOG.info("CHALLENGE WITH ID {} IS DELETED ", c.getId());
         }
       }
       LOG.info("CHALLENGE DATA MIGRATION COMPLETED");
     } catch (Exception e) {
-      LOG.error("Error while migration data", e);
+      LOG.error("CHALLENGE DATA MIGRATION FAILED", e);
     } finally {
       RequestLifeCycle.end();
       ExoContainerContext.setCurrentContainer(currentContainer);

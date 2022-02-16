@@ -69,7 +69,7 @@ public interface ChallengeService {
    * 
    * @return A {@link List<Challenge>} object
    */
-  List<Challenge> getAllChallenges() throws Exception;
+  List<Challenge> getAllChallenges();
 
   /**
    * delete challenge by id.
