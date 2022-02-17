@@ -45,7 +45,7 @@ public class ChallengeServiceImpl implements ChallengeService {
   }
 
   @Override
-  public List<Challenge> getAllChallenges() throws Exception {
+  public List<Challenge> getAllChallenges() {
     return challengeStorage.getAllChallenges();
   }
 
