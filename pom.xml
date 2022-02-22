@@ -25,9 +25,9 @@
   </scm>
   <properties>
     <!-- 3rd party libraries versions -->
-    <org.exoplatform.social.version>6.3.x-SNAPSHOT</org.exoplatform.social.version>
-    <org.exoplatform.platform-ui.version>6.3.x-SNAPSHOT</org.exoplatform.platform-ui.version>
-    <addon.exo.gamification.version>2.3.x-SNAPSHOT</addon.exo.gamification.version>
+    <org.exoplatform.social.version>6.3.0-20220222</org.exoplatform.social.version>
+    <org.exoplatform.platform-ui.version>6.3.0-20220222</org.exoplatform.platform-ui.version>
+    <addon.exo.gamification.version>2.3.0-20220222</addon.exo.gamification.version>
   </properties>
   <dependencyManagement>
     <dependencies>
