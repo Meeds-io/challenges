@@ -71,8 +71,6 @@ public class DataMigrationChallengeJob implements Job {
                         c.getAudience(),
                         c.getStartDate(),
                         c.getEndDate(),
-                        c.isCanEdit(),
-                        c.isCanAnnounce(),
                         new ArrayList<>(c.getManagers()),
                         0l,
                         SOCIAL);
@@ -112,10 +110,7 @@ public class DataMigrationChallengeJob implements Job {
                                   a.getComment(),
                                   a.getCreator(),
                                   a.getCreatedDate(),
-                                  a.getActivityId(),
-                                  creator.getRemoteId(),
-                                  null,
-                                  null);
+                                  a.getActivityId());
                   org.exoplatform.addons.gamification.service.dto.configuration.Announcement newAnnouncement =
                           getAnnouncementServiceChallenge().createAnnouncement(announcement,
                                   creator.getRemoteId(),
@@ -135,10 +130,7 @@ public class DataMigrationChallengeJob implements Job {
                                 a.getComment(),
                                 a.getCreator(),
                                 a.getCreatedDate(),
-                                a.getActivityId(),
-                                creator.getRemoteId(),
-                                null,
-                                null);
+                                a.getActivityId());
                 org.exoplatform.addons.gamification.service.dto.configuration.Announcement newAnnouncement =
                         getAnnouncementServiceChallenge().createAnnouncement(announcement,
                                 creator.getRemoteId(),
